@@ -184,6 +184,9 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .modal-submit:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,255,255,.15)}
 .modal-ghost{background:transparent;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.12);margin-top:8px}
 .modal-ghost:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.25);box-shadow:none;transform:none}
+.modal-row{display:flex;gap:8px;margin-top:14px}
+.modal-mini{flex:1;padding:9px;border-radius:8px;background:transparent;color:rgba(255,255,255,.45);border:1px dashed rgba(255,255,255,.15);font-size:.68rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.modal-mini:hover{color:var(--ac);border-color:var(--ac);background:rgba(255,255,255,.04)}
 .modal-err{color:#ef4444;font-size:.78rem;margin-top:10px;min-height:16px;text-align:center}
 .acc-user{font-size:.8rem;font-weight:600;cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.15);color:#fff;padding:7px 14px;border-radius:10px;font-family:inherit;transition:all .25s}
 .nav-actions{display:flex;flex-direction:column;align-items:stretch;gap:6px}
@@ -311,6 +314,11 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
     <input class="modal-input" id="accPass" type="password" autocomplete="current-password">
     <button class="modal-submit" id="accSubmit" type="button" data-i18n="acc_enter">Войти</button>
     <button class="modal-submit modal-ghost" id="accRegister" type="button" data-i18n="acc_reg">Зарегистрироваться</button>
+    <div class="modal-row">
+      <button class="modal-mini" id="accExport" type="button" data-i18n="acc_backup">Скачать бэкап</button>
+      <button class="modal-mini" id="accImport" type="button" data-i18n="acc_restore">Восстановить</button>
+      <input type="file" id="accImportFile" accept=".json" style="display:none">
+    </div>
     <div class="modal-err" id="accErr"></div>
   </div>
 </div>
@@ -423,7 +431,12 @@ var I18N = {
   acc_err_empty:{ru:"Введите имя и пароль",en:"Enter name and password"},
   acc_err_bad:{ru:"Неверное имя или пароль",en:"Wrong name or password"},
   acc_err_exists:{ru:"Такой аккаунт уже существует",en:"This account already exists"},
-  acc_err_short:{ru:"Пароль должен быть минимум 4 символа",en:"Password must be at least 4 characters"}
+  acc_err_short:{ru:"Пароль должен быть минимум 4 символа",en:"Password must be at least 4 characters"},
+  acc_backup:{ru:"Скачать бэкап",en:"Download backup"},
+  acc_restore:{ru:"Восстановить",en:"Restore"},
+  acc_backup_ok:{ru:"Бэкап скачан",en:"Backup downloaded"},
+  acc_restore_ok:{ru:"Восстановлено аккаунтов",en:"Accounts restored"},
+  acc_restore_bad:{ru:"Неверный файл бэкапа",en:"Invalid backup file"}
 };
 
 var TAG_EN = {
@@ -721,6 +734,38 @@ document.getElementById('accRegister').onclick = function() { doAuth('register')
 document.getElementById('accPass').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') document.getElementById('accSubmit').click();
 });
+document.getElementById('accExport').onclick = function() {
+  var accounts = JSON.parse(localStorage.getItem('mc_accounts') || '{}');
+  var data = JSON.stringify({saved:accounts, exported:new Date().toISOString()}, null, 2);
+  var blob = new Blob([data], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'migora-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  document.getElementById('accErr').textContent = t('acc_backup_ok');
+};
+document.getElementById('accImport').onclick = function() { document.getElementById('accImportFile').click(); };
+document.getElementById('accImportFile').onchange = function(e) {
+  var f = e.target.files[0];
+  if (!f) return;
+  var r = new FileReader();
+  r.onload = function() {
+    try {
+      var obj = JSON.parse(r.result);
+      var saved = obj.saved || obj;
+      if (typeof saved !== 'object' || saved === null) throw new Error();
+      var merged = JSON.parse(localStorage.getItem('mc_accounts') || '{}');
+      for (var k in saved) merged[k] = saved[k];
+      localStorage.setItem('mc_accounts', JSON.stringify(merged));
+      document.getElementById('accErr').textContent = t('acc_restore_ok') + ' (' + Object.keys(saved).length + ')';
+    } catch (ex) {
+      document.getElementById('accErr').textContent = t('acc_restore_bad');
+    }
+  };
+  r.readAsText(f);
+  e.target.value = '';
+};
 refreshAccBtn();
 
 document.getElementById('langBtn').onclick = function() {
