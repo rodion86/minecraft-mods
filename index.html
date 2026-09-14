@@ -843,27 +843,14 @@ var fbDb = null, fbRef = null, fbOn = false;
 document.getElementById('navChatBtn').onclick = openChat;
 
 function openChat() {
-  if (!document.getElementById('chatModal')) {
-    document.body.insertAdjacentHTML('beforeend',
-      '<div class="modal" id="chatModal"><div class="modal-card chat-card">' +
-        '<div class="modal-head"><div class="modal-title" data-i18n="chat_title">Чат онлайн</div><button class="modal-close" onclick="document.getElementById(\'chatModal\').classList.remove(\'open\')">✕</button></div>' +
-        '<div class="chat-status" id="chatStatus"></div>' +
-        '<div class="chat-list" id="chatList"></div>' +
-        '<div class="chat-input-row"><input class="modal-input chat-input" id="chatInput" type="text" placeholder="..." ><button class="modal-submit chat-send" id="chatSend" type="button">➤</button></div>' +
-      '</div></div>'
-    );
-    chatList = document.getElementById('chatList');
-    chatInput = document.getElementById('chatInput');
-    document.getElementById('chatSend').onclick = sendChatMsg;
-    chatInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') sendChatMsg(); });
-    if (LANG !== 'ru') {
-      var t2 = document.querySelector('#chatModal [data-i18n="chat_title"]');
-      t2.textContent = 'Online chat';
-    }
-  }
-  document.getElementById('chatModal').classList.add('open');
-  updateChatStatus();
-  chatInput.focus();
+  if (document.getElementById('chatSoon')) { document.getElementById('chatSoon').classList.add('open'); return; }
+  var msg = LANG === 'ru' ? 'Общий чат — обновим в скором времени' : 'General chat — coming soon';
+  var d = document.createElement('div');
+  d.className = 'modal';
+  d.id = 'chatSoon';
+  d.innerHTML = '<div class="modal-card chat-card" style="text-align:center;padding:32px 24px"><div class="modal-title" style="margin-bottom:12px;font-size:1rem">' + msg + '</div><button class="modal-submit" onclick="document.getElementById(\'chatSoon\').classList.remove(\'open\')" style="margin-top:8px">' + (LANG === 'ru' ? 'Закрыть' : 'Close') + '</button></div>';
+  document.body.appendChild(d);
+  d.onclick = function(e) { if (e.target === d) d.classList.remove('open'); };
 }
 
 function closeChat() {
