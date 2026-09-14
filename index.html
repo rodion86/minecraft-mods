@@ -165,12 +165,11 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .footer-links a:hover{color:var(--ac)}
 
 /* VISITOR WIDGET */
-.visitor{position:fixed;top:20px;left:20px;z-index:100;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);backdrop-filter:blur(20px);opacity:0;animation:fadeUp .6s ease forwards;animation-delay:1s}
+.visitor{position:fixed;bottom:20px;left:20px;z-index:100;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);backdrop-filter:blur(20px);opacity:0;animation:fadeUp .6s ease forwards;animation-delay:1s}
 .visitor-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px rgba(34,197,94,.5);animation:visPulse 2s ease infinite}
 @keyframes visPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
 .visitor-count{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.7)}
 .visitor-label{font-size:.62rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.5px}
-@media(max-width:640px){.visitor{top:auto;bottom:20px;left:16px}}
 
 @media(max-width:900px){.bento{grid-template-columns:repeat(2,1fr)}.card.gold{grid-column:span 2}}
 @media(max-width:640px){nav{flex-wrap:wrap;gap:12px}.nav-links{display:none}.hero{padding:60px 0 24px}.bento{grid-template-columns:1fr}.card.gold{grid-column:span 1;flex-direction:column;align-items:center;text-align:center;padding:24px}.gold-right{width:100%}.stats{grid-template-columns:1fr}}
