@@ -155,16 +155,6 @@ a.card{opacity:0;animation:cardIn .5s ease forwards}
 .stat-num{font-size:1.8rem;font-weight:700;margin-bottom:2px}
 .stat-label{font-size:.7rem;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:1px;font-weight:600}
 
-/* EVENT TIMER */
-.event{text-align:center;margin:0 0 60px;padding:36px 20px;border-radius:18px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);opacity:0;animation:fadeUp .6s ease forwards;animation-delay:.9s}
-.event-label{font-size:.8rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:20px}
-.event-timer{display:flex;align-items:center;justify-content:center;gap:10px}
-.et-box{width:84px;padding:16px 8px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
-.et-box span{display:block;font-size:1.9rem;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:1px;color:#fff}
-.et-box small{font-size:.6rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1px;margin-top:4px;display:block}
-.et-colon{font-size:1.9rem;font-weight:700;color:rgba(255,255,255,.2);font-family:'JetBrains Mono',monospace}
-@media(max-width:640px){.event-timer{gap:6px}.et-box{width:66px;padding:12px 4px}.et-box span{font-size:1.4rem}}
-
 footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:center}
 .footer-brand{font-size:.85rem;font-weight:700;margin-bottom:8px}
 .footer-brand span{opacity:.35}
@@ -217,17 +207,6 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
   <h1>Всё для модов<br>Minecraft</h1>
   <p>Лаунчеры, загрузчики, оптимизация, сборки. Лучшее в одном месте.</p>
 </section>
-
-<div class="event">
-  <div class="event-label">🎉 Ивент через</div>
-  <div class="event-timer" id="eventTimer">
-    <div class="et-box"><span id="et-h">03</span><small>часов</small></div>
-    <span class="et-colon">:</span>
-    <div class="et-box"><span id="et-m">00</span><small>минут</small></div>
-    <span class="et-colon">:</span>
-    <div class="et-box"><span id="et-s">00</span><small>секунд</small></div>
-  </div>
-</div>
 
 <div class="search-wrap">
   <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -569,32 +548,6 @@ function drawParticles(){
   requestAnimationFrame(drawParticles);
 }
 drawParticles();
-
-/* EVENT TIMER (3 hours, persists across reloads) */
-var EVENT_MS = 3 * 3600 * 1000;
-var endTime = parseInt(localStorage.getItem('mc_event_end'), 10);
-
-function restartEvent() {
-  endTime = Date.now() + EVENT_MS;
-  localStorage.setItem('mc_event_end', endTime);
-}
-
-if (!endTime || endTime < Date.now()) restartEvent();
-
-function pad(n) { return n < 10 ? '0' + n : '' + n; }
-function updateTimer() {
-  var rem = Math.max(0, endTime - Date.now());
-  var totalS = Math.floor(rem / 1000);
-  var h = Math.floor(totalS / 3600);
-  var m = Math.floor((totalS % 3600) / 60);
-  var s = totalS % 60;
-  document.getElementById('et-h').textContent = pad(h);
-  document.getElementById('et-m').textContent = pad(m);
-  document.getElementById('et-s').textContent = pad(s);
-  if (rem <= 0) restartEvent();
-}
-updateTimer();
-setInterval(updateTimer, 1000);
 </script>
 </body>
 </html>
