@@ -570,23 +570,31 @@ function drawParticles(){
 }
 drawParticles();
 
-/* EVENT TIMER (3 hours) */
-var TH = 3, TM = 0, TS = 0;
+/* EVENT TIMER (3 hours, persists across reloads) */
+var EVENT_MS = 3 * 3600 * 1000;
+var endTime = parseInt(localStorage.getItem('mc_event_end'), 10);
+
+function restartEvent() {
+  endTime = Date.now() + EVENT_MS;
+  localStorage.setItem('mc_event_end', endTime);
+}
+
+if (!endTime || endTime < Date.now()) restartEvent();
+
 function pad(n) { return n < 10 ? '0' + n : '' + n; }
 function updateTimer() {
-  document.getElementById('et-h').textContent = pad(TH);
-  document.getElementById('et-m').textContent = pad(TM);
-  document.getElementById('et-s').textContent = pad(TS);
-}
-function tickTimer() {
-  if (TS > 0) TS--;
-  else if (TM > 0) { TM--; TS = 59; }
-  else if (TH > 0) { TH--; TM = 59; TS = 59; }
-  else { TH = 3; TM = 0; TS = 0; }
-  updateTimer();
+  var rem = Math.max(0, endTime - Date.now());
+  var totalS = Math.floor(rem / 1000);
+  var h = Math.floor(totalS / 3600);
+  var m = Math.floor((totalS % 3600) / 60);
+  var s = totalS % 60;
+  document.getElementById('et-h').textContent = pad(h);
+  document.getElementById('et-m').textContent = pad(m);
+  document.getElementById('et-s').textContent = pad(s);
+  if (rem <= 0) restartEvent();
 }
 updateTimer();
-setInterval(tickTimer, 1000);
+setInterval(updateTimer, 1000);
 </script>
 </body>
 </html>
