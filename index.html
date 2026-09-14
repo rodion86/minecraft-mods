@@ -56,6 +56,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0
 .nav-links a:hover{color:var(--ac)}
 .nav-cta{padding:8px 18px;border-radius:10px;background:var(--ac);color:#000;font-size:.78rem;font-weight:700;text-decoration:none;border:none;cursor:pointer;transition:all .25s;font-family:inherit}
 .nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,255,255,.15)}
+.lang-btn{padding:8px 14px;border-radius:10px;background:transparent;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.12);font-size:.75rem;font-weight:700;cursor:pointer;transition:all .25s;font-family:inherit}
+.lang-btn:hover{color:#000;background:var(--ac);border-color:var(--ac)}
 
 /* HERO */
 .hero{padding:80px 0 40px;text-align:center;opacity:0;animation:fadeUp .6s ease forwards;animation-delay:.6s}
@@ -195,78 +197,79 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
     <div class="brand-name">don0s <span>x</span> migodi</div>
   </div>
   <div class="nav-links">
-    <a href="#catalog">Каталог</a>
+    <a href="#catalog" data-i18n="catalog">Каталог</a>
     <a href="https://t.me/macclient11" target="_blank">don0s</a>
     <a href="https://t.me/migodihvh" target="_blank">migodi</a>
   </div>
+  <button class="lang-btn" id="langBtn" type="button">EN</button>
   <a class="nav-cta" href="https://migodi2.github.io/migoralauncher/#" target="_blank" rel="noopener">Migora</a>
 </nav>
 
 <section class="hero" id="catalog">
-  <div class="badge">каждый день обновляем</div>
-  <h1>Всё для модов<br>Minecraft</h1>
-  <p>Лаунчеры, загрузчики, оптимизация, сборки. Лучшее в одном месте.</p>
+  <div class="badge" data-i18n="badge">каждый день обновляем</div>
+  <h1 data-i18n="hero_title">Всё для модов<br>Minecraft</h1>
+  <p data-i18n="hero_p">Лаунчеры, загрузчики, оптимизация, сборки. Лучшее в одном месте.</p>
 </section>
 
 <div class="search-wrap">
   <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-  <input type="text" id="search" placeholder="Найти приложение...">
+  <input type="text" id="search" placeholder="Найти приложение..." data-i18n-ph="search">
   <span class="search-count" id="count"></span>
 </div>
 
 <div class="tabs" id="tabs"></div>
 
 <div class="section active" id="sec-all">
-  <div class="section-head"><div class="section-title">Все приложения</div><div class="section-desc">Полный каталог всего что есть</div></div>
+  <div class="section-head"><div class="section-title" data-i18n="sec_all_title">Все приложения</div><div class="section-desc" data-i18n="sec_all_desc">Полный каталог всего что есть</div></div>
   <div class="bento" id="grid-all"></div>
-  <div class="empty" id="empty-all">Ничего не найдено</div>
+  <div class="empty" id="empty-all" data-i18n="empty">Ничего не найдено</div>
 </div>
 
 <div class="section" id="sec-launcher">
-  <div class="section-head"><div class="section-title">Лаунчеры</div><div class="section-desc">Запускай Minecraft с модами, профилями и сборками</div></div>
+  <div class="section-head"><div class="section-title" data-i18n="sec_launcher_title">Лаунчеры</div><div class="section-desc" data-i18n="sec_launcher_desc">Запускай Minecraft с модами, профилями и сборками</div></div>
   <div class="bento" id="grid-launcher"></div>
-  <div class="empty" id="empty-launcher">Ничего не найдено</div>
+  <div class="empty" id="empty-launcher" data-i18n="empty">Ничего не найдено</div>
 </div>
 
 <div class="section" id="sec-loader">
-  <div class="section-head"><div class="section-title">Загрузчики модов</div><div class="section-desc">API и загрузчики которые ставят моды в игру</div></div>
+  <div class="section-head"><div class="section-title" data-i18n="sec_loader_title">Загрузчики модов</div><div class="section-desc" data-i18n="sec_loader_desc">API и загрузчики которые ставят моды в игру</div></div>
   <div class="bento" id="grid-loader"></div>
-  <div class="empty" id="empty-loader">Ничего не найдено</div>
+  <div class="empty" id="empty-loader" data-i18n="empty">Ничего не найдено</div>
 </div>
 
 <div class="section" id="sec-manager">
-  <div class="section-head"><div class="section-title">Менеджеры</div><div class="section-desc">Управляй модами, модпаками и обновлениями</div></div>
+  <div class="section-head"><div class="section-title" data-i18n="sec_manager_title">Менеджеры</div><div class="section-desc" data-i18n="sec_manager_desc">Управляй модами, модпаками и обновлениями</div></div>
   <div class="bento" id="grid-manager"></div>
-  <div class="empty" id="empty-manager">Ничего не найдено</div>
+  <div class="empty" id="empty-manager" data-i18n="empty">Ничего не найдено</div>
 </div>
 
 <div class="section" id="sec-builder">
-  <div class="section-head"><div class="section-title">Сборщики</div><div class="section-desc">Собирай и кастомизируй свои сборки модов</div></div>
+  <div class="section-head"><div class="section-title" data-i18n="sec_builder_title">Сборщики</div><div class="section-desc" data-i18n="sec_builder_desc">Собирай и кастомизируй свои сборки модов</div></div>
   <div class="bento" id="grid-builder"></div>
-  <div class="empty" id="empty-builder">Ничего не найдено</div>
+  <div class="empty" id="empty-builder" data-i18n="empty">Ничего не найдено</div>
 </div>
 
 <div class="section" id="sec-tool">
-  <div class="section-head"><div class="section-title">Инструменты</div><div class="section-desc">Оптимизация, шейдеры, производительность</div></div>
+  <div class="section-head"><div class="section-title" data-i18n="sec_tool_title">Инструменты</div><div class="section-desc" data-i18n="sec_tool_desc">Оптимизация, шейдеры, производительность</div></div>
   <div class="bento" id="grid-tool"></div>
-  <div class="empty" id="empty-tool">Ничего не найдено</div>
+  <div class="empty" id="empty-tool" data-i18n="empty">Ничего не найдено</div>
 </div>
 
 <div class="section" id="sec-cheat">
-  <div class="section-head"><div class="section-title">Читы</div><div class="section-desc">Клиенты, моды и утилиты для PvP</div></div>
+  <div class="section-head"><div class="section-title" data-i18n="sec_cheat_title">Читы</div><div class="section-desc" data-i18n="sec_cheat_desc">Клиенты, моды и утилиты для PvP</div></div>
   <div class="bento" id="grid-cheat"></div>
-  <div class="empty" id="empty-cheat">Ничего не найдено</div>
+  <div class="empty" id="empty-cheat" data-i18n="empty">Ничего не найдено</div>
 </div>
 
 <div class="stats">
-  <div class="stat"><div class="stat-num">34+</div><div class="stat-label">приложений</div></div>
-  <div class="stat"><div class="stat-num">7</div><div class="stat-label">категорий</div></div>
-  <div class="stat"><div class="stat-num">∞</div><div class="stat-label">модов</div></div>
+  <div class="stat"><div class="stat-num">34+</div><div class="stat-label" data-i18n="stat_apps">приложений</div></div>
+  <div class="stat"><div class="stat-num">7</div><div class="stat-label" data-i18n="stat_cats">категорий</div></div>
+  <div class="stat"><div class="stat-num">∞</div><div class="stat-label" data-i18n="stat_mods">модов</div></div>
 </div>
 
 <footer>
   <div class="footer-brand">don0s <span>x</span> migodi</div>
-  <p style="color:rgba(255,255,255,.15);font-size:.7rem">неофициальный справочник · 2026</p>
+  <p data-i18n="footer_note" style="color:rgba(255,255,255,.15);font-size:.7rem">неофициальный справочник · 2026</p>
   <div class="footer-links">
     <a href="https://t.me/macclient11" target="_blank">Telegram don0s</a>
     <a href="https://t.me/migodihvh" target="_blank">Telegram migodi</a>
@@ -318,6 +321,104 @@ var CAT = {launcher:"Лаунчеры",loader:"Загрузчики модов",
 var curTab = "all";
 var curQ = "";
 
+var LANG = 'ru';
+var I18N = {
+  catalog:{ru:"Каталог",en:"Catalog"},
+  search:{ru:"Найти приложение...",en:"Search apps..."},
+  badge:{ru:"каждый день обновляем",en:"we update every day"},
+  hero_title:{ru:"Всё для модов<br>Minecraft",en:"Everything for mods<br>Minecraft"},
+  hero_p:{ru:"Лаунчеры, загрузчики, оптимизация, сборки. Лучшее в одном месте.",en:"Launchers, loaders, optimization, packs. All in one place."},
+  empty:{ru:"Ничего не найдено",en:"Nothing found"},
+  best:{ru:"Лучший выбор",en:"Best pick"},
+  rec:{ru:"Рекомендуем",en:"Recommended"},
+  madeby:{ru:"сделал",en:"made by"},
+  stat_apps:{ru:"приложений",en:"apps"},
+  stat_cats:{ru:"категорий",en:"categories"},
+  stat_mods:{ru:"модов",en:"mods"},
+  footer_note:{ru:"неофициальный справочник · 2026",en:"unofficial guide · 2026"},
+  cat_all:{ru:"Все",en:"All"},
+  cat_launcher:{ru:"Лаунчеры",en:"Launchers"},
+  cat_loader:{ru:"Загрузчики модов",en:"Mod loaders"},
+  cat_manager:{ru:"Менеджеры",en:"Managers"},
+  cat_builder:{ru:"Сборщики",en:"Pack builders"},
+  cat_tool:{ru:"Инструменты",en:"Tools"},
+  cat_cheat:{ru:"Читы",en:"Cheats"},
+  sec_all_title:{ru:"Все приложения",en:"All apps"},
+  sec_all_desc:{ru:"Полный каталог всего что есть",en:"The full catalog of everything we have"},
+  sec_launcher_title:{ru:"Лаунчеры",en:"Launchers"},
+  sec_launcher_desc:{ru:"Запускай Minecraft с модами, профилями и сборками",en:"Launch Minecraft with mods, profiles and packs"},
+  sec_loader_title:{ru:"Загрузчики модов",en:"Mod loaders"},
+  sec_loader_desc:{ru:"API и загрузчики которые ставят моды в игру",en:"APIs and loaders that install mods into the game"},
+  sec_manager_title:{ru:"Менеджеры",en:"Managers"},
+  sec_manager_desc:{ru:"Управляй модами, модпаками и обновлениями",en:"Manage mods, modpacks and updates"},
+  sec_builder_title:{ru:"Сборщики",en:"Pack builders"},
+  sec_builder_desc:{ru:"Собирай и кастомизируй свои сборки модов",en:"Build and customize your own modpacks"},
+  sec_tool_title:{ru:"Инструменты",en:"Tools"},
+  sec_tool_desc:{ru:"Оптимизация, шейдеры, производительность",en:"Optimization, shaders, performance"},
+  sec_cheat_title:{ru:"Читы",en:"Cheats"},
+  sec_cheat_desc:{ru:"Клиенты, моды и утилиты для PvP",en:"Clients, mods and utilities for PvP"}
+};
+
+var TAG_EN = {
+  "Сборки":"Packs","Простой":"Simple","Быстрый":"Fast","Рекомендуем":"Recommended","Модпаки":"Modpacks",
+  "Обновления":"Updates","API":"API","Классика":"Classic","Open Source":"Open Source","Forge Fork":"Forge Fork",
+  "Современный":"Modern","Fabric Fork":"Fabric Fork","Профили":"Profiles","Расширенный":"Advanced","PvP":"PvP",
+  "Оптимизация":"Optimization","Моды":"Mods","Мобильный":"Mobile","Java":"Java","Пакеты":"Packs","CLI":"CLI",
+  "3D":"3D","Моделинг":"Modeling","FPS":"FPS","Шейдеры":"Shaders","Fabric":"Fabric","Hack":"Hack","Сервер":"Server",
+  "Освещение":"Lighting","Создание":"Creation","Строительство":"Building","Плагин":"Plugin","Карта":"Map",
+  "Миникарта":"Minimap","Бесплатно":"Free","Установка":"Install","FTB":"FTB","Overwolf":"Overwolf"
+};
+
+var DB_EN = {
+  "Migora Launcher":{desc:"The best Minecraft launcher. Ready modpacks, simple UI, lightning-fast startup. Made with love.",tags:["Packs","Simple","Fast","Recommended"]},
+  "CurseForge App":{desc:"Official app. Huge library of mods and modpacks, auto-install and updates.",tags:["Modpacks","Updates","Overwolf"]},
+  "Forge":{desc:"Classic mod loader. Most mods run through Forge.",tags:["API","Classic"]},
+  "Fabric":{desc:"Lightweight and fast loader. Perfect for new versions and mods.",tags:["Fast","Open Source"]},
+  "NeoForge":{desc:"Forge fork with improvements. Backward compatible with most Forge mods.",tags:["Forge Fork","Modern"]},
+  "Quilt Loader":{desc:"Fabric fork with extra features. Fully compatible with Fabric mods.",tags:["Fabric Fork","Open Source"]},
+  "Prism Launcher":{desc:"Successor of MultiMC. CurseForge and Modrinth support out of the box.",tags:["Open Source","Profiles"]},
+  "MultiMC":{desc:"Powerful launcher for advanced players. Isolated mod profiles.",tags:["Profiles","Advanced"]},
+  "Lunar Client":{desc:"PvP client with built-in optimization, mods and minimap.",tags:["PvP","Optimization"]},
+  "Badlion Client":{desc:"PvP client with tons of built-in mods, FPS boost and cosmetics.",tags:["PvP","Mods"]},
+  "PojavLauncher":{desc:"Java Edition on your phone. Runs mods on Android and iOS.",tags:["Mobile","Java"]},
+  "ATLauncher":{desc:"Simple launcher with a catalog of verified modpacks.",tags:["Simple","Packs"]},
+  "GDLauncher":{desc:"Minimalistic launcher with CurseForge and Modrinth integration.",tags:["Simple","Modpacks"]},
+  "Modrinth App":{desc:"Modern Modrinth app. Fast mod search and install.",tags:["Open Source","Modern"]},
+  "FTB App":{desc:"App from Feed The Beast. Hundreds of modpacks and auto-updates.",tags:["Modpacks","FTB"]},
+  "Mod Manager":{desc:"Simple mod manager. Install and remove mods in a couple of clicks.",tags:["Simple","Install"]},
+  "CurseForge Mobile":{desc:"Mobile version of CurseForge. Install mods and modpacks on Android.",tags:["Mobile","Free"]},
+  "ATLauncher Packs":{desc:"Create and share your own modpack builds via ATLauncher.",tags:["Packs","Builds"]},
+  "Packwiz":{desc:"CLI tool for creating modpacks. Perfect for automation.",tags:["CLI","Packs"]},
+  "Modrinth Packs":{desc:"Create and publish your own modpacks on Modrinth.",tags:["Packs","Open Source"]},
+  "Blockbench":{desc:"Free 3D editor for creating models, skins and animations.",tags:["3D","Modeling"]},
+  "OptiFine":{desc:"FPS optimization + shaders and HD textures support.",tags:["FPS","Shaders"]},
+  "Iris Shaders":{desc:"OptiFine replacement for Fabric. Shaders with maximum FPS.",tags:["Shaders","Fabric"]},
+  "Sodium":{desc:"Rendering optimization mod for Fabric. Huge FPS boost.",tags:["Fabric","FPS"]},
+  "Lithium":{desc:"Server-side logic optimization. Faster ticks and fewer lags.",tags:["Fabric","Server"]},
+  "Starlight":{desc:"Rewritten lighting engine. 26x faster light rendering.",tags:["Fabric","Lighting"]},
+  "MCreator":{desc:"Visual editor for creating mods without programming.",tags:["Creation","Mods"]},
+  "WorldEdit":{desc:"Powerful tool for fast building in the world.",tags:["Building","Plugin"]},
+  "JourneyMap":{desc:"Real-time minimap with markers and waypoints.",tags:["Map","Minimap"]},
+  "Velka":{desc:"Cheat client for version 1.21.4.",tags:["PvP","Hack"]},
+  "Wild":{desc:"Cheat client for version 1.21.4.",tags:["PvP","Hack"]},
+  "Nuclear":{desc:"Cheat client for version 1.21.4.",tags:["PvP","Hack"]},
+  "Delta":{desc:"Delta FULL.FIX cheat client for version 1.21.4.",tags:["PvP","Hack"]},
+  "Zenith":{desc:"Zenith cheat client for version 1.21.4.",tags:["PvP","Hack"]}
+};
+
+function t(k) { var o = I18N[k]; return o ? o[LANG] : k; }
+function catName(k) { return t('cat_' + k); }
+function aName(a) { var e = DB_EN[a.name]; return (LANG === 'en' && e && e.name) ? e.name : a.name; }
+function aDesc(a) { var e = DB_EN[a.name]; return (LANG === 'en' && e && e.desc) ? e.desc : a.desc; }
+function aTags(a) {
+  if (LANG !== 'en') return a.tags;
+  var e = DB_EN[a.name];
+  if (e && e.tags) return e.tags;
+  var out = [];
+  for (var i = 0; i < a.tags.length; i++) out.push(TAG_EN[a.tags[i]] || a.tags[i]);
+  return out;
+}
+
 function makeStars(r) {
   var html = '';
   for (var i = 1; i <= 5; i++) {
@@ -334,11 +435,12 @@ function makeCard(a, idx) {
   var cls = 'card';
   if (a.gold) cls += ' gold';
   var tags = '';
-  for (var t = 0; t < a.tags.length; t++) {
-    tags += '<span class="tag">' + a.tags[t] + '</span>';
+  var tagsArr = aTags(a);
+  for (var t = 0; t < tagsArr.length; t++) {
+    tags += '<span class="tag">' + tagsArr[t] + '</span>';
   }
-  var badge = a.gold ? '<div class="gold-badge">★ ' + (a.featured ? 'Лучший выбор' : 'Рекомендуем') + '</div>' : '';
-  var author = a.author ? '<div class="card-author">сделал <span>' + a.author + '</span></div>' : '';
+  var badge = a.gold ? '<div class="gold-badge">★ ' + (a.featured ? t('best') : t('rec')) + '</div>' : '';
+  var author = a.author ? '<div class="card-author">' + t('madeby') + ' <span>' + a.author + '</span></div>' : '';
   
   if (a.gold) {
     return '<a class="' + cls + '" href="' + a.link + '" target="_blank" rel="noopener" style="animation-delay:' + (idx * .06) + 's">' + badge +
@@ -353,12 +455,12 @@ function makeCard(a, idx) {
       '<div class="gold-right">' +
         '<div class="card-head">' +
           '<div class="card-meta">' +
-            '<div class="card-name">' + a.name + '</div>' +
+            '<div class="card-name">' + aName(a) + '</div>' +
             '<div class="card-plat">' + a.platform + '</div>' +
           '</div>' +
-          '<span class="card-cat">' + CAT[a.cat] + '</span>' +
+          '<span class="card-cat">' + catName(a.cat) + '</span>' +
         '</div>' +
-        '<p class="card-desc">' + a.desc + '</p>' +
+        '<p class="card-desc">' + aDesc(a) + '</p>' +
         '<div class="tags">' + tags + '</div>' +
       '</div>' +
     '</a>';
@@ -368,12 +470,12 @@ function makeCard(a, idx) {
     '<div class="card-head">' +
       '<div class="card-icon">' + a.icon + '</div>' +
       '<div class="card-meta">' +
-        '<div class="card-name">' + a.name + '</div>' +
+        '<div class="card-name">' + aName(a) + '</div>' +
         '<div class="card-plat">' + a.platform + '</div>' +
       '</div>' +
-      '<span class="card-cat">' + CAT[a.cat] + '</span>' +
+      '<span class="card-cat">' + catName(a.cat) + '</span>' +
     '</div>' +
-    '<p class="card-desc">' + a.desc + '</p>' +
+    '<p class="card-desc">' + aDesc(a) + '</p>' +
     '<div class="tags">' + tags + '</div>' +
     author +
     '<div class="card-foot">' +
@@ -391,7 +493,7 @@ function filterApps(cat) {
   for (var i = 0; i < DB.length; i++) {
     var a = DB[i];
     if (cat !== 'all' && a.cat !== cat) continue;
-    if (q && a.name.toLowerCase().indexOf(q) === -1 && a.platform.toLowerCase().indexOf(q) === -1 && a.desc.toLowerCase().indexOf(q) === -1 && a.tags.join(' ').toLowerCase().indexOf(q) === -1) continue;
+    if (q && aName(a).toLowerCase().indexOf(q) === -1 && a.platform.toLowerCase().indexOf(q) === -1 && aDesc(a).toLowerCase().indexOf(q) === -1 && aTags(a).join(' ').toLowerCase().indexOf(q) === -1) continue;
     result.push(a);
   }
   return result;
@@ -467,19 +569,42 @@ function switchTab(id) {
 }
 
 var tabsEl = document.getElementById('tabs');
-var tabList = [{k:'all',l:'Все'}];
-for (var k in CAT) tabList.push({k:k, l:CAT[k]});
-for (var i = 0; i < tabList.length; i++) {
-  var b = document.createElement('button');
-  b.className = 'tab' + (i === 0 ? ' on' : '');
-  b.textContent = tabList[i].l;
-  b.setAttribute('data-id', tabList[i].k);
-  (function(id){ b.onclick = function(){ switchTab(id); }; })(tabList[i].k);
-  tabsEl.appendChild(b);
+function rebuildTabs() {
+  tabsEl.innerHTML = '';
+  var tabList = [{k:'all', l:catName('all')}];
+  var keys = [];
+  for (var k in CAT) keys.push(k);
+  for (var i = 0; i < keys.length; i++) tabList.push({k:keys[i], l:catName(keys[i])});
+  for (var i = 0; i < tabList.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'tab' + (tabList[i].k === curTab ? ' on' : '');
+    b.textContent = tabList[i].l;
+    b.setAttribute('data-id', tabList[i].k);
+    (function(id){ b.onclick = function(){ switchTab(id); }; })(tabList[i].k);
+    tabsEl.appendChild(b);
+  }
 }
 
+function applyLang() {
+  document.documentElement.lang = LANG;
+  var els = document.querySelectorAll('[data-i18n]');
+  for (var i = 0; i < els.length; i++) {
+    els[i].innerHTML = t(els[i].getAttribute('data-i18n'));
+  }
+  var ph = document.querySelector('[data-i18n-ph]');
+  if (ph) ph.placeholder = t(ph.getAttribute('data-i18n-ph'));
+  document.getElementById('langBtn').textContent = LANG === 'ru' ? 'EN' : 'RU';
+  rebuildTabs();
+  render();
+}
+
+document.getElementById('langBtn').onclick = function() {
+  LANG = LANG === 'ru' ? 'en' : 'ru';
+  applyLang();
+};
+
 document.getElementById('search').oninput = function(e) { curQ = e.target.value; render(); };
-render();
+applyLang();
 
 /* INTRO */
 setTimeout(function() {
