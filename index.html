@@ -186,6 +186,10 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .acc-user{font-size:.8rem;font-weight:600;cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.15);color:#fff;padding:7px 14px;border-radius:10px;font-family:inherit;transition:all .25s}
 .acc-user:hover{border-color:var(--ac)}
 
+/* LANGUAGE FAB */
+.lang-fab{position:fixed;top:150px;left:20px;z-index:100;padding:8px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-size:.75rem;font-weight:700;cursor:pointer;transition:all .25s;backdrop-filter:blur(20px);font-family:inherit;opacity:0;animation:fadeUp .6s ease forwards;animation-delay:1.1s;text-align:center}
+.lang-fab:hover{color:#000;background:var(--ac);border-color:var(--ac)}
+
 @media(max-width:900px){.bento{grid-template-columns:repeat(2,1fr)}.card.gold{grid-column:span 2}}
 @media(max-width:640px){nav{flex-wrap:wrap;gap:12px}.nav-links{display:none}.hero{padding:60px 0 24px}.bento{grid-template-columns:1fr}.card.gold{grid-column:span 1;flex-direction:column;align-items:center;text-align:center;padding:24px}.gold-right{width:100%}.stats{grid-template-columns:1fr}}
 </style>
@@ -302,6 +306,8 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
     <div class="modal-err" id="accErr"></div>
   </div>
 </div>
+
+<div class="lang-fab" id="langBtn" type="button">EN</div>
 
 <div class="visitor">
   <div class="visitor-dot"></div>
@@ -645,6 +651,7 @@ function applyLang() {
   }
   var ph = document.querySelector('[data-i18n-ph]');
   if (ph) ph.placeholder = t(ph.getAttribute('data-i18n-ph'));
+  document.getElementById('langBtn').textContent = LANG === 'ru' ? 'EN' : 'RU';
   rebuildTabs();
   render();
 }
@@ -698,6 +705,12 @@ document.getElementById('accPass').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') document.getElementById('accSubmit').click();
 });
 refreshAccBtn();
+
+document.getElementById('langBtn').onclick = function() {
+  LANG = LANG === 'ru' ? 'en' : 'ru';
+  applyLang();
+  this.textContent = LANG === 'ru' ? 'EN' : 'RU';
+};
 
 document.getElementById('search').oninput = function(e) { curQ = e.target.value; render(); };
 applyLang();
