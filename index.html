@@ -204,14 +204,9 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .chat-input{margin-bottom:0;flex:1}
 .chat-send{width:auto;padding:12px 18px;flex-shrink:0}
 .modal-err{color:#ef4444;font-size:.78rem;margin-top:10px;min-height:16px;text-align:center}
-.acc-user{font-size:.8rem;font-weight:600;cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.15);color:#fff;padding:7px 14px;border-radius:10px;font-family:inherit;transition:all .25s}
 .nav-actions{display:flex;flex-direction:column;align-items:stretch;gap:6px;position:relative}
-.acc-menu{position:absolute;top:calc(100% + 8px);right:0;left:0;z-index:200;display:none;flex-direction:column;gap:4px;padding:8px;border-radius:12px;background:#0d0d0d;border:1px solid rgba(255,255,255,.1);box-shadow:0 20px 60px rgba(0,0,0,.7)}
-.acc-menu.open{display:flex;animation:fadeIn .2s ease}
-.acc-menu-item{padding:9px 14px;border-radius:8px;border:none;background:transparent;color:rgba(255,255,255,.6);font-size:.8rem;font-weight:600;text-align:left;cursor:pointer;transition:all .2s;font-family:inherit}
-.acc-menu-item:hover{background:rgba(255,255,255,.06);color:#fff}
-.acc-menu-logout{color:#ef4444}
-.acc-menu-logout:hover{background:rgba(239,68,68,.1);color:#f87171}
+.nav-yt{display:flex;align-items:center;justify-content:center;gap:7px;text-decoration:none}
+.nav-yt svg{flex-shrink:0}
 .lang-sub{border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.35);font-size:.65rem;padding:4px 10px}
 .lang-sub:hover{color:#000;background:var(--ac);border-color:var(--ac)}
 
@@ -257,14 +252,10 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
     <a href="https://t.me/migodihvh" target="_blank">migodi</a>
   </div>
   <div class="nav-actions" id="navActions">
-  <button class="lang-btn" id="accBtn" type="button" data-i18n="signin">Войти</button>
-  <div class="acc-menu" id="accMenu">
-    <button class="acc-menu-item" id="menuChat" type="button" data-i18n="menu_chat">Чат</button>
-    <button class="acc-menu-item" id="menuCustom" type="button" data-i18n="menu_custom">Кастомизация</button>
-    <button class="acc-menu-item" id="menuLang" type="button" data-i18n="menu_lang">Язык</button>
-    <button class="acc-menu-item" id="menuBackup" type="button" data-i18n="menu_backup">Бэкап</button>
-    <button class="acc-menu-item acc-menu-logout" id="menuLogout" type="button" data-i18n="menu_logout">Выйти</button>
-  </div>
+  <a class="lang-btn nav-yt" href="https://www.youtube.com/@d0no0s-l7r" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4L15.8 12l-6.2 3.6z"/></svg>
+    YouTube
+  </a>
   <button class="lang-btn lang-sub" id="langBtn" type="button">EN</button>
 </div>
 </nav>
@@ -329,27 +320,6 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
   <div class="stat"><div class="stat-num">34+</div><div class="stat-label" data-i18n="stat_apps">приложений</div></div>
   <div class="stat"><div class="stat-num">7</div><div class="stat-label" data-i18n="stat_cats">категорий</div></div>
   <div class="stat"><div class="stat-num">∞</div><div class="stat-label" data-i18n="stat_mods">модов</div></div>
-</div>
-
-<div class="modal" id="accModal">
-  <div class="modal-card">
-    <div class="modal-head">
-      <div class="modal-title" data-i18n="acc_title">Вход в аккаунт</div>
-      <button class="modal-close" id="accClose" type="button">✕</button>
-    </div>
-    <label class="modal-label" data-i18n="acc_name">Имя:</label>
-    <input class="modal-input" id="accName" type="text" autocomplete="username">
-    <label class="modal-label" data-i18n="acc_pass">Пароль:</label>
-    <input class="modal-input" id="accPass" type="password" autocomplete="current-password">
-    <button class="modal-submit" id="accSubmit" type="button" data-i18n="acc_enter">Войти</button>
-    <button class="modal-submit modal-ghost" id="accRegister" type="button" data-i18n="acc_reg">Зарегистрироваться</button>
-    <div class="modal-row">
-      <button class="modal-mini" id="accExport" type="button" data-i18n="acc_backup">Скачать бэкап</button>
-      <button class="modal-mini" id="accImport" type="button" data-i18n="acc_restore">Восстановить</button>
-      <input type="file" id="accImportFile" accept=".json" style="display:none">
-    </div>
-    <div class="modal-err" id="accErr"></div>
-  </div>
 </div>
 
 <div class="visitor">
@@ -451,28 +421,7 @@ var I18N = {
   sec_tool_title:{ru:"Инструменты",en:"Tools"},
   sec_tool_desc:{ru:"Оптимизация, шейдеры, производительность",en:"Optimization, shaders, performance"},
   sec_cheat_title:{ru:"Читы",en:"Cheats"},
-  sec_cheat_desc:{ru:"Клиенты, моды и утилиты для PvP",en:"Clients, mods and utilities for PvP"},
-  signin:{ru:"Войти",en:"Sign in"},
-  acc_title:{ru:"Вход в аккаунт",en:"Account login"},
-  acc_name:{ru:"Имя",en:"Name"},
-  acc_pass:{ru:"Пароль",en:"Password"},
-  acc_enter:{ru:"Войти",en:"Sign in"},
-  acc_reg:{ru:"Зарегистрироваться",en:"Register"},
-  acc_err_empty:{ru:"Введите имя и пароль",en:"Enter name and password"},
-  acc_err_bad:{ru:"Неверное имя или пароль",en:"Wrong name or password"},
-  acc_err_exists:{ru:"Такой аккаунт уже существует",en:"This account already exists"},
-  acc_err_short:{ru:"Пароль должен быть минимум 4 символа",en:"Password must be at least 4 characters"},
-  acc_backup:{ru:"Скачать бэкап",en:"Download backup"},
-  acc_restore:{ru:"Восстановить",en:"Restore"},
-  acc_backup_ok:{ru:"Бэкап скачан",en:"Backup downloaded"},
-  acc_restore_ok:{ru:"Восстановлено аккаунтов",en:"Accounts restored"},
-  acc_restore_bad:{ru:"Неверный файл бэкапа",en:"Invalid backup file"},
-  menu_chat:{ru:"Чат",en:"Chat"},
-  menu_custom:{ru:"Кастомизация",en:"Customization"},
-  menu_lang:{ru:"Язык",en:"Language"},
-  menu_backup:{ru:"Бэкап",en:"Backup"},
-  menu_logout:{ru:"Выйти",en:"Log out"},
-  chat_title:{ru:"Чат онлайн",en:"Online chat"}
+  sec_cheat_desc:{ru:"Клиенты, моды и утилиты для PvP",en:"Clients, mods and utilities for PvP"}
 };
 
 var TAG_EN = {
@@ -714,118 +663,6 @@ function applyLang() {
   render();
 }
 
-/* ACCOUNT LOGIN */
-var accBtn = document.getElementById('accBtn');
-var accModal = document.getElementById('accModal');
-var accMenu = document.getElementById('accMenu');
-var meUser = localStorage.getItem('mc_user');
-
-function refreshAccBtn() {
-  if (meUser) {
-    accBtn.className = 'acc-user';
-    accBtn.textContent = meUser.charAt(0).toUpperCase() + meUser.slice(1);
-  } else {
-    accBtn.className = 'lang-btn';
-    accBtn.textContent = t('signin');
-    accMenu.classList.remove('open');
-  }
-}
-
-function toggleAccMenu(force) {
-  if (!meUser) return;
-  accMenu.classList.toggle('open', force === undefined ? !accMenu.classList.contains('open') : force);
-}
-
-accBtn.onclick = function() {
-  if (meUser) {
-    toggleAccMenu();
-  } else {
-    accModal.classList.add('open');
-    document.getElementById('accName').focus();
-  }
-};
-
-document.addEventListener('click', function(e) {
-  if (accMenu.classList.contains('open') && !e.target.closest('#navActions')) {
-    toggleAccMenu(false);
-  }
-});
-
-document.getElementById('menuChat').onclick = function() { toggleAccMenu(false); openChat(); };
-document.getElementById('menuCustom').onclick = function() { toggleAccMenu(false); openCustom(); };
-document.getElementById('menuLang').onclick = function() { toggleAccMenu(false); toggleLang(); };
-document.getElementById('menuBackup').onclick = function() { toggleAccMenu(false); accModal.classList.add('open'); };
-document.getElementById('menuLogout').onclick = function() {
-  localStorage.removeItem('mc_user');
-  meUser = null;
-  refreshAccBtn();
-  closeChat();
-};
-
-document.getElementById('accClose').onclick = function() { accModal.classList.remove('open'); };
-accModal.addEventListener('click', function(e) { if (e.target === accModal) accModal.classList.remove('open'); });
-function doAuth(mode) {
-  var n = document.getElementById('accName').value.trim();
-  var p = document.getElementById('accPass').value;
-  var err = document.getElementById('accErr');
-  if (!n || !p) { err.textContent = t('acc_err_empty'); return; }
-  var accounts = JSON.parse(localStorage.getItem('mc_accounts') || '{}');
-  if (mode === 'register') {
-    if (accounts[n]) { err.textContent = t('acc_err_exists'); return; }
-    if (p.length < 4) { err.textContent = t('acc_err_short'); return; }
-    accounts[n] = p;
-  } else {
-    if (!accounts[n] || accounts[n] !== p) { err.textContent = t('acc_err_bad'); return; }
-  }
-  localStorage.setItem('mc_accounts', JSON.stringify(accounts));
-  localStorage.setItem('mc_user', n);
-  meUser = n;
-  document.getElementById('accName').value = '';
-  document.getElementById('accPass').value = '';
-  err.textContent = '';
-  accModal.classList.remove('open');
-  refreshAccBtn();
-}
-
-document.getElementById('accSubmit').onclick = function() { doAuth('login'); };
-document.getElementById('accRegister').onclick = function() { doAuth('register'); };
-document.getElementById('accPass').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') document.getElementById('accSubmit').click();
-});
-document.getElementById('accExport').onclick = function() {
-  var accounts = JSON.parse(localStorage.getItem('mc_accounts') || '{}');
-  var data = JSON.stringify({saved:accounts, exported:new Date().toISOString()}, null, 2);
-  var blob = new Blob([data], {type:'application/json'});
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'migora-backup-' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
-  document.getElementById('accErr').textContent = t('acc_backup_ok');
-};
-document.getElementById('accImport').onclick = function() { document.getElementById('accImportFile').click(); };
-document.getElementById('accImportFile').onchange = function(e) {
-  var f = e.target.files[0];
-  if (!f) return;
-  var r = new FileReader();
-  r.onload = function() {
-    try {
-      var obj = JSON.parse(r.result);
-      var saved = obj.saved || obj;
-      if (typeof saved !== 'object' || saved === null) throw new Error();
-      var merged = JSON.parse(localStorage.getItem('mc_accounts') || '{}');
-      for (var k in saved) merged[k] = saved[k];
-      localStorage.setItem('mc_accounts', JSON.stringify(merged));
-      document.getElementById('accErr').textContent = t('acc_restore_ok') + ' (' + Object.keys(saved).length + ')';
-    } catch (ex) {
-      document.getElementById('accErr').textContent = t('acc_restore_bad');
-    }
-  };
-  r.readAsText(f);
-  e.target.value = '';
-};
-refreshAccBtn();
-
 function toggleLang() {
   LANG = LANG === 'ru' ? 'en' : 'ru';
   applyLang();
@@ -835,11 +672,7 @@ function toggleLang() {
 
 document.getElementById('langBtn').onclick = toggleLang;
 
-/* CHAT (Firebase) */
-var chatBox = null, chatInput = null, chatList = null;
-
-var fbDb = null, fbRef = null, fbOn = false;
-
+/* CHAT */
 document.getElementById('navChatBtn').onclick = openChat;
 
 function openChat() {
@@ -854,81 +687,8 @@ function openChat() {
 }
 
 function closeChat() {
-  var m = document.getElementById('chatModal');
+  var m = document.getElementById('chatSoon');
   if (m) m.classList.remove('open');
-}
-
-function chatName() {
-  return meUser || (LANG === 'ru' ? 'Гость' : 'Guest');
-}
-
-function updateChatStatus() {
-  var s = document.getElementById('chatStatus');
-  if (!s) return;
-  if (fbOn) {
-    s.textContent = LANG === 'ru' ? '● онлайн' : '● online';
-    s.style.color = '#3ddc84';
-  } else {
-    s.textContent = LANG === 'ru' ? 'проверка подключения...' : 'connecting...';
-    s.style.color = 'rgba(255,255,255,.4)';
-  }
-}
-
-function sendChatMsg() {
-  var v = chatInput.value.trim();
-  if (!v) return;
-  chatInput.value = '';
-  if (fbOn && fbRef) {
-    fbRef.push({ n: chatName(), t: v, ts: Date.now() });
-  } else {
-    addChatMsg(chatName(), v, Date.now());
-  }
-}
-
-function addChatMsg(name, text, ts) {
-  var d = new Date(ts);
-  var time = (d.getHours() < 10 ? '0' : '') + d.getHours() + ':' + (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
-  var div = document.createElement('div');
-  div.className = 'chat-msg';
-  div.innerHTML = '<span class="chat-name">' + name.replace(/[<>&"]/g, function(c){ return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]; }) + '</span> <span class="chat-text">' + text.replace(/[<>&"]/g, function(c){ return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]; }) + '</span><span class="chat-time">' + time + '</span>';
-  chatList.appendChild(div);
-  chatList.scrollTop = chatList.scrollHeight;
-}
-
-function renderChatMsgs() {}
-
-function initFirebase(cfg) {
-  if (!cfg || !cfg.databaseURL) return;
-  if (typeof firebase === 'undefined') return;
-  try {
-    var app = firebase.initializeApp(cfg);
-    fbDb = firebase.database(app);
-    fbRef = app.database().ref('chat').limitToLast(100);
-    fbRef.on('child_added', function(snap) {
-      var m = snap.val();
-      if (m && m.n && m.t !== undefined && chatList) addChatMsg(m.n, m.t, m.ts || Date.now());
-      updateChatStatus();
-    });
-    fbOn = true;
-    updateChatStatus();
-  } catch (e) {
-    fbOn = false;
-    updateChatStatus();
-  }
-}
-
-var FIREBASE_CONFIG = null;
-initFirebase(FIREBASE_CONFIG);
-
-function openCustom() { alertCustom(); }
-function alertCustom() {
-  var msg = LANG === 'ru' ? 'Кастомизация появится после подключения Firebase' : 'Customization will appear after Firebase setup';
-  var d = document.createElement('div');
-  d.className = 'modal';
-  d.innerHTML = '<div class="modal-card"><div class="modal-head"><div class="modal-title">' + msg + '</div><button class="modal-close">✕</button></div></div>';
-  document.body.appendChild(d);
-  d.querySelector('.modal-close').onclick = function(){ d.remove(); };
-  d.onclick = function(e){ if (e.target === d) d.remove(); };
 }
 
 document.getElementById('search').oninput = function(e) { curQ = e.target.value; render(); };
