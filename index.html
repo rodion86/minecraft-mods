@@ -169,6 +169,23 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .visitor-count{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.7)}
 .visitor-label{font-size:.62rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.5px}
 
+/* ACCOUNT MODAL */
+.modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(10px)}
+.modal.open{display:flex}
+.modal-card{width:min(360px,90vw);background:#0d0d0d;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:28px;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-title{font-size:1.1rem;font-weight:700}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.4);font-size:1rem;cursor:pointer;padding:4px;transition:color .2s}
+.modal-close:hover{color:#fff}
+.modal-label{display:block;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.4);margin-bottom:6px}
+.modal-input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:#fff;font-family:inherit;font-size:.88rem;outline:none;margin-bottom:16px;transition:border .25s,box-shadow .3s}
+.modal-input:focus{border-color:var(--ac);box-shadow:0 0 0 4px rgba(255,255,255,.05)}
+.modal-submit{width:100%;padding:13px;border-radius:10px;background:var(--ac);color:#000;border:none;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .25s}
+.modal-submit:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,255,255,.15)}
+.modal-err{color:#ef4444;font-size:.78rem;margin-top:10px;min-height:16px;text-align:center}
+.acc-user{font-size:.8rem;font-weight:600;cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.15);color:#fff;padding:7px 14px;border-radius:10px;font-family:inherit;transition:all .25s}
+.acc-user:hover{border-color:var(--ac)}
+
 @media(max-width:900px){.bento{grid-template-columns:repeat(2,1fr)}.card.gold{grid-column:span 2}}
 @media(max-width:640px){nav{flex-wrap:wrap;gap:12px}.nav-links{display:none}.hero{padding:60px 0 24px}.bento{grid-template-columns:1fr}.card.gold{grid-column:span 1;flex-direction:column;align-items:center;text-align:center;padding:24px}.gold-right{width:100%}.stats{grid-template-columns:1fr}}
 </style>
@@ -206,7 +223,7 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
     <a href="https://t.me/macclient11" target="_blank">don0s</a>
     <a href="https://t.me/migodihvh" target="_blank">migodi</a>
   </div>
-  <button class="lang-btn" id="langBtn" type="button">EN</button>
+  <button class="lang-btn" id="accBtn" type="button" data-i18n="signin">Войти</button>
 </nav>
 
 <section class="hero" id="catalog">
@@ -269,6 +286,21 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
   <div class="stat"><div class="stat-num">34+</div><div class="stat-label" data-i18n="stat_apps">приложений</div></div>
   <div class="stat"><div class="stat-num">7</div><div class="stat-label" data-i18n="stat_cats">категорий</div></div>
   <div class="stat"><div class="stat-num">∞</div><div class="stat-label" data-i18n="stat_mods">модов</div></div>
+</div>
+
+<div class="modal" id="accModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div class="modal-title" data-i18n="acc_title">Вход в аккаунт</div>
+      <button class="modal-close" id="accClose" type="button">✕</button>
+    </div>
+    <label class="modal-label" data-i18n="acc_name">Имя:</label>
+    <input class="modal-input" id="accName" type="text" autocomplete="username">
+    <label class="modal-label" data-i18n="acc_pass">Пароль:</label>
+    <input class="modal-input" id="accPass" type="password" autocomplete="current-password">
+    <button class="modal-submit" id="accSubmit" type="button" data-i18n="acc_enter">Войти</button>
+    <div class="modal-err" id="accErr"></div>
+  </div>
 </div>
 
 <div class="visitor">
@@ -369,7 +401,14 @@ var I18N = {
   sec_tool_title:{ru:"Инструменты",en:"Tools"},
   sec_tool_desc:{ru:"Оптимизация, шейдеры, производительность",en:"Optimization, shaders, performance"},
   sec_cheat_title:{ru:"Читы",en:"Cheats"},
-  sec_cheat_desc:{ru:"Клиенты, моды и утилиты для PvP",en:"Clients, mods and utilities for PvP"}
+  sec_cheat_desc:{ru:"Клиенты, моды и утилиты для PvP",en:"Clients, mods and utilities for PvP"},
+  signin:{ru:"Войти",en:"Sign in"},
+  acc_title:{ru:"Вход в аккаунт",en:"Account login"},
+  acc_name:{ru:"Имя",en:"Name"},
+  acc_pass:{ru:"Пароль",en:"Password"},
+  acc_enter:{ru:"Войти",en:"Sign in"},
+  acc_err_empty:{ru:"Введите имя и пароль",en:"Enter name and password"},
+  acc_err_bad:{ru:"Неверный пароль",en:"Wrong password"}
 };
 
 var TAG_EN = {
@@ -606,15 +645,59 @@ function applyLang() {
   }
   var ph = document.querySelector('[data-i18n-ph]');
   if (ph) ph.placeholder = t(ph.getAttribute('data-i18n-ph'));
-  document.getElementById('langBtn').textContent = LANG === 'ru' ? 'EN' : 'RU';
   rebuildTabs();
   render();
 }
 
-document.getElementById('langBtn').onclick = function() {
-  LANG = LANG === 'ru' ? 'en' : 'ru';
-  applyLang();
+/* ACCOUNT LOGIN */
+var accBtn = document.getElementById('accBtn');
+var accModal = document.getElementById('accModal');
+var meUser = localStorage.getItem('mc_user');
+
+function refreshAccBtn() {
+  if (meUser) {
+    accBtn.className = 'acc-user';
+    accBtn.textContent = meUser.charAt(0).toUpperCase() + meUser.slice(1);
+  } else {
+    accBtn.className = 'lang-btn';
+    accBtn.textContent = t('signin');
+  }
+}
+
+accBtn.onclick = function() {
+  if (meUser) {
+    localStorage.removeItem('mc_user');
+    meUser = null;
+    refreshAccBtn();
+  } else {
+    accModal.classList.add('open');
+    document.getElementById('accName').focus();
+  }
 };
+
+document.getElementById('accClose').onclick = function() { accModal.classList.remove('open'); };
+accModal.addEventListener('click', function(e) { if (e.target === accModal) accModal.classList.remove('open'); });
+document.getElementById('accSubmit').onclick = function() {
+  var n = document.getElementById('accName').value.trim();
+  var p = document.getElementById('accPass').value;
+  var err = document.getElementById('accErr');
+  if (!n || !p) { err.textContent = t('acc_err_empty'); return; }
+  var accounts = JSON.parse(localStorage.getItem('mc_accounts') || '{}');
+  if (accounts[n] && accounts[n] !== p) { err.textContent = t('acc_err_bad'); return; }
+  accounts[n] = p;
+  localStorage.setItem('mc_accounts', JSON.stringify(accounts));
+  localStorage.setItem('mc_user', n);
+  meUser = n;
+  document.getElementById('accName').value = '';
+  document.getElementById('accPass').value = '';
+  err.textContent = '';
+  accModal.classList.remove('open');
+  refreshAccBtn();
+};
+document.getElementById('accPass').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') document.getElementById('accSubmit').click();
+});
+refreshAccBtn();
 
 document.getElementById('search').oninput = function(e) { curQ = e.target.value; render(); };
 applyLang();
