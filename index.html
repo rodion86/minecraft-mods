@@ -436,8 +436,8 @@ function makeCard(a, idx) {
   if (a.gold) cls += ' gold';
   var tags = '';
   var tagsArr = aTags(a);
-  for (var t = 0; t < tagsArr.length; t++) {
-    tags += '<span class="tag">' + tagsArr[t] + '</span>';
+  for (var ti = 0; ti < tagsArr.length; ti++) {
+    tags += '<span class="tag">' + tagsArr[ti] + '</span>';
   }
   var badge = a.gold ? '<div class="gold-badge">★ ' + (a.featured ? t('best') : t('rec')) + '</div>' : '';
   var author = a.author ? '<div class="card-author">' + t('madeby') + ' <span>' + a.author + '</span></div>' : '';
