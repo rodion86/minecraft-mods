@@ -252,9 +252,15 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
   <div class="empty" id="empty-tool">Ничего не найдено</div>
 </div>
 
+<div class="section" id="sec-cheat">
+  <div class="section-head"><div class="section-title">Читы</div><div class="section-desc">Клиенты, моды и утилиты для PvP</div></div>
+  <div class="bento" id="grid-cheat"></div>
+  <div class="empty" id="empty-cheat">Ничего не найдено</div>
+</div>
+
 <div class="stats">
-  <div class="stat"><div class="stat-num">29+</div><div class="stat-label">приложений</div></div>
-  <div class="stat"><div class="stat-num">6</div><div class="stat-label">категорий</div></div>
+  <div class="stat"><div class="stat-num">35+</div><div class="stat-label">приложений</div></div>
+  <div class="stat"><div class="stat-num">7</div><div class="stat-label">категорий</div></div>
   <div class="stat"><div class="stat-num">∞</div><div class="stat-label">модов</div></div>
 </div>
 
@@ -299,10 +305,17 @@ var DB = [
   {name:"Starlight",icon:"SL",platform:"Win · Mac · Linux",cat:"tool",tags:["Fabric","Освещение"],desc:"Переписанный движок освещения. Ускоряет рендер света в 26 раз.",rating:4.8,link:"https://modrinth.com/mod/starlight"},
   {name:"MCreator",icon:"MC",platform:"Win · Mac · Linux",cat:"tool",tags:["Создание","Модов"],desc:"Визуальный редактор для создания модов без программирования.",rating:4.2,link:"https://mcreator.net/"},
   {name:"WorldEdit",icon:"WE",platform:"Win · Mac · Linux",cat:"tool",tags:["Строительство","Плагин"],desc:"Мощный инструмент для быстрого строительства в мире.",rating:4.6,link:"https://enginehub.org/worldedit/"},
-  {name:"JourneyMap",icon:"JM",platform:"Win · Mac · Linux",cat:"tool",tags:["Карта","Миникарта"],desc:"Миникарта в реальном времени с маркерами и вейпоинтами.",rating:4.7,link:"https://www.curseforge.com/minecraft/mc-mods/journeymap"}
+  {name:"JourneyMap",icon:"JM",platform:"Win · Mac · Linux",cat:"tool",tags:["Карта","Миникарта"],desc:"Миникарта в реальном времени с маркерами и вейпоинтами.",rating:4.7,link:"https://www.curseforge.com/minecraft/mc-mods/journeymap"},
+
+  {name:"Lunar Client",icon:"LC",platform:"Win · Mac · Linux",cat:"cheat",tags:["PvP","FPS"],desc:"Оптимизированный PvP-клиент с встроенными модами и AntiCheat.",rating:4.8,link:"https://www.lunarclient.com/"},
+  {name:"Badlion Client",icon:"BL",platform:"Win · Mac · Linux",cat:"cheat",tags:["PvP","Моды"],desc:"Клиент с 100+ встроенными модами для PvP и строительства.",rating:4.7,link:"https://www.badlion.net/"},
+  {name:"Salwyrr Client",icon:"SW",platform:"Win · Linux",cat:"cheat",tags:["PvP","Hack"],desc:"Мощный PvP-клиент с встроенными читами и функциями.",rating:4.4,link:"https://salwyrr.com/"},
+  {name:"Frost Client",icon:"FC",platform:"Win · Linux",cat:"cheat",tags:["PvP","XRay"],desc:"Полнофункциональный чит-клиент с множеством модулей для PvP.",rating:4.3,link:"https://frostclient.net/"},
+  {name:"Wurst Client",icon:"WC",platform:"Win · Mac · Linux",cat:"cheat",tags:["Hack","Free"],desc:"Легендарный бесплатный чит-клиент для Minecraft.",rating:4.0,link:"https://www.wurstclient.net/"},
+  {name:"XRay",icon:"XR",platform:"Win · Mac · Linux",cat:"cheat",tags:["XRay","Оружие"],desc:"Мод для просмотра руд и полезных блоков сквозь стены.",rating:4.6,link:"https://modrinth.com/mod/xray"}
 ];
 
-var CAT = {launcher:"Лаунчеры",loader:"Загрузчики модов",manager:"Менеджеры",builder:"Сборщики",tool:"Инструменты"};
+var CAT = {launcher:"Лаунчеры",loader:"Загрузчики модов",manager:"Менеджеры",builder:"Сборщики",tool:"Инструменты",cheat:"Читы"};
 var curTab = "all";
 var curQ = "";
 
@@ -416,7 +429,7 @@ function render() {
 
 function switchTab(id) {
   if (curTab === id) return;
-  var tabOrder = ['all','launcher','loader','manager','builder','tool'];
+  var tabOrder = ['all','launcher','loader','manager','builder','tool','cheat'];
   var oldIdx = tabOrder.indexOf(curTab);
   var newIdx = tabOrder.indexOf(id);
   var direction = newIdx > oldIdx ? 'right' : 'left';
