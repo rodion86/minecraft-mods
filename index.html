@@ -182,6 +182,8 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .modal-input:focus{border-color:var(--ac);box-shadow:0 0 0 4px rgba(255,255,255,.05)}
 .modal-submit{width:100%;padding:13px;border-radius:10px;background:var(--ac);color:#000;border:none;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .25s}
 .modal-submit:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,255,255,.15)}
+.modal-ghost{background:transparent;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.12);margin-top:8px}
+.modal-ghost:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.25);box-shadow:none;transform:none}
 .modal-err{color:#ef4444;font-size:.78rem;margin-top:10px;min-height:16px;text-align:center}
 .acc-user{font-size:.8rem;font-weight:600;cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.15);color:#fff;padding:7px 14px;border-radius:10px;font-family:inherit;transition:all .25s}
 .nav-actions{display:flex;flex-direction:column;align-items:stretch;gap:6px}
@@ -308,6 +310,7 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
     <label class="modal-label" data-i18n="acc_pass">Пароль:</label>
     <input class="modal-input" id="accPass" type="password" autocomplete="current-password">
     <button class="modal-submit" id="accSubmit" type="button" data-i18n="acc_enter">Войти</button>
+    <button class="modal-submit modal-ghost" id="accRegister" type="button" data-i18n="acc_reg">Зарегистрироваться</button>
     <div class="modal-err" id="accErr"></div>
   </div>
 </div>
@@ -416,8 +419,11 @@ var I18N = {
   acc_name:{ru:"Имя",en:"Name"},
   acc_pass:{ru:"Пароль",en:"Password"},
   acc_enter:{ru:"Войти",en:"Sign in"},
+  acc_reg:{ru:"Зарегистрироваться",en:"Register"},
   acc_err_empty:{ru:"Введите имя и пароль",en:"Enter name and password"},
-  acc_err_bad:{ru:"Неверный пароль",en:"Wrong password"}
+  acc_err_bad:{ru:"Неверное имя или пароль",en:"Wrong name or password"},
+  acc_err_exists:{ru:"Такой аккаунт уже существует",en:"This account already exists"},
+  acc_err_short:{ru:"Пароль должен быть минимум 4 символа",en:"Password must be at least 4 characters"}
 };
 
 var TAG_EN = {
@@ -687,14 +693,19 @@ accBtn.onclick = function() {
 
 document.getElementById('accClose').onclick = function() { accModal.classList.remove('open'); };
 accModal.addEventListener('click', function(e) { if (e.target === accModal) accModal.classList.remove('open'); });
-document.getElementById('accSubmit').onclick = function() {
+function doAuth(mode) {
   var n = document.getElementById('accName').value.trim();
   var p = document.getElementById('accPass').value;
   var err = document.getElementById('accErr');
   if (!n || !p) { err.textContent = t('acc_err_empty'); return; }
   var accounts = JSON.parse(localStorage.getItem('mc_accounts') || '{}');
-  if (accounts[n] && accounts[n] !== p) { err.textContent = t('acc_err_bad'); return; }
-  accounts[n] = p;
+  if (mode === 'register') {
+    if (accounts[n]) { err.textContent = t('acc_err_exists'); return; }
+    if (p.length < 4) { err.textContent = t('acc_err_short'); return; }
+    accounts[n] = p;
+  } else {
+    if (!accounts[n] || accounts[n] !== p) { err.textContent = t('acc_err_bad'); return; }
+  }
   localStorage.setItem('mc_accounts', JSON.stringify(accounts));
   localStorage.setItem('mc_user', n);
   meUser = n;
@@ -703,7 +714,10 @@ document.getElementById('accSubmit').onclick = function() {
   err.textContent = '';
   accModal.classList.remove('open');
   refreshAccBtn();
-};
+}
+
+document.getElementById('accSubmit').onclick = function() { doAuth('login'); };
+document.getElementById('accRegister').onclick = function() { doAuth('register'); };
 document.getElementById('accPass').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') document.getElementById('accSubmit').click();
 });
