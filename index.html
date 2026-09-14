@@ -216,6 +216,50 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 
 @media(max-width:900px){.bento{grid-template-columns:repeat(2,1fr)}.card.gold{grid-column:span 2}}
 @media(max-width:640px){nav{flex-wrap:wrap;gap:12px}.nav-links{display:none}.hero{padding:60px 0 24px}.bento{grid-template-columns:1fr}.card.gold{grid-column:span 1;flex-direction:column;align-items:center;text-align:center;padding:24px}.gold-right{width:100%}.stats{grid-template-columns:1fr}}
+
+/* ADMIN */
+.admin-fab{position:fixed;bottom:16px;right:16px;z-index:300;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.55);font-size:1.15rem;cursor:pointer;transition:all .25s;backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;animation:fadeUp .6s ease forwards;animation-delay:1.4s}
+.admin-fab:hover{color:#000;background:var(--ac);border-color:var(--ac)}
+.admin-card{width:min(720px,94vw);max-height:86vh;display:flex;flex-direction:column;padding:24px}
+.admin-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.admin-tab{padding:8px 14px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit}
+.admin-tab.on{background:var(--ac);color:#000;border-color:var(--ac)}
+.admin-body{overflow-y:auto;padding-right:4px;flex:1}
+.admin-pane{display:none}
+.admin-pane.on{display:block;animation:fadeIn .2s ease}
+.admin-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.admin-form .full{grid-column:span 2}
+.admin-form .modal-input{margin-bottom:0}
+.admin-form .modal-label{margin-bottom:4px}
+.admin-list{display:flex;flex-direction:column;gap:8px}
+.admin-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)}
+.admin-item-main{flex:1;min-width:0}
+.admin-item-title{font-size:.82rem;font-weight:600;word-break:break-word}
+.admin-item-sub{font-size:.68rem;color:rgba(255,255,255,.35);word-break:break-word}
+.admin-del{background:none;border:none;color:#ef4444;cursor:pointer;font-size:1rem;padding:4px;transition:all .2s;flex-shrink:0}
+.admin-del:hover{color:#f87171}
+.admin-toggle{background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);border-radius:6px;padding:4px 8px;font-size:.65rem;cursor:pointer;font-family:inherit;flex-shrink:0}
+.admin-toggle.on{background:#22c55e;color:#000;border-color:#22c55e}
+.admin-hint{font-size:.68rem;color:rgba(255,255,255,.3);margin:14px 0 8px}
+.admin-save{width:100%;padding:12px;border-radius:10px;background:var(--ac);color:#000;border:none;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .25s;margin-top:10px}
+.admin-save:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,255,255,.15)}
+textarea.modal-input{resize:vertical;min-height:60px}
+
+/* EVENT BANNER */
+.event-strip{display:flex;align-items:center;gap:14px;padding:12px 18px;border-radius:14px;background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid color-mix(in srgb,var(--ac) 35%,transparent);margin-top:24px}
+.event-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 12px rgba(34,197,94,.6);animation:visPulse 1.5s ease infinite;flex-shrink:0}
+.event-strip-title{font-weight:700;font-size:.9rem;line-height:1.3}
+.event-strip-date{font-size:.66rem;color:rgba(255,255,255,.5);font-family:'JetBrains Mono',monospace;margin-top:2px}
+.event-strip-desc{font-size:.75rem;color:rgba(255,255,255,.7);flex:1;min-width:0}
+.event-strip-desc:empty{display:none}
+
+/* NEWS */
+.news-section{margin-top:44px;border-top:1px solid rgba(255,255,255,.04);padding-top:30px}
+.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:14px}
+.news-card{padding:16px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.news-card-title{font-weight:700;font-size:.9rem;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.news-card-date{font-size:.62rem;color:rgba(255,255,255,.35);font-family:'JetBrains Mono',monospace}
+.news-card-text{font-size:.78rem;color:rgba(255,255,255,.7);line-height:1.5;margin-top:4px}
 </style>
 </head>
 <body>
@@ -322,6 +366,9 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
   <div class="stat"><div class="stat-num">∞</div><div class="stat-label" data-i18n="stat_mods">модов</div></div>
 </div>
 
+<div id="eventBanner"></div>
+<div id="newsSection"></div>
+
 <div class="visitor">
   <div class="visitor-dot"></div>
   <div>
@@ -339,6 +386,84 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
   </div>
 </footer>
 
+</div>
+
+<button class="admin-fab" id="adminFab" type="button" title="Админ">⚙</button>
+
+<div class="modal" id="adminPassModal">
+  <div class="modal-card" style="width:min(320px,90vw)">
+    <div class="modal-head">
+      <div class="modal-title">Админ</div>
+      <button class="modal-close" id="adminPassClose" type="button">✕</button>
+    </div>
+    <label class="modal-label">Пароль</label>
+    <input class="modal-input" id="adminPassInput" type="password" autocomplete="off">
+    <button class="modal-submit" id="adminPassBtn" type="button">Войти</button>
+    <div class="modal-err" id="adminPassErr"></div>
+  </div>
+</div>
+
+<div class="modal" id="adminModal">
+  <div class="modal-card admin-card">
+    <div class="modal-head">
+      <div class="modal-title">Админ-панель</div>
+      <button class="modal-close" id="adminClose" type="button">✕</button>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab on" data-pane="paneEvents" type="button">Ивенты</button>
+      <button class="admin-tab" data-pane="paneCards" type="button">Карточки</button>
+      <button class="admin-tab" data-pane="paneTexts" type="button">Тексты</button>
+      <button class="admin-tab" data-pane="paneNews" type="button">Новости</button>
+    </div>
+    <div class="admin-body">
+
+      <div class="admin-pane on" id="paneEvents">
+        <div class="admin-form">
+          <div class="full"><label class="modal-label">Название</label><input class="modal-input" id="evName" type="text" placeholder="Китовый замес"></div>
+          <div><label class="modal-label">Дата</label><input class="modal-input" id="evDate" type="text" placeholder="01.01.2026"></div>
+          <div><label class="modal-label">Ссылка (необязательно)</label><input class="modal-input" id="evLink" type="text" placeholder="https://..."></div>
+          <div class="full"><label class="modal-label">Описание</label><textarea class="modal-input" id="evDesc" placeholder="Коротко о событии"></textarea></div>
+        </div>
+        <button class="modal-submit" id="evAdd" type="button">Добавить ивент</button>
+        <div class="admin-hint">Активные ивенты</div>
+        <div class="admin-list" id="evList"></div>
+      </div>
+
+      <div class="admin-pane" id="paneCards">
+        <div class="admin-form">
+          <div><label class="modal-label">Название</label><input class="modal-input" id="adName" type="text" placeholder="Мой лаунчер"></div>
+          <div><label class="modal-label">Иконка</label><input class="modal-input" id="adIcon" type="text" placeholder="M" maxlength="2"></div>
+          <div><label class="modal-label">Категория</label><select class="modal-input" id="adCat"></select></div>
+          <div><label class="modal-label">Платформа</label><input class="modal-input" id="adPlat" type="text" placeholder="Win · Mac · Linux"></div>
+          <div class="full"><label class="modal-label">Описание</label><textarea class="modal-input" id="adDesc" placeholder="Описание приложения"></textarea></div>
+          <div class="full"><label class="modal-label">Ссылка</label><input class="modal-input" id="adLink" type="text" placeholder="https://..."></div>
+          <div><label class="modal-label">Рейтинг</label><input class="modal-input" id="adRating" type="number" min="0" max="5" step="0.1" value="4.5"></div>
+          <div><label class="modal-label">Теги (через запятую)</label><input class="modal-input" id="adTags" type="text" placeholder="Быстрый, Простой"></div>
+        </div>
+        <button class="modal-submit" id="adAdd" type="button">Добавить карточку</button>
+        <div class="admin-hint">Добавленные карточки</div>
+        <div class="admin-list" id="adList"></div>
+      </div>
+
+      <div class="admin-pane" id="paneTexts">
+        <div class="admin-hint">Переопределение текстов (RU / EN)</div>
+        <div class="admin-list" id="txList"></div>
+        <button class="admin-save" id="txSave" type="button">Сохранить тексты</button>
+      </div>
+
+      <div class="admin-pane" id="paneNews">
+        <div class="admin-form">
+          <div><label class="modal-label">Заголовок</label><input class="modal-input" id="nwTitle" type="text" placeholder="Обновление каталога"></div>
+          <div><label class="modal-label">Дата</label><input class="modal-input" id="nwDate" type="text" placeholder="01.01.2026"></div>
+          <div class="full"><label class="modal-label">Текст</label><textarea class="modal-input" id="nwText" placeholder="Что нового"></textarea></div>
+        </div>
+        <button class="modal-submit" id="nwAdd" type="button">Добавить новость</button>
+        <div class="admin-hint">Новости</div>
+        <div class="admin-list" id="nwList"></div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <script>
@@ -471,7 +596,7 @@ var DB_EN = {
   "Zenith":{desc:"Zenith cheat client for version 1.21.4.",tags:["PvP","Hack"]}
 };
 
-function t(k) { var o = I18N[k]; return o ? o[LANG] : k; }
+function t(k) { var o = (admin && admin.texts && admin.texts[k]) ? admin.texts[k] : I18N[k]; return o ? o[LANG] : k; }
 function catName(k) { return t('cat_' + k); }
 function aName(a) { var e = DB_EN[a.name]; return (LANG === 'en' && e && e.name) ? e.name : a.name; }
 function aDesc(a) { var e = DB_EN[a.name]; return (LANG === 'en' && e && e.desc) ? e.desc : a.desc; }
@@ -555,8 +680,9 @@ function makeCard(a, idx) {
 function filterApps(cat) {
   var q = curQ.toLowerCase();
   var result = [];
-  for (var i = 0; i < DB.length; i++) {
-    var a = DB[i];
+  var all = DB.concat(admin.cards || []);
+  for (var i = 0; i < all.length; i++) {
+    var a = all[i];
     if (cat !== 'all' && a.cat !== cat) continue;
     if (q && aName(a).toLowerCase().indexOf(q) === -1 && a.platform.toLowerCase().indexOf(q) === -1 && aDesc(a).toLowerCase().indexOf(q) === -1 && aTags(a).join(' ').toLowerCase().indexOf(q) === -1) continue;
     result.push(a);
@@ -585,7 +711,7 @@ function renderSection(cat) {
 function render() {
   var f = filterApps('all');
   var cnt = document.getElementById('count');
-  if (cnt) cnt.textContent = f.length + ' / ' + DB.length;
+  if (cnt) cnt.textContent = f.length + ' / ' + (DB.length + (admin.cards ? admin.cards.length : 0));
   var keys = ['all'];
   for (var k in CAT) keys.push(k);
   for (var i = 0; i < keys.length; i++) {
@@ -692,6 +818,269 @@ function closeChat() {
 }
 
 document.getElementById('search').oninput = function(e) { curQ = e.target.value; render(); };
+
+/* ADMIN */
+var ADMIN_PASS = 'HFCG3grfawrq345zx';
+var ADMIN_STORAGE = 'mc_admin_v1';
+var admin = { events: [], cards: [], texts: {}, news: [] };
+var adminAuthed = sessionStorage.getItem('mc_admin_ok') === '1';
+var fbApp = null, fbDb = null, fbSync = false;
+
+function adminLoad() {
+  var raw = localStorage.getItem(ADMIN_STORAGE);
+  if (raw) {
+    try { var d = JSON.parse(raw); if (d.events) admin.events = d.events; if (d.cards) admin.cards = d.cards; if (d.texts) admin.texts = d.texts; if (d.news) admin.news = d.news; } catch(e) {}
+  }
+  renderEvents();
+  renderNews();
+}
+
+function adminSave() {
+  localStorage.setItem(ADMIN_STORAGE, JSON.stringify(admin));
+  if (fbSync && fbDb) {
+    fbDb.ref('admin').set(JSON.parse(JSON.stringify(admin)));
+  }
+}
+
+function adminInitFirebase(cfg) {
+  if (!cfg || !cfg.databaseURL || typeof firebase === 'undefined') return;
+  try {
+    fbApp = firebase.initializeApp(cfg);
+    fbDb = firebase.database(fbApp);
+    fbSync = true;
+    fbDb.ref('admin').on('value', function(snap) {
+      var v = snap.val();
+      if (v) {
+        if (v.events) admin.events = v.events;
+        if (v.cards) admin.cards = v.cards;
+        if (v.texts) admin.texts = v.texts;
+        if (v.news) admin.news = v.news;
+        renderEvents();
+        renderNews();
+        applyLang();
+      }
+    });
+  } catch (e) { fbSync = false; }
+}
+
+function renderEvents() {
+  var wrap = document.getElementById('eventBanner');
+  if (!wrap) return;
+  var active = (admin.events || []).filter(function(e){ return e.on; });
+  wrap.innerHTML = '';
+  for (var i = 0; i < active.length; i++) {
+    var e = active[i];
+    var linkWrap = e.link ? '<a href="' + e.link + '" target="_blank" rel="noopener" style="color:#fff;text-decoration:none;display:flex;align-items:center;gap:14px;width:100%">' : '<div style="display:flex;align-items:center;gap:14px;width:100%">';
+    var closeWrap = e.link ? '</a>' : '</div>';
+    wrap.innerHTML += '<div class="event-strip">' + linkWrap +
+      '<div class="event-dot"></div>' +
+      '<div style="flex:1;min-width:0"><div class="event-strip-title">' + esc(e.name) + '</div>' +
+      (e.date ? '<div class="event-strip-date">' + esc(e.date) + '</div>' : '') +
+      '<div class="event-strip-desc">' + esc(e.desc) + '</div></div>' +
+      closeWrap + '</div>';
+  }
+}
+
+function renderNews() {
+  var wrap = document.getElementById('newsSection');
+  if (!wrap) return;
+  if (!admin.news || admin.news.length === 0) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  wrap.style.display = 'block';
+  var html = '<div class="section-head"><div class="section-title">Новости</div><div class="section-desc">' + t('badge') + '</div></div><div class="news-grid">';
+  for (var i = admin.news.length - 1; i >= 0; i--) {
+    var n = admin.news[i];
+    html += '<div class="news-card"><div class="news-card-title">' + esc(n.title) + '<span class="news-card-date">' + esc(n.date) + '</span></div><div class="news-card-text">' + esc(n.text) + '</div></div>';
+  }
+  html += '</div>';
+  wrap.innerHTML = html;
+}
+
+function esc(s) {
+  if (s === undefined || s === null) return '';
+  return String(s).replace(/[<>&"]/g, function(c){ return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]; });
+}
+
+function openAdmin() {
+  if (adminAuthed) { document.getElementById('adminModal').classList.add('open'); return; }
+  document.getElementById('adminPassModal').classList.add('open');
+  document.getElementById('adminPassInput').focus();
+}
+
+function tryAdminPass() {
+  if (document.getElementById('adminPassInput').value === ADMIN_PASS) {
+    adminAuthed = true;
+    sessionStorage.setItem('mc_admin_ok', '1');
+    document.getElementById('adminPassModal').classList.remove('open');
+    document.getElementById('adminPassErr').textContent = '';
+    document.getElementById('adminPassInput').value = '';
+    document.getElementById('adminModal').classList.add('open');
+    refreshAdminLists();
+  } else {
+    document.getElementById('adminPassErr').textContent = LANG === 'ru' ? 'Неверный пароль' : 'Wrong password';
+  }
+}
+
+document.getElementById('adminFab').onclick = openAdmin;
+document.getElementById('adminPassBtn').onclick = tryAdminPass;
+document.getElementById('adminPassInput').addEventListener('keydown', function(e){ if (e.key === 'Enter') tryAdminPass(); });
+document.getElementById('adminPassClose').onclick = function(){ document.getElementById('adminPassModal').classList.remove('open'); };
+document.getElementById('adminClose').onclick = function(){ document.getElementById('adminModal').classList.remove('open'); };
+document.getElementById('adminModal').addEventListener('click', function(e){ if (e.target === document.getElementById('adminModal')) document.getElementById('adminModal').classList.remove('open'); });
+
+var adminTabs = document.querySelectorAll('.admin-tab');
+for (var ai = 0; ai < adminTabs.length; ai++) {
+  (function(tab){
+    tab.onclick = function() {
+      for (var i = 0; i < adminTabs.length; i++) adminTabs[i].classList.remove('on');
+      tab.classList.add('on');
+      var panes = document.querySelectorAll('.admin-pane');
+      for (var j = 0; j < panes.length; j++) panes[j].classList.toggle('on', panes[j].id === tab.getAttribute('data-pane'));
+      refreshAdminLists();
+    };
+  })(adminTabs[ai]);
+}
+
+function refreshAdminLists() {
+  renderEvList();
+  renderCardsList();
+  renderTxList();
+  renderNwList();
+}
+
+function uid() { return 'id' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+document.getElementById('evAdd').onclick = function() {
+  var name = document.getElementById('evName').value.trim();
+  if (!name) return;
+  admin.events.push({ id: uid(), name: name, date: document.getElementById('evDate').value.trim(), link: document.getElementById('evLink').value.trim(), desc: document.getElementById('evDesc').value.trim(), on: true });
+  ['evName','evDate','evLink','evDesc'].forEach(function(id, i, arr){ document.getElementById(arr[i]).value = ''; });
+  adminSave(); renderEvList(); renderEvents();
+}
+
+function renderEvList() {
+  var list = document.getElementById('evList');
+  list.innerHTML = '';
+  if (!admin.events.length) { list.innerHTML = '<div class="admin-item"><div class="admin-item-sub">—</div></div>'; return; }
+  for (var i = admin.events.length - 1; i >= 0; i--) {
+    var e = admin.events[i];
+    var item = document.createElement('div');
+    item.className = 'admin-item';
+    item.innerHTML = '<div class="admin-item-main"><div class="admin-item-title">' + esc(e.name) + '</div><div class="admin-item-sub">' + esc(e.date) + (e.link ? ' · ' + esc(e.link) : '') + '</div></div>' +
+      '<button class="admin-toggle' + (e.on ? ' on' : '') + '" type="button">' + (e.on ? 'ON' : 'OFF') + '</button>' +
+      '<button class="admin-del" type="button">✕</button>';
+    item.querySelector('.admin-toggle').onclick = function(ev){ ev.on = !ev.on; adminSave(); renderEvList(); renderEvents(); }.bind(null, e);
+    item.querySelector('.admin-del').onclick = function(ev){ admin.events = admin.events.filter(function(x){ return x.id !== ev.id; }); adminSave(); renderEvList(); renderEvents(); }.bind(null, e);
+    list.appendChild(item);
+  }
+}
+
+function fillCatSelect() {
+  var sel = document.getElementById('adCat');
+  var keys = [];
+  for (var k in CAT) keys.push(k);
+  for (var i = 0; i < keys.length; i++) {
+    var o = document.createElement('option');
+    o.value = keys[i];
+    o.textContent = catName(keys[i]);
+    sel.appendChild(o);
+  }
+}
+fillCatSelect();
+
+document.getElementById('adAdd').onclick = function() {
+  var name = document.getElementById('adName').value.trim();
+  if (!name) return;
+  var rating = parseFloat(document.getElementById('adRating').value);
+  if (isNaN(rating)) rating = 4.5;
+  var tags = document.getElementById('adTags').value.split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+  admin.cards.push({
+    id: uid(),
+    name: name,
+    icon: document.getElementById('adIcon').value.trim() || 'A',
+    plat: document.getElementById('adPlat').value.trim(),
+    cat: document.getElementById('adCat').value,
+    desc: document.getElementById('adDesc').value.trim(),
+    link: document.getElementById('adLink').value.trim(),
+    rating: rating,
+    tags: tags.length ? tags : ['—']
+  });
+  ['adName','adIcon','adPlat','adDesc','adLink','adTags'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('adRating').value = '4.5';
+  adminSave(); renderCardsList(); applyLang();
+};
+
+function renderCardsList() {
+  var list = document.getElementById('adList');
+  list.innerHTML = '';
+  if (!admin.cards.length) { list.innerHTML = '<div class="admin-item"><div class="admin-item-sub">—</div></div>'; return; }
+  for (var i = admin.cards.length - 1; i >= 0; i--) {
+    var c = admin.cards[i];
+    var item = document.createElement('div');
+    item.className = 'admin-item';
+    item.innerHTML = '<div class="admin-item-main"><div class="admin-item-title">' + esc(c.name) + '</div><div class="admin-item-sub">' + catName(c.cat) + ' · ' + esc(c.icon) + '</div></div>' +
+      '<button class="admin-del" type="button">✕</button>';
+    item.querySelector('.admin-del').onclick = function(card){ admin.cards = admin.cards.filter(function(x){ return x.id !== card.id; }); adminSave(); renderCardsList(); applyLang(); }.bind(null, c);
+    list.appendChild(item);
+  }
+}
+
+var TX_KEYS = ['badge','hero_title','hero_p','stat_apps','stat_cats','stat_mods','footer_note','nav_chat','search'];
+function renderTxList() {
+  var list = document.getElementById('txList');
+  list.innerHTML = '';
+  for (var i = 0; i < TX_KEYS.length; i++) {
+    var k = TX_KEYS[i];
+    var cur = admin.texts[k] || { ru: '', en: '' };
+    var item = document.createElement('div');
+    item.className = 'admin-item';
+    item.style.flexDirection = 'column';
+    item.style.alignItems = 'stretch';
+    item.innerHTML = '<div class="admin-item-title">' + k + '</div>' +
+      '<input class="modal-input" style="margin:0" data-tx-ru="' + k + '" value="' + esc(cur.ru) + '" placeholder="RU: ' + esc((I18N[k] && I18N[k].ru) || '') + '">' +
+      '<input class="modal-input" style="margin:0" data-tx-en="' + k + '" value="' + esc(cur.en) + '" placeholder="EN: ' + esc((I18N[k] && I18N[k].en) || '') + '">';
+    list.appendChild(item);
+  }
+}
+document.getElementById('txSave').onclick = function() {
+  var inputs = document.querySelectorAll('[data-tx-ru]');
+  for (var i = 0; i < inputs.length; i++) {
+    var k = inputs[i].getAttribute('data-tx-ru');
+    var ru = inputs[i].value.trim();
+    var en = document.querySelector('[data-tx-en="' + k + '"]').value.trim();
+    if (ru || en) admin.texts[k] = { ru: ru, en: en };
+    else delete admin.texts[k];
+  }
+  adminSave(); applyLang();
+};
+
+document.getElementById('nwAdd').onclick = function() {
+  var title = document.getElementById('nwTitle').value.trim();
+  if (!title) return;
+  admin.news.push({ id: uid(), title: title, date: document.getElementById('nwDate').value.trim(), text: document.getElementById('nwText').value.trim() });
+  ['nwTitle','nwDate','nwText'].forEach(function(id){ document.getElementById(id).value = ''; });
+  adminSave(); renderNwList(); renderNews();
+};
+
+function renderNwList() {
+  var list = document.getElementById('nwList');
+  list.innerHTML = '';
+  if (!admin.news.length) { list.innerHTML = '<div class="admin-item"><div class="admin-item-sub">—</div></div>'; return; }
+  for (var i = admin.news.length - 1; i >= 0; i--) {
+    var n = admin.news[i];
+    var item = document.createElement('div');
+    item.className = 'admin-item';
+    item.innerHTML = '<div class="admin-item-main"><div class="admin-item-title">' + esc(n.title) + '</div><div class="admin-item-sub">' + esc(n.date) + '</div></div>' +
+      '<button class="admin-del" type="button">✕</button>';
+    item.querySelector('.admin-del').onclick = function(nw){ admin.news = admin.news.filter(function(x){ return x.id !== nw.id; }); adminSave(); renderNwList(); renderNews(); }.bind(null, n);
+    list.appendChild(item);
+  }
+}
+
+adminLoad();
+
+var FIREBASE_CONFIG = null;
+adminInitFirebase(FIREBASE_CONFIG);
+
 applyLang();
 
 /* VISITOR COUNTER */
