@@ -164,6 +164,14 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .footer-links a{font-size:.75rem;color:rgba(255,255,255,.3);text-decoration:none;transition:color .2s}
 .footer-links a:hover{color:var(--ac)}
 
+/* VISITOR WIDGET */
+.visitor{position:fixed;top:20px;right:20px;z-index:100;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);backdrop-filter:blur(20px);opacity:0;animation:fadeUp .6s ease forwards;animation-delay:1s}
+.visitor-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px rgba(34,197,94,.5);animation:visPulse 2s ease infinite}
+@keyframes visPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.visitor-count{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.7)}
+.visitor-label{font-size:.62rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.5px}
+@media(max-width:640px){.visitor{top:auto;bottom:20px;right:16px}}
+
 @media(max-width:900px){.bento{grid-template-columns:repeat(2,1fr)}.card.gold{grid-column:span 2}}
 @media(max-width:640px){nav{flex-wrap:wrap;gap:12px}.nav-links{display:none}.hero{padding:60px 0 24px}.bento{grid-template-columns:1fr}.card.gold{grid-column:span 1;flex-direction:column;align-items:center;text-align:center;padding:24px}.gold-right{width:100%}.stats{grid-template-columns:1fr}}
 </style>
@@ -267,6 +275,14 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
   <div class="stat"><div class="stat-num">∞</div><div class="stat-label" data-i18n="stat_mods">модов</div></div>
 </div>
 
+<div class="visitor">
+  <div class="visitor-dot"></div>
+  <div>
+    <div class="visitor-count" id="visCount">...</div>
+    <div class="visitor-label" data-i18n="vis_label">посещений</div>
+  </div>
+</div>
+
 <footer>
   <div class="footer-brand">don0s <span>x</span> migodi</div>
   <p data-i18n="footer_note" style="color:rgba(255,255,255,.15);font-size:.7rem">неофициальный справочник · 2026</p>
@@ -336,6 +352,7 @@ var I18N = {
   stat_cats:{ru:"категорий",en:"categories"},
   stat_mods:{ru:"модов",en:"mods"},
   footer_note:{ru:"неофициальный справочник · 2026",en:"unofficial guide · 2026"},
+  vis_label:{ru:"посещений",en:"visits"},
   cat_all:{ru:"Все",en:"All"},
   cat_launcher:{ru:"Лаунчеры",en:"Launchers"},
   cat_loader:{ru:"Загрузчики модов",en:"Mod loaders"},
@@ -605,6 +622,17 @@ document.getElementById('langBtn').onclick = function() {
 
 document.getElementById('search').oninput = function(e) { curQ = e.target.value; render(); };
 applyLang();
+
+/* VISITOR COUNTER */
+(function(){
+  var vc = document.getElementById('visCount');
+  if (!vc) return;
+  var vid = localStorage.getItem('mc_vid');
+  if (!vid) { vid = 'v' + Math.random().toString(36).substr(2,9); localStorage.setItem('mc_vid', vid); }
+  var visits = parseInt(localStorage.getItem('mc_visits') || '0', 10) + 1;
+  localStorage.setItem('mc_visits', visits);
+  vc.textContent = visits;
+})();
 
 /* INTRO */
 setTimeout(function() {
