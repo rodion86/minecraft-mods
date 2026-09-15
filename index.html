@@ -510,7 +510,7 @@ var CAT = {launcher:"Лаунчеры",loader:"Загрузчики модов",
 var curTab = "all";
 var curQ = "";
 
-var LANG = 'ru';
+var LANG = localStorage.getItem('mc_lang') === 'en' ? 'en' : 'ru';
 var I18N = {
   catalog:{ru:"Каталог",en:"Catalog"},
   nav_music:{ru:"Яндекс Музыка бесплатно",en:"Yandex Music free"},
@@ -792,6 +792,7 @@ function applyLang() {
 
 function toggleLang() {
   LANG = LANG === 'ru' ? 'en' : 'ru';
+  localStorage.setItem('mc_lang', LANG);
   applyLang();
   var btn = document.getElementById('langBtn');
   if (btn) btn.textContent = LANG === 'ru' ? 'EN' : 'RU';
