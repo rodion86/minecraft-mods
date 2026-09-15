@@ -1413,8 +1413,8 @@ drawParticles();
   if (!wrap) return;
   var tx = innerWidth / 2, ty = innerHeight / 2;
   var x = tx, y = ty;
-  var vx = 0, vy = 0;
-  var angle = -45;
+  var px = x, py = y;
+  var ang = 0, av = 0;
   var on = false;
   function show(){ if (!on){ on = true; wrap.classList.add('on'); } }
   document.addEventListener('mousemove', function(e){
@@ -1423,23 +1423,18 @@ drawParticles();
   });
   document.addEventListener('mouseleave', function(){ on = false; wrap.classList.remove('on'); });
   (function loop(){
-    var nx = x + (tx - x) * 0.28;
-    var ny = y + (ty - y) * 0.28;
-    vx = nx - x; vy = ny - y;
+    var nx = x + (tx - x) * 0.22;
+    var ny = y + (ty - y) * 0.22;
+    var vx = nx - px, vy = ny - py;
     x = nx; y = ny;
-    var v = Math.sqrt(vx * vx + vy * vy);
-    if (v > 0.08) {
-      var targetA = Math.atan2(vy, vx) * 180 / Math.PI + 90;
-      var d = targetA - angle;
-      while (d > 180) d -= 360;
-      while (d < -180) d += 360;
-      angle += d * 0.12;
-    } else {
-      angle += (0 - angle) * 0.06;
-    }
-    var wobble = Math.sin(performance.now() / 380) * 2.2;
-    var kick = Math.sin(performance.now() / 70) * 0.8 * Math.min(v, 12) / 12;
-    wrap.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) rotate(' + (angle + wobble + kick) + 'deg)';
+    px = nx; py = ny;
+    var drive = -vx * 0.05 - vy * 0.02;
+    av += -ang * 0.035 + drive;
+    av *= 0.9;
+    ang += av;
+    if (ang > 14) ang = 14;
+    if (ang < -14) ang = -14;
+    wrap.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) rotate(' + ang + 'deg)';
     requestAnimationFrame(loop);
   })();
 })();
