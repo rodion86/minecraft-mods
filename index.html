@@ -171,6 +171,12 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .visitor-count{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.7)}
 .visitor-label{font-size:.62rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.5px}
 
+/* CLOCK WIDGET */
+.clock{position:fixed;top:170px;left:20px;z-index:100;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);backdrop-filter:blur(20px);opacity:0;animation:fadeUp .6s ease forwards;animation-delay:1.15s}
+.clock-icon{font-size:.9rem;opacity:.5;line-height:1}
+.clock-time{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:600;color:rgba(255,255,255,.85);letter-spacing:.5px}
+.clock-date{font-size:.6rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
 /* ACCOUNT MODAL */
 .modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(10px)}
 .modal.open{display:flex}
@@ -375,6 +381,14 @@ textarea.modal-input{resize:vertical;min-height:60px}
   <div>
     <div class="visitor-count" id="visCount">...</div>
     <div class="visitor-label" data-i18n="vis_label">онлайн</div>
+  </div>
+</div>
+
+<div class="clock">
+  <div class="clock-icon">🕒</div>
+  <div>
+    <div class="clock-time" id="clockTime">--:--</div>
+    <div class="clock-date" id="clockDate"></div>
   </div>
 </div>
 
@@ -1080,6 +1094,26 @@ applyLang();
   var visits = parseInt(localStorage.getItem('mc_visits') || '0', 10) + 1;
   localStorage.setItem('mc_visits', visits);
   vc.textContent = Math.floor(Math.random() * 4) + 2;
+})();
+
+/* CLOCK */
+(function(){
+  var timeEl = document.getElementById('clockTime');
+  var dateEl = document.getElementById('clockDate');
+  if (!timeEl) return;
+  var MS = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  var WD = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+  function tick() {
+    var d = new Date();
+    var h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
+    var hh = (h < 10 ? '0' : '') + h;
+    var mm = (m < 10 ? '0' : '') + m;
+    var ss = (s < 10 ? '0' : '') + s;
+    timeEl.textContent = hh + ':' + mm + ':' + ss;
+    dateEl.textContent = d.getDate() + ' ' + MS[d.getMonth()] + ' · ' + WD[d.getDay()];
+  }
+  tick();
+  setInterval(tick, 1000);
 })();
 
 /* INTRO */
