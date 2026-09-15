@@ -1186,21 +1186,16 @@ applyLang();
   var lastTs = parseInt(localStorage.getItem('mc_online_ts') || '0', 10);
   var now = Date.now();
 
-  function pickNext(cur) {
-    if (cur === undefined || isNaN(cur)) return Math.floor(Math.random() * 51) + 50;
-    var delta = Math.floor(Math.random() * 21) - 10;
-    var n = cur + delta;
-    if (n < 50) n = 50;
-    if (n > 100) n = 100;
-    return n;
+  function pickNext() {
+    return Math.floor(Math.random() * 2462) + 1;
   }
 
   if (isNaN(curOnline)) {
-    curOnline = pickNext(undefined);
+    curOnline = pickNext();
     localStorage.setItem('mc_online', curOnline);
     localStorage.setItem('mc_online_ts', now);
-  } else if (now - lastTs >= 600000) {
-    curOnline = pickNext(curOnline);
+  } else if (now - lastTs >= 240000) {
+    curOnline = pickNext();
     localStorage.setItem('mc_online', curOnline);
     localStorage.setItem('mc_online_ts', now);
   }
@@ -1208,8 +1203,8 @@ applyLang();
   vc.textContent = curOnline;
   setInterval(function() {
     var t = Date.now();
-    if (t - parseInt(localStorage.getItem('mc_online_ts') || '0', 10) >= 600000) {
-      curOnline = pickNext(curOnline);
+    if (t - parseInt(localStorage.getItem('mc_online_ts') || '0', 10) >= 240000) {
+      curOnline = pickNext();
       localStorage.setItem('mc_online', curOnline);
       localStorage.setItem('mc_online_ts', t);
       vc.textContent = curOnline;
