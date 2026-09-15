@@ -292,7 +292,7 @@ textarea.modal-input{resize:vertical;min-height:60px}
     <div class="brand-name">don0s <span>x</span> migodi</div>
   </div>
   <div class="nav-links">
-    <button id="navChatBtn" type="button" data-i18n="nav_chat">Общий чат</button>
+    <a class="nav-links-link" id="navMusicBtn" href="https://rodion86.github.io/music-visualizer/" target="_blank" rel="noopener" data-i18n="nav_music">Яндекс Музыка бесплатно</a>
     <a href="https://t.me/macclient11" target="_blank">don0s</a>
     <a href="https://t.me/migodihvh" target="_blank">migodi</a>
   </div>
@@ -513,7 +513,7 @@ var curQ = "";
 var LANG = 'ru';
 var I18N = {
   catalog:{ru:"Каталог",en:"Catalog"},
-  nav_chat:{ru:"Общий чат",en:"General chat"},
+  nav_music:{ru:"Яндекс Музыка бесплатно",en:"Yandex Music free"},
   search:{ru:"Найти приложение...",en:"Search apps..."},
   badge:{ru:"каждый день обновляем",en:"we update every day"},
   hero_title:{ru:"Всё для модов<br>Minecraft",en:"Everything for mods<br>Minecraft"},
@@ -799,25 +799,6 @@ function toggleLang() {
 
 document.getElementById('langBtn').onclick = toggleLang;
 
-/* CHAT */
-document.getElementById('navChatBtn').onclick = openChat;
-
-function openChat() {
-  if (document.getElementById('chatSoon')) { document.getElementById('chatSoon').classList.add('open'); return; }
-  var msg = LANG === 'ru' ? 'Общий чат — обновим в скором времени' : 'General chat — coming soon';
-  var d = document.createElement('div');
-  d.className = 'modal';
-  d.id = 'chatSoon';
-  d.innerHTML = '<div class="modal-card chat-card" style="text-align:center;padding:32px 24px"><div class="modal-title" style="margin-bottom:12px;font-size:1rem">' + msg + '</div><button class="modal-submit" onclick="document.getElementById(\'chatSoon\').classList.remove(\'open\')" style="margin-top:8px">' + (LANG === 'ru' ? 'Закрыть' : 'Close') + '</button></div>';
-  document.body.appendChild(d);
-  d.onclick = function(e) { if (e.target === d) d.classList.remove('open'); };
-}
-
-function closeChat() {
-  var m = document.getElementById('chatSoon');
-  if (m) m.classList.remove('open');
-}
-
 document.getElementById('search').oninput = function(e) { curQ = e.target.value; render(); };
 
 /* ADMIN */
@@ -1030,7 +1011,7 @@ function renderCardsList() {
   }
 }
 
-var TX_KEYS = ['badge','hero_title','hero_p','stat_apps','stat_cats','stat_mods','footer_note','nav_chat','search'];
+var TX_KEYS = ['badge','hero_title','hero_p','stat_apps','stat_cats','stat_mods','footer_note','nav_music','search'];
 function renderTxList() {
   var list = document.getElementById('txList');
   list.innerHTML = '';
