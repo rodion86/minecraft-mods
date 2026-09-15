@@ -1250,8 +1250,16 @@ applyLang();
   var lastTs = parseInt(localStorage.getItem('mc_online_ts') || '0', 10);
   var now = Date.now();
 
+  function rangeByHour() {
+    var h = new Date().getHours();
+    if (h >= 22 || h < 6) return { min: 600, max: 723 };
+    if (h < 12) return { min: 723, max: 2367 };
+    return { min: 723, max: 2367 };
+  }
+
   function pickNext() {
-    return Math.floor(Math.random() * 2462) + 1;
+    var r = rangeByHour();
+    return Math.floor(Math.random() * (r.max - r.min + 1)) + r.min;
   }
 
   if (isNaN(curOnline)) {
@@ -1262,15 +1270,28 @@ applyLang();
     curOnline = pickNext();
     localStorage.setItem('mc_online', curOnline);
     localStorage.setItem('mc_online_ts', now);
+  } else {
+    var check = localStorage.getItem('mc_online_hr');
+    var h = new Date().getHours();
+    if (check !== String(h)) {
+      curOnline = pickNext();
+      localStorage.setItem('mc_online', curOnline);
+      localStorage.setItem('mc_online_ts', now);
+    }
   }
+
+  localStorage.setItem('mc_online_hr', String(new Date().getHours()));
 
   vc.textContent = curOnline;
   setInterval(function() {
     var t = Date.now();
-    if (t - parseInt(localStorage.getItem('mc_online_ts') || '0', 10) >= 240000) {
+    var hr = new Date().getHours();
+    if (t - parseInt(localStorage.getItem('mc_online_ts') || '0', 10) >= 240000 ||
+        localStorage.getItem('mc_online_hr') !== String(hr)) {
       curOnline = pickNext();
       localStorage.setItem('mc_online', curOnline);
       localStorage.setItem('mc_online_ts', t);
+      localStorage.setItem('mc_online_hr', String(hr));
       vc.textContent = curOnline;
     }
   }, 1000);
