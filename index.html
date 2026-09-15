@@ -1093,7 +1093,26 @@ applyLang();
   if (!vid) { vid = 'v' + Math.random().toString(36).substr(2,9); localStorage.setItem('mc_vid', vid); }
   var visits = parseInt(localStorage.getItem('mc_visits') || '0', 10) + 1;
   localStorage.setItem('mc_visits', visits);
-  vc.textContent = Math.floor(Math.random() * 4) + 2;
+
+  function randOnline(cur) {
+    var base;
+    if (cur === undefined || isNaN(cur)) {
+      base = Math.floor(Math.random() * 51) + 50;
+    } else {
+      var delta = Math.floor(Math.random() * 21) - 10;
+      base = cur + delta;
+      if (base < 50) base = 50;
+      if (base > 100) base = 100;
+    }
+    return base;
+  }
+
+  var curOnline = randOnline(undefined);
+  vc.textContent = curOnline;
+  setInterval(function() {
+    curOnline = randOnline(curOnline);
+    vc.textContent = curOnline;
+  }, 600000);
 })();
 
 /* CLOCK */
