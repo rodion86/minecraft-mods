@@ -177,6 +177,10 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .clock-time{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:600;color:rgba(255,255,255,.85);letter-spacing:.5px}
 .clock-date{font-size:.6rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
 
+/* PLAYEROK BUTTON */
+.playerok-btn{position:fixed;top:240px;left:20px;z-index:100;display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.75);font-size:.72rem;font-weight:700;text-decoration:none;backdrop-filter:blur(20px);cursor:pointer;transition:all .25s;opacity:0;animation:fadeUp .6s ease forwards;animation-delay:1.3s}
+.playerok-btn:hover{color:#000;background:var(--ac);border-color:var(--ac)}
+
 /* ACCOUNT MODAL */
 .modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(10px)}
 .modal.open{display:flex}
@@ -391,6 +395,8 @@ textarea.modal-input{resize:vertical;min-height:60px}
     <div class="clock-date" id="clockDate"></div>
   </div>
 </div>
+
+<a class="playerok-btn" href="https://playerok.com/profile/bySandy01/products" target="_blank" rel="noopener">💎 Хочешь такой же сайт?</a>
 
 <footer>
   <div class="footer-brand">don0s <span>x</span> migodi</div>
