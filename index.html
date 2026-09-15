@@ -54,8 +54,18 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0
 .brand-name{font-size:.9rem;font-weight:700}
 .brand-name span{opacity:.35}
 .nav-links{display:flex;gap:24px}
-.nav-links a,.nav-links button{font-size:.78rem;font-weight:500;color:rgba(255,255,255,.35);text-decoration:none;transition:color .2s;background:none;border:none;padding:0;cursor:pointer;font-family:'Space Grotesk',sans-serif}
-.nav-links a:hover,.nav-links button:hover{color:var(--ac)}
+.nav-links a,.nav-links button{position:relative;font-size:.78rem;font-weight:500;color:rgba(255,255,255,.35);text-decoration:none;transition:color .45s cubic-bezier(.34,1.56,.64,1);background:none;border:none;padding:0;cursor:pointer;font-family:'Space Grotesk',sans-serif;will-change:color}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:-5px;width:100%;height:2px;border-radius:2px;background:var(--ac);transform:scaleX(0);transform-origin:left;transition:transform .55s cubic-bezier(.34,1.56,.64,1)}
+.nav-links a:hover{color:var(--ac)}
+.nav-links a:hover::after{transform:scaleX(1)}
+
+/* BURGER */
+.nav-burger{display:none;width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;z-index:3000;position:relative;padding:0}
+.nav-burger span{display:block;width:18px;height:2px;border-radius:2px;background:rgba(255,255,255,.85);transition:transform .5s cubic-bezier(.34,1.56,.64,1),opacity .3s,background .3s;will-change:transform}
+.nav-burger.open span{background:var(--ac)}
+.nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-burger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 .lang-btn{padding:8px 14px;border-radius:10px;background:transparent;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.12);font-size:.75rem;font-weight:700;cursor:pointer;transition:all .25s;font-family:inherit}
 .lang-btn:hover{color:#000;background:var(--ac);border-color:var(--ac)}
 
@@ -220,12 +230,24 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .lang-sub{border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.35);font-size:.65rem;padding:4px 10px}
 .lang-sub:hover{color:#000;background:var(--ac);border-color:var(--ac)}
 
+/* MOBILE SHEET */
+.mnav-overlay{position:fixed;inset:0;z-index:5000;display:none}
+.mnav-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);opacity:0;transition:opacity .5s cubic-bezier(.32,.72,0,1)}
+.mnav-sheet{position:absolute;right:0;top:0;bottom:0;width:min(320px,86%);background:rgba(18,18,20,.97);backdrop-filter:blur(40px);border-left:1px solid rgba(255,255,255,.08);box-shadow:-40px 0 80px rgba(0,0,0,.5);transform:translateX(105%);transition:transform .6s cubic-bezier(.32,.72,0,1);display:flex;flex-direction:column;padding:28px;padding-top:76px;gap:6px;will-change:transform;overflow-y:auto}
+.mnav-link{font-size:1.02rem;font-weight:600;padding:15px 16px;border-radius:14px;color:rgba(255,255,255,.85);text-decoration:none;display:flex;align-items:center;gap:11px;transition:background .4s cubic-bezier(.34,1.56,.64,1),transform .4s cubic-bezier(.34,1.56,.64,1),color .3s;will-change:transform,background;-webkit-tap-highlight-color:transparent}
+.mnav-link:hover{background:rgba(255,255,255,.06);color:var(--ac)}
+.mnav-link:active{transform:scale(.96)}
+.mnav-label{font-size:.62rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1.5px;margin:14px 16px 4px;font-weight:600}
+.mnav-overlay.open{display:block}
+.mnav-overlay.open .mnav-backdrop{opacity:1}
+.mnav-overlay.open .mnav-sheet{transform:translateX(0)}
+
 /* LANGUAGE FAB */
 .lang-fab{position:fixed;top:150px;left:20px;z-index:100;padding:8px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-size:.75rem;font-weight:700;cursor:pointer;transition:all .25s;backdrop-filter:blur(20px);font-family:inherit;opacity:0;animation:fadeUp .6s ease forwards;animation-delay:1.1s;text-align:center}
 .lang-fab:hover{color:#000;background:var(--ac);border-color:var(--ac)}
 
 @media(max-width:900px){.bento{grid-template-columns:repeat(2,1fr)}.card.gold{grid-column:span 2}}
-@media(max-width:640px){nav{flex-wrap:wrap;gap:12px}.nav-links{display:none}.hero{padding:60px 0 24px}.bento{grid-template-columns:1fr}.card.gold{grid-column:span 1;flex-direction:column;align-items:center;text-align:center;padding:24px}.gold-right{width:100%}.stats{grid-template-columns:1fr}}
+@media(max-width:640px){nav{flex-wrap:wrap;gap:12px}.nav-links{display:none}.nav-burger{display:flex;margin-left:auto}.nav-yt{font-size:0}.nav-yt svg{width:20px;height:20px}.hero{padding:60px 0 24px}.bento{grid-template-columns:1fr}.card.gold{grid-column:span 1;flex-direction:column;align-items:center;text-align:center;padding:24px}.gold-right{width:100%}.stats{grid-template-columns:1fr}}
 
 /* ADMIN */
 .admin-fab{display:none;position:fixed;bottom:16px;right:16px;z-index:300;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.55);font-size:1.15rem;cursor:pointer;transition:all .25s;backdrop-filter:blur(10px);align-items:center;justify-content:center;opacity:0;animation:fadeUp .6s ease forwards;animation-delay:1.4s}
@@ -342,7 +364,23 @@ textarea.modal-input{resize:vertical;min-height:60px}
   </a>
   <button class="lang-btn lang-sub" id="langBtn" type="button">EN</button>
 </div>
+  <button class="nav-burger" id="navBurger" type="button" aria-label="Меню">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="mnav-overlay" id="mnavOverlay">
+  <div class="mnav-backdrop" id="mnavBackdrop"></div>
+  <div class="mnav-sheet">
+    <div class="mnav-label">меню</div>
+    <a class="mnav-link" href="https://rodion86.github.io/music-visualizer/" target="_blank" rel="noopener">🎵 Яндекс Музыка бесплатно</a>
+    <a class="mnav-link" href="https://t.me/macclient11" target="_blank">✈️ don0s</a>
+    <a class="mnav-link" href="https://t.me/migodihvh" target="_blank">✈️ migodi</a>
+    <div class="mnav-label">ссылки</div>
+    <a class="mnav-link" href="https://www.youtube.com/@d0no0s-l7r" target="_blank" rel="noopener">▶️ YouTube</a>
+    <a class="mnav-link" href="https://playerok.com/profile/bySandy01/products" target="_blank" rel="noopener">💎 PlayerOk</a>
+  </div>
+</div>
 
 <section class="hero" id="catalog">
   <div class="badge" data-i18n="badge">каждый день обновляем</div>
@@ -1131,6 +1169,32 @@ var FIREBASE_CONFIG = null;
 adminInitFirebase(FIREBASE_CONFIG);
 
 applyLang();
+
+/* BURGER MENU */
+(function(){
+  var burger = document.getElementById('navBurger');
+  var overlay = document.getElementById('mnavOverlay');
+  var backdrop = document.getElementById('mnavBackdrop');
+  if (!burger || !overlay) return;
+  burger.onclick = function() {
+    var open = overlay.classList.contains('open');
+    overlay.classList.toggle('open');
+    burger.classList.toggle('open');
+    document.body.style.overflow = open ? '' : 'hidden';
+  };
+  backdrop.onclick = function() {
+    overlay.classList.remove('open');
+    burger.classList.remove('open');
+    document.body.style.overflow = '';
+  };
+  overlay.querySelectorAll('.mnav-link').forEach(function(link) {
+    link.onclick = function() {
+      overlay.classList.remove('open');
+      burger.classList.remove('open');
+      document.body.style.overflow = '';
+    };
+  });
+})();
 
 /* CAPTCHA */
 (function(){
