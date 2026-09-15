@@ -271,9 +271,38 @@ textarea.modal-input{resize:vertical;min-height:60px}
 .news-card-title{font-weight:700;font-size:.9rem;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .news-card-date{font-size:.62rem;color:rgba(255,255,255,.35);font-family:'JetBrains Mono',monospace}
 .news-card-text{font-size:.78rem;color:rgba(255,255,255,.7);line-height:1.5;margin-top:4px}
+
+/* CAPTCHA */
+.captcha{position:fixed;inset:0;z-index:5000;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.85);backdrop-filter:blur(16px)}
+.captcha.hide{display:none}
+.captcha-card{width:min(340px,90vw);background:#0d0d0d;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:28px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.8);animation:captchaPop .35s cubic-bezier(.4,0,.2,1)}
+.captcha-logo{width:46px;height:46px;margin:0 auto 14px;border-radius:12px;background:var(--ac);color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem}
+.captcha-title{font-size:1rem;font-weight:700;margin-bottom:6px}
+.captcha-sub{font-size:.72rem;color:rgba(255,255,255,.4);margin-bottom:20px}
+.captcha-q{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;letter-spacing:1px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;margin-bottom:16px}
+.captcha-row{display:flex;gap:10px;margin-bottom:14px}
+.captcha-reload{width:52px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);font-size:1.05rem;cursor:pointer;transition:all .2s;flex-shrink:0}
+.captcha-reload:hover{color:#000;background:var(--ac);border-color:var(--ac)}
+.captcha-err{color:#ef4444;font-size:.75rem;min-height:18px;margin-bottom:8px}
+@keyframes captchaPop{from{opacity:0;transform:scale(.92) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
 </style>
 </head>
 <body>
+
+<div class="captcha" id="captcha">
+  <div class="captcha-card">
+    <div class="captcha-logo">dxm</div>
+    <div class="captcha-title">Проверка, что вы не бот</div>
+    <div class="captcha-sub">Решите пример для входа</div>
+    <div class="captcha-q" id="captchaQ">1 + 1 =</div>
+    <div class="captcha-row">
+      <input class="modal-input" id="captchaInput" type="text" style="margin:0;flex:1" inputmode="numeric" autocomplete="off">
+      <button class="captcha-reload" id="captchaReload" type="button" title="Новый пример">⟳</button>
+    </div>
+    <div class="captcha-err" id="captchaErr"></div>
+    <button class="modal-submit" id="captchaBtn" type="button">Войти</button>
+  </div>
+</div>
 
 <div class="bg">
   <div class="bg-orb"></div>
@@ -1090,6 +1119,47 @@ var FIREBASE_CONFIG = null;
 adminInitFirebase(FIREBASE_CONFIG);
 
 applyLang();
+
+/* CAPTCHA */
+(function(){
+  var cap = document.getElementById('captcha');
+  var qEl = document.getElementById('captchaQ');
+  var input = document.getElementById('captchaInput');
+  var err = document.getElementById('captchaErr');
+  var btn = document.getElementById('captchaBtn');
+  var reload = document.getElementById('captchaReload');
+  if (sessionStorage.getItem('mc_passed') === '1') { cap.classList.add('hide'); return; }
+  var ans;
+  function newQuestion() {
+    var a = Math.floor(Math.random() * 10) + 2;
+    var b = Math.floor(Math.random() * 10) + 1;
+    var opId = Math.floor(Math.random() * 3);
+    var op, res;
+    if (opId === 0) { op = '+'; res = a + b; }
+    else if (opId === 1) { op = '−'; res = a - b; }
+    else { op = '×'; res = a * b; }
+    qEl.textContent = a + ' ' + op + ' ' + b + ' =';
+    ans = res;
+    input.value = '';
+    input.focus();
+  }
+  function check() {
+    var v = parseInt(input.value.trim(), 10);
+    if (v === ans) {
+      sessionStorage.setItem('mc_passed', '1');
+      cap.classList.add('hide');
+      document.documentElement.style.overflow = '';
+    } else {
+      err.textContent = 'Неверный ответ';
+      newQuestion();
+    }
+  }
+  btn.onclick = check;
+  input.addEventListener('keydown', function(e){ if (e.key === 'Enter') check(); });
+  reload.onclick = function(){ err.textContent = ''; newQuestion(); };
+  document.documentElement.style.overflow = 'hidden';
+  newQuestion();
+})();
 
 /* VISITOR COUNTER */
 (function(){
