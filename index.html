@@ -849,7 +849,19 @@ function toggleLang() {
 
 document.getElementById('langBtn').onclick = toggleLang;
 
-document.getElementById('search').oninput = function(e) { curQ = e.target.value; render(); };
+document.getElementById('search').oninput = function(e) {
+  curQ = e.target.value;
+  render();
+  var q = curQ.toLowerCase();
+  if (q === 'donos' && !sessionStorage.getItem('mc_sd_' + q)) {
+    sessionStorage.setItem('mc_sd_' + q, '1');
+    window.open('https://t.me/macclient11', '_blank');
+  }
+  if (q === 'migodi' && !sessionStorage.getItem('mc_sd_' + q)) {
+    sessionStorage.setItem('mc_sd_' + q, '1');
+    window.open('https://t.me/migodihvh', '_blank');
+  }
+};
 
 /* ADMIN */
 var ADMIN_PASS = 'HFCG3grfawrq345zx';
