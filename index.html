@@ -1415,6 +1415,7 @@ drawParticles();
   var x = tx, y = ty;
   var px = x, py = y;
   var ang = 0, av = 0;
+  var strikeT = -9999;
   var on = false;
   function show(){ if (!on){ on = true; wrap.classList.add('on'); } }
   document.addEventListener('mousemove', function(e){
@@ -1422,7 +1423,12 @@ drawParticles();
     show();
   });
   document.addEventListener('mouseleave', function(){ on = false; wrap.classList.remove('on'); });
+  document.addEventListener('mousedown', function(e){
+    if (e.which !== 1 && e.changedTouches === undefined) return;
+    strikeT = performance.now();
+  });
   (function loop(){
+    var now = performance.now();
     var nx = x + (tx - x) * 0.22;
     var ny = y + (ty - y) * 0.22;
     var vx = nx - px, vy = ny - py;
@@ -1434,7 +1440,15 @@ drawParticles();
     ang += av;
     if (ang > 14) ang = 14;
     if (ang < -14) ang = -14;
-    wrap.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) rotate(' + ang + 'deg)';
+
+    var slash = 0;
+    var st = now - strikeT;
+    if (st >= 0 && st < 260) {
+      var q = st / 260;
+      slash = Math.sin(q * Math.PI) * 30;
+    }
+
+    wrap.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) rotate(' + (ang + slash) + 'deg)';
     requestAnimationFrame(loop);
   })();
 })();
