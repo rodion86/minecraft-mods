@@ -309,7 +309,11 @@ textarea.modal-input{resize:vertical;min-height:60px}
 @keyframes captchaPop{from{opacity:0;transform:scale(.92) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
 
 /* MINECRAFT CURSOR */
-html,body,body *{cursor:url('netherite-sword.svg') 7 7,auto !important}
+html,body,body *{cursor:none !important}
+#katanaCursor{position:fixed;top:0;left:0;z-index:99999;pointer-events:none;opacity:0;transition:opacity .35s;will-change:transform}
+#katanaCursor img{width:36px;height:36px;display:block;transform:translate(-6px,-6px);transform-origin:center;image-rendering:auto;will-change:transform}
+#katanaCursor.on{opacity:1}
+@media(hover:none){#katanaCursor{display:none}}
 </style>
 </head>
 <body>
@@ -556,6 +560,9 @@ html,body,body *{cursor:url('netherite-sword.svg') 7 7,auto !important}
     </div>
   </div>
 </div>
+
+
+<div id="katanaCursor"><img src="netherite-sword.svg" alt="" draggable="false"></div>
 
 <script>
 var DB = [
@@ -1399,6 +1406,43 @@ function drawParticles(){
   requestAnimationFrame(drawParticles);
 }
 drawParticles();
+
+/* SWORD CURSOR */
+(function(){
+  var wrap = document.getElementById('katanaCursor');
+  if (!wrap) return;
+  var tx = innerWidth / 2, ty = innerHeight / 2;
+  var x = tx, y = ty;
+  var vx = 0, vy = 0;
+  var angle = -45;
+  var on = false;
+  function show(){ if (!on){ on = true; wrap.classList.add('on'); } }
+  document.addEventListener('mousemove', function(e){
+    tx = e.clientX; ty = e.clientY;
+    show();
+  });
+  document.addEventListener('mouseleave', function(){ on = false; wrap.classList.remove('on'); });
+  (function loop(){
+    var nx = x + (tx - x) * 0.28;
+    var ny = y + (ty - y) * 0.28;
+    vx = nx - x; vy = ny - y;
+    x = nx; y = ny;
+    var v = Math.sqrt(vx * vx + vy * vy);
+    if (v > 0.08) {
+      var targetA = Math.atan2(vy, vx) * 180 / Math.PI + 90;
+      var d = targetA - angle;
+      while (d > 180) d -= 360;
+      while (d < -180) d += 360;
+      angle += d * 0.12;
+    } else {
+      angle += (0 - angle) * 0.06;
+    }
+    var wobble = Math.sin(performance.now() / 380) * 2.2;
+    var kick = Math.sin(performance.now() / 70) * 0.8 * Math.min(v, 12) / 12;
+    wrap.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) rotate(' + (angle + wobble + kick) + 'deg)';
+    requestAnimationFrame(loop);
+  })();
+})();
 </script>
 </body>
 </html>
