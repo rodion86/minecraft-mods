@@ -1094,25 +1094,39 @@ applyLang();
   var visits = parseInt(localStorage.getItem('mc_visits') || '0', 10) + 1;
   localStorage.setItem('mc_visits', visits);
 
-  function randOnline(cur) {
-    var base;
-    if (cur === undefined || isNaN(cur)) {
-      base = Math.floor(Math.random() * 51) + 50;
-    } else {
-      var delta = Math.floor(Math.random() * 21) - 10;
-      base = cur + delta;
-      if (base < 50) base = 50;
-      if (base > 100) base = 100;
-    }
-    return base;
+  var curOnline = parseInt(localStorage.getItem('mc_online') || '', 10);
+  var lastTs = parseInt(localStorage.getItem('mc_online_ts') || '0', 10);
+  var now = Date.now();
+
+  function pickNext(cur) {
+    if (cur === undefined || isNaN(cur)) return Math.floor(Math.random() * 51) + 50;
+    var delta = Math.floor(Math.random() * 21) - 10;
+    var n = cur + delta;
+    if (n < 50) n = 50;
+    if (n > 100) n = 100;
+    return n;
   }
 
-  var curOnline = randOnline(undefined);
+  if (isNaN(curOnline)) {
+    curOnline = pickNext(undefined);
+    localStorage.setItem('mc_online', curOnline);
+    localStorage.setItem('mc_online_ts', now);
+  } else if (now - lastTs >= 600000) {
+    curOnline = pickNext(curOnline);
+    localStorage.setItem('mc_online', curOnline);
+    localStorage.setItem('mc_online_ts', now);
+  }
+
   vc.textContent = curOnline;
   setInterval(function() {
-    curOnline = randOnline(curOnline);
-    vc.textContent = curOnline;
-  }, 600000);
+    var t = Date.now();
+    if (t - parseInt(localStorage.getItem('mc_online_ts') || '0', 10) >= 600000) {
+      curOnline = pickNext(curOnline);
+      localStorage.setItem('mc_online', curOnline);
+      localStorage.setItem('mc_online_ts', t);
+      vc.textContent = curOnline;
+    }
+  }, 1000);
 })();
 
 /* CLOCK */
