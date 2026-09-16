@@ -402,6 +402,7 @@ html,body,body *{cursor:none !important}
     <a class="nav-links-link" id="navMusicBtn" href="https://rodion86.github.io/music-visualizer/" target="_blank" rel="noopener" data-i18n="nav_music">Яндекс Музыка бесплатно</a>
     <a href="https://t.me/macclient11" target="_blank">don0s</a>
     <a href="https://t.me/migodihvh" target="_blank">migodi</a>
+    <button class="nav-links-link" id="navChatBtn" type="button" data-i18n="nav_secret">Секретный чат</button>
   </div>
   <div class="nav-actions" id="navActions">
   <a class="lang-btn nav-yt" href="https://www.youtube.com/@d0no0s-l7r" target="_blank" rel="noopener">
@@ -600,6 +601,21 @@ html,body,body *{cursor:none !important}
   </div>
 </div>
 
+<div class="modal" id="chatModal">
+  <div class="modal-card chat-card">
+    <div class="modal-head">
+      <div class="modal-title" data-i18n="chat_title">Секретный чат</div>
+      <button class="modal-close" id="chatClose" type="button">✕</button>
+    </div>
+    <div class="chat-status" id="chatStatus">...</div>
+    <div class="chat-list" id="chatList"></div>
+    <div class="chat-input-row">
+      <input class="modal-input chat-input" id="chatMsg" type="text" placeholder="Сообщение...">
+      <button class="modal-submit chat-send" id="chatSend" type="button">➤</button>
+    </div>
+  </div>
+</div>
+
 
 <div id="katanaCursor"><img src="netherite-sword.svg?v=2" alt="" draggable="false"></div>
 
@@ -651,6 +667,7 @@ var LANG = localStorage.getItem('mc_lang') === 'en' ? 'en' : 'ru';
 var I18N = {
   catalog:{ru:"Каталог",en:"Catalog"},
   nav_music:{ru:"Яндекс Музыка бесплатно",en:"Yandex Music free"},
+  nav_secret:{ru:"Секретный чат",en:"Secret chat"},
   search:{ru:"Найти приложение...",en:"Search apps..."},
   badge:{ru:"каждый день обновляем",en:"we update every day"},
   hero_title:{ru:"Всё для модов<br>Minecraft",en:"Everything for mods<br>Minecraft"},
@@ -1162,7 +1179,7 @@ function renderCardsList() {
   }
 }
 
-var TX_KEYS = ['badge','hero_title','hero_p','stat_apps','stat_cats','stat_mods','footer_note','nav_music','search'];
+var TX_KEYS = ['badge','hero_title','hero_p','stat_apps','stat_cats','stat_mods','footer_note','nav_music','nav_secret','chat_title','search'];
 function renderTxList() {
   var list = document.getElementById('txList');
   list.innerHTML = '';
@@ -1220,6 +1237,85 @@ var FIREBASE_CONFIG = null;
 adminInitFirebase(FIREBASE_CONFIG);
 
 applyLang();
+
+/* SECRET CHAT */
+(function(){
+  var modal = document.getElementById('chatModal');
+  var list = document.getElementById('chatList');
+  var input = document.getElementById('chatMsg');
+  var statusEl = document.getElementById('chatStatus');
+  var openBtn = document.getElementById('navChatBtn');
+  if (!modal || !list || !input) return;
+  var KEY = 'mc_chat_v1';
+  var msgs = [];
+  try { msgs = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) { msgs = []; }
+  var nick = localStorage.getItem('mc_chat_nick');
+  if (!nick) { nick = 'Аноним ' + Math.floor(Math.random() * 900 + 100); localStorage.setItem('mc_chat_nick', nick); }
+  var fbRef = (FIREBASE_CONFIG && typeof firebase !== 'undefined' && firebase.database && firebase.database().ref) ? firebase.database().ref('chat') : null;
+
+  function render() {
+    if (!list) return;
+    list.innerHTML = '';
+    for (var i = 0; i < msgs.length; i++) {
+      var m = msgs[i];
+      var div = document.createElement('div');
+      div.className = 'chat-msg';
+      var own = m.n === nick;
+      div.style.justifyContent = own ? 'flex-end' : 'flex-start';
+      div.style.background = own ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.03)';
+      div.innerHTML = '<span class="chat-name">' + esc(m.n) + '</span><span class="chat-text">' + esc(m.t) + '</span><span class="chat-time">' + esc(m.ts) + '</span>';
+      list.appendChild(div);
+    }
+    list.scrollTop = list.scrollHeight;
+  }
+
+  function send() {
+    var v = input.value.trim();
+    if (!v) return;
+    var t = new Date();
+    var hh = (t.getHours() < 10 ? '0' : '') + t.getHours();
+    var mm = (t.getMinutes() < 10 ? '0' : '') + t.getMinutes();
+    var m = { n: nick, t: v, ts: hh + ':' + mm };
+    msgs.push(m);
+    if (msgs.length > 100) msgs = msgs.slice(-100);
+    try { localStorage.setItem(KEY, JSON.stringify(msgs)); } catch(e) {}
+    input.value = '';
+    render();
+    if (fbRef) { fbRef.push(m); }
+  }
+
+  function open() {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    render();
+    setTimeout(function(){ if (input && window.innerWidth > 640) input.focus(); }, 100);
+  }
+  function close() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  if (openBtn) openBtn.onclick = open;
+  document.getElementById('chatClose').onclick = close;
+  document.getElementById('chatSend').onclick = send;
+  input.addEventListener('keydown', function(e){ if (e.key === 'Enter') send(); });
+  modal.addEventListener('click', function(e){ if (e.target === modal) close(); });
+
+  if (statusEl) statusEl.textContent = fbRef ? '● онлайн' : '● секретный чат';
+
+  if (fbRef) {
+    fbRef.limitToLast(50).on('child_added', function(snap) {
+      var m = snap.val();
+      if (!m || m.n === nick) return;
+      msgs.push(m);
+      if (msgs.length > 100) msgs = msgs.slice(-100);
+      render();
+    });
+  }
+
+  var mnavBtn = document.querySelector('.mnav-link[data-chat]');
+  if (mnavBtn) mnavBtn.onclick = function(e){ e.preventDefault(); close(); open(); };
+})();
 
 /* BURGER MENU */
 (function(){
