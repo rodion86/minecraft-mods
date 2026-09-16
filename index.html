@@ -1247,9 +1247,12 @@ applyLang();
   var list = document.getElementById('chatList');
   var input = document.getElementById('chatMsg');
   var statusEl = document.getElementById('chatStatus');
+  var sendBtn = document.getElementById('chatSend');
   var openBtn = document.getElementById('navChatBtn');
   if (!modal || !list || !input) return;
   var KEY = 'mc_chat_v1';
+  var CD = 2000;
+  var lastSent = 0;
   var msgs = [];
   try { msgs = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) { msgs = []; }
   var nick = localStorage.getItem('mc_chat_nick');
@@ -1259,8 +1262,9 @@ applyLang();
   function render() {
     if (!list) return;
     list.innerHTML = '';
-    for (var i = 0; i < msgs.length; i++) {
-      var m = msgs[i];
+    var arr = msgs.slice(-60);
+    for (var i = 0; i < arr.length; i++) {
+      var m = arr[i];
       var div = document.createElement('div');
       div.className = 'chat-msg';
       var own = m.n === nick;
@@ -1272,13 +1276,31 @@ applyLang();
     list.scrollTop = list.scrollHeight;
   }
 
+  function lock() {
+    if (!sendBtn) return;
+    sendBtn.disabled = true;
+    sendBtn.style.opacity = '.45';
+    sendBtn.style.pointerEvents = 'none';
+  }
+  function unlock() {
+    if (!sendBtn) return;
+    sendBtn.disabled = false;
+    sendBtn.style.opacity = '';
+    sendBtn.style.pointerEvents = '';
+  }
+
   function send() {
     var v = input.value.trim();
     if (!v) return;
+    var now = Date.now();
+    if (sendBtn.disabled || now - lastSent < CD) return;
+    lastSent = now;
+    lock();
+    setTimeout(unlock, CD);
     var t = new Date();
     var hh = (t.getHours() < 10 ? '0' : '') + t.getHours();
     var mm = (t.getMinutes() < 10 ? '0' : '') + t.getMinutes();
-    var m = { n: nick, t: v, ts: hh + ':' + mm };
+    var m = { n: nick, t: v, ts: hh + ':' + mm, x: Date.now() };
     msgs.push(m);
     if (msgs.length > 100) msgs = msgs.slice(-100);
     try { localStorage.setItem(KEY, JSON.stringify(msgs)); } catch(e) {}
@@ -1300,16 +1322,17 @@ applyLang();
 
   if (openBtn) openBtn.onclick = open;
   document.getElementById('chatClose').onclick = close;
-  document.getElementById('chatSend').onclick = send;
+  if (sendBtn) sendBtn.onclick = send;
   input.addEventListener('keydown', function(e){ if (e.key === 'Enter') send(); });
   modal.addEventListener('click', function(e){ if (e.target === modal) close(); });
 
-  if (statusEl) statusEl.textContent = fbRef ? '● онлайн' : '● секретный чат';
+  if (statusEl) statusEl.textContent = fbRef ? '● онлайн · кд 2 сек' : '● секретный чат · кд 2 сек';
 
   if (fbRef) {
-    fbRef.limitToLast(50).on('child_added', function(snap) {
+    fbRef.limitToLast(60).on('child_added', function(snap) {
       var m = snap.val();
-      if (!m || m.n === nick) return;
+      if (!m) return;
+      if (msgs.some(function(x){ return x.x === m.x; })) return;
       msgs.push(m);
       if (msgs.length > 100) msgs = msgs.slice(-100);
       render();
