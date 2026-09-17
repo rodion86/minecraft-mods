@@ -107,7 +107,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0
 .card{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:16px;padding:22px;position:relative;overflow:hidden;display:flex;flex-direction:column;transition:all .4s cubic-bezier(.4,0,.2,1);cursor:pointer;transform-style:preserve-3d;perspective:1000px;text-decoration:none;color:inherit}
 .card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.04),transparent 60%);opacity:0;transition:opacity .4s;pointer-events:none}
 .card::after{content:'';position:absolute;inset:-1px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,.08),transparent 50%);opacity:0;transition:opacity .4s;pointer-events:none;z-index:-1}
-.card:hover{border-color:rgba(255,255,255,.12);transform:translateY(-6px) rotateX(2deg);box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(255,255,255,.03)}
+.card:hover::after{opacity:1}
+.card:hover{border-color:rgba(255,255,255,.12);transform:translateY(-6px) rotateX(2deg);box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(255,255,255,.03);filter:contrast(1.35) saturate(1.35) brightness(1.06);transition:all .4s cubic-bezier(.4,0,.2,1),filter .35s ease}
 .card:hover::before{opacity:1}
 .card:hover::after{opacity:1}
 .card:active{transform:translateY(-2px) scale(.98);transition-duration:.1s}
