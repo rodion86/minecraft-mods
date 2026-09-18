@@ -492,7 +492,7 @@ html,body,body *{cursor:none !important}
 </div>
 
 <div class="section" id="sec-visual">
-  <div class="section-head"><div class="section-title" data-i18n="sec_visual_title">Визуалы</div><div class="section-desc" data-i18n="sec_visual_desc">Шейдеры, текстуры, моды для красивого вида</div></div>
+  <div class="section-head"><div class="section-title" data-i18n="sec_visual_title">Визуалы</div><div class="section-desc" data-i18n="sec_visual_desc">Косметика, скины, анимации для уникального вида</div></div>
   <div class="bento" id="grid-visual"></div>
   <div class="empty" id="empty-visual" data-i18n="empty">Ничего не найдено</div>
 </div>
@@ -671,9 +671,12 @@ var DB = [
   {name:"Zenith",icon:"ZN",platform:"1.21.4",cat:"cheat",tags:["PvP","Hack"],desc:"Чит-клиент Zenith для версии 1.21.4.",rating:4.8,link:"https://github.com/Nefq1/crackforminecraftnefq/releases/download/v1.0/ZenithDLC.rar"},
   {name:"Wexside",icon:"WS",platform:"1.21.11",cat:"cheat",tags:["PvP","Hack"],desc:"Чит-клиент Wexside для версии 1.21.11.",rating:4.8,link:"https://github.com/Nefq1/crackforminecraftnefq/releases/download/v1.0/wehside2408-1.21.11.zip"},
   {name:"SystemDLC",icon:"SD",platform:"1.21.4",cat:"cheat",tags:["PvP","Hack"],desc:"Чит-клиент SystemDLC для версии 1.21.4.",rating:4.8,link:"https://github.com/CollapseLoader/SystemDLC/releases/download/1.0.0/SystemClient.jar"},
-  {name:"Complementary Shaders",icon:"CS",platform:"1.21.4",cat:"visual",tags:["Шейдеры","Реализм"],desc:"Красивые шейдеры с реалистичным освещением и тенями.",rating:4.9,link:"https://www.complementary.dev/"},
-  {name:"BSL Shaders",icon:"BS",platform:"1.21.4",cat:"visual",tags:["Шейдеры","Яркий"],desc:"Популярные шейдеры с яркими цветами и сочными тенями.",rating:4.8,link:"https://bitslablab.com/bsl/"},
-  {name:"Sildur's Vibrant",icon:"SV",platform:"1.21.4",cat:"visual",tags:["Шейдеры","Производительность"],desc:"Шейдеры Sildur с балансом красоты и FPS.",rating:4.7,link:"https://sildurs-shaders.github.io/"}
+  {name:"Cosmetica",icon:"CT",platform:"1.21.4",cat:"visual",tags:["Косметика","Бесплатно"],desc:"Кастомные косметики: шляпы, крылья, ауры. Видят все игроки.",rating:4.7,link:"https://modrinth.com/mod/cosmetica"},
+  {name:"Not Enough Animations",icon:"NA",platform:"1.21.4",cat:"visual",tags:["Анимации","Косметика"],desc:"Лучшие анимации: придерживая предметы, лягушки на плече и многое другое.",rating:4.8,link:"https://modrinth.com/mod/not-enough-animations"},
+  {name:"First Person Model",icon:"FP",platform:"1.21.4",cat:"visual",tags:["Вид","Кастомизация"],desc:"Показывает твоё тело и скин от первого лица.",rating:4.8,link:"https://modrinth.com/mod/first-person-model"},
+  {name:"Better Third Person",icon:"BT",platform:"1.21.4",cat:"visual",tags:["Вид","Камера"],desc:"Улучшенный вид от третьего лица с покачиванием камеры.",rating:4.5,link:"https://modrinth.com/mod/better-third-person"},
+  {name:"Falling Leaves",icon:"FL",platform:"1.21.4",cat:"visual",tags:["Эффекты","Атмосфера"],desc:"Плавно падающие листья с деревьев. Красиво и атмосферно.",rating:4.7,link:"https://modrinth.com/mod/fallingleaves"},
+  {name:"Presence Footsteps",icon:"PF",platform:"1.21.4",cat:"visual",tags:["Звук","Вид"],desc:"Реалистичные звуки шагов по разным блокам.",rating:4.6,link:"https://modrinth.com/mod/presence-footsteps"}
 ];
 
 var CAT = {launcher:"Лаунчеры",loader:"Загрузчики модов",manager:"Менеджеры",builder:"Сборщики",tool:"Инструменты",cheat:"Читы",visual:"Визуалы"};
@@ -721,7 +724,7 @@ var I18N = {
   sec_cheat_title:{ru:"Читы",en:"Cheats"},
   sec_cheat_desc:{ru:"Клиенты, моды и утилиты для PvP",en:"Clients, mods and utilities for PvP"},
   sec_visual_title:{ru:"Визуалы",en:"Visuals"},
-  sec_visual_desc:{ru:"Шейдеры, текстуры, моды для красивого вида",en:"Shaders, textures and mods for a great look"}
+  sec_visual_desc:{ru:"Косметика, скины, анимации для уникального вида",en:"Cosmetics, skins and animations for a unique look"}
 };
 
 var TAG_EN = {
@@ -732,7 +735,9 @@ var TAG_EN = {
   "3D":"3D","Моделинг":"Modeling","FPS":"FPS","Шейдеры":"Shaders","Fabric":"Fabric","Hack":"Hack","Сервер":"Server",
   "Освещение":"Lighting","Создание":"Creation","Строительство":"Building","Плагин":"Plugin","Карта":"Map",
   "Миникарта":"Minimap","Бесплатно":"Free","Установка":"Install","FTB":"FTB","Overwolf":"Overwolf",
-  "Реализм":"Realistic","Яркий":"Vibrant","Производительность":"Performance","Шейдеры":"Shaders"
+  "Реализм":"Realistic","Яркий":"Vibrant","Производительность":"Performance",
+  "Косметика":"Cosmetics","Анимации":"Animations","Вид":"View","Кастомизация":"Customization",
+  "Камера":"Camera","Эффекты":"Effects","Атмосфера":"Atmosphere","Звук":"Sound"
 };
 
 var DB_EN = {
@@ -772,9 +777,12 @@ var DB_EN = {
   "Zenith":{desc:"Zenith cheat client for version 1.21.4.",tags:["PvP","Hack"]},
   "Wexside":{desc:"Wexside cheat client for version 1.21.11.",tags:["PvP","Hack"]},
   "SystemDLC":{desc:"SystemDLC cheat client for version 1.21.4.",tags:["PvP","Hack"]},
-  "Complementary Shaders":{desc:"Beautiful shaders with realistic lighting and shadows.",tags:["Shaders","Realistic"]},
-  "BSL Shaders":{desc:"Popular shaders with vivid colors and rich shadows.",tags:["Shaders","Vibrant"]},
-  "Sildur's Vibrant":{desc:"Sildur shaders balancing beauty and FPS.",tags:["Shaders","Performance"]}
+  "Cosmetica":{desc:"Custom cosmetics: hats, wings, auras. Visible to all players.",tags:["Cosmetics","Free"]},
+  "Not Enough Animations":{desc:"Better animations: holding items, frogs on shoulder and more.",tags:["Animations","Cosmetics"]},
+  "First Person Model":{desc:"Shows your body and skin in first person.",tags:["View","Customization"]},
+  "Better Third Person":{desc:"Improved third person view with camera sway.",tags:["View","Camera"]},
+  "Falling Leaves":{desc:"Gently falling leaves from trees. Pretty and atmospheric.",tags:["Effects","Atmosphere"]},
+  "Presence Footsteps":{desc:"Realistic footstep sounds on different blocks.",tags:["Sound","View"]}
 };
 
 function t(k) { var o = (admin && admin.texts && admin.texts[k]) ? admin.texts[k] : I18N[k]; return o ? o[LANG] : k; }
