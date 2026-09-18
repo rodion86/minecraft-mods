@@ -491,6 +491,12 @@ html,body,body *{cursor:none !important}
   <div class="empty" id="empty-cheat" data-i18n="empty">Ничего не найдено</div>
 </div>
 
+<div class="section" id="sec-visual">
+  <div class="section-head"><div class="section-title" data-i18n="sec_visual_title">Визуалы</div><div class="section-desc" data-i18n="sec_visual_desc">Шейдеры, текстуры, моды для красивого вида</div></div>
+  <div class="bento" id="grid-visual"></div>
+  <div class="empty" id="empty-visual" data-i18n="empty">Ничего не найдено</div>
+</div>
+
 <div class="stats">
   <div class="stat"><div class="stat-num">34+</div><div class="stat-label" data-i18n="stat_apps">приложений</div></div>
   <div class="stat"><div class="stat-num">7</div><div class="stat-label" data-i18n="stat_cats">категорий</div></div>
@@ -664,10 +670,13 @@ var DB = [
   {name:"Delta",icon:"DL",platform:"1.21.4",cat:"cheat",tags:["PvP","Hack"],desc:"Чит-клиент Delta FULL.FIX для версии 1.21.4.",rating:4.8,link:"https://github.com/Nefq1/crackforminecraftnefq/releases/download/v1.0/Delta.1.21.4.FULL.FIX.rar"},
   {name:"Zenith",icon:"ZN",platform:"1.21.4",cat:"cheat",tags:["PvP","Hack"],desc:"Чит-клиент Zenith для версии 1.21.4.",rating:4.8,link:"https://github.com/Nefq1/crackforminecraftnefq/releases/download/v1.0/ZenithDLC.rar"},
   {name:"Wexside",icon:"WS",platform:"1.21.11",cat:"cheat",tags:["PvP","Hack"],desc:"Чит-клиент Wexside для версии 1.21.11.",rating:4.8,link:"https://github.com/Nefq1/crackforminecraftnefq/releases/download/v1.0/wehside2408-1.21.11.zip"},
-  {name:"SystemDLC",icon:"SD",platform:"1.21.4",cat:"cheat",tags:["PvP","Hack"],desc:"Чит-клиент SystemDLC для версии 1.21.4.",rating:4.8,link:"https://github.com/CollapseLoader/SystemDLC/releases/download/1.0.0/SystemClient.jar"}
+  {name:"SystemDLC",icon:"SD",platform:"1.21.4",cat:"cheat",tags:["PvP","Hack"],desc:"Чит-клиент SystemDLC для версии 1.21.4.",rating:4.8,link:"https://github.com/CollapseLoader/SystemDLC/releases/download/1.0.0/SystemClient.jar"},
+  {name:"Complementary Shaders",icon:"CS",platform:"1.21.4",cat:"visual",tags:["Шейдеры","Реализм"],desc:"Красивые шейдеры с реалистичным освещением и тенями.",rating:4.9,link:"https://www.complementary.dev/"},
+  {name:"BSL Shaders",icon:"BS",platform:"1.21.4",cat:"visual",tags:["Шейдеры","Яркий"],desc:"Популярные шейдеры с яркими цветами и сочными тенями.",rating:4.8,link:"https://bitslablab.com/bsl/"},
+  {name:"Sildur's Vibrant",icon:"SV",platform:"1.21.4",cat:"visual",tags:["Шейдеры","Производительность"],desc:"Шейдеры Sildur с балансом красоты и FPS.",rating:4.7,link:"https://sildurs-shaders.github.io/"}
 ];
 
-var CAT = {launcher:"Лаунчеры",loader:"Загрузчики модов",manager:"Менеджеры",builder:"Сборщики",tool:"Инструменты",cheat:"Читы"};
+var CAT = {launcher:"Лаунчеры",loader:"Загрузчики модов",manager:"Менеджеры",builder:"Сборщики",tool:"Инструменты",cheat:"Читы",visual:"Визуалы"};
 var curTab = "all";
 var curQ = "";
 
@@ -696,6 +705,7 @@ var I18N = {
   cat_builder:{ru:"Сборщики",en:"Pack builders"},
   cat_tool:{ru:"Инструменты",en:"Tools"},
   cat_cheat:{ru:"Читы",en:"Cheats"},
+  cat_visual:{ru:"Визуалы",en:"Visuals"},
   sec_all_title:{ru:"Все приложения",en:"All apps"},
   sec_all_desc:{ru:"Полный каталог всего что есть",en:"The full catalog of everything we have"},
   sec_launcher_title:{ru:"Лаунчеры",en:"Launchers"},
@@ -709,7 +719,9 @@ var I18N = {
   sec_tool_title:{ru:"Инструменты",en:"Tools"},
   sec_tool_desc:{ru:"Оптимизация, шейдеры, производительность",en:"Optimization, shaders, performance"},
   sec_cheat_title:{ru:"Читы",en:"Cheats"},
-  sec_cheat_desc:{ru:"Клиенты, моды и утилиты для PvP",en:"Clients, mods and utilities for PvP"}
+  sec_cheat_desc:{ru:"Клиенты, моды и утилиты для PvP",en:"Clients, mods and utilities for PvP"},
+  sec_visual_title:{ru:"Визуалы",en:"Visuals"},
+  sec_visual_desc:{ru:"Шейдеры, текстуры, моды для красивого вида",en:"Shaders, textures and mods for a great look"}
 };
 
 var TAG_EN = {
@@ -719,7 +731,8 @@ var TAG_EN = {
   "Оптимизация":"Optimization","Моды":"Mods","Мобильный":"Mobile","Java":"Java","Пакеты":"Packs","CLI":"CLI",
   "3D":"3D","Моделинг":"Modeling","FPS":"FPS","Шейдеры":"Shaders","Fabric":"Fabric","Hack":"Hack","Сервер":"Server",
   "Освещение":"Lighting","Создание":"Creation","Строительство":"Building","Плагин":"Plugin","Карта":"Map",
-  "Миникарта":"Minimap","Бесплатно":"Free","Установка":"Install","FTB":"FTB","Overwolf":"Overwolf"
+  "Миникарта":"Minimap","Бесплатно":"Free","Установка":"Install","FTB":"FTB","Overwolf":"Overwolf",
+  "Реализм":"Realistic","Яркий":"Vibrant","Производительность":"Performance","Шейдеры":"Shaders"
 };
 
 var DB_EN = {
@@ -758,7 +771,10 @@ var DB_EN = {
   "Delta":{desc:"Delta FULL.FIX cheat client for version 1.21.4.",tags:["PvP","Hack"]},
   "Zenith":{desc:"Zenith cheat client for version 1.21.4.",tags:["PvP","Hack"]},
   "Wexside":{desc:"Wexside cheat client for version 1.21.11.",tags:["PvP","Hack"]},
-  "SystemDLC":{desc:"SystemDLC cheat client for version 1.21.4.",tags:["PvP","Hack"]}
+  "SystemDLC":{desc:"SystemDLC cheat client for version 1.21.4.",tags:["PvP","Hack"]},
+  "Complementary Shaders":{desc:"Beautiful shaders with realistic lighting and shadows.",tags:["Shaders","Realistic"]},
+  "BSL Shaders":{desc:"Popular shaders with vivid colors and rich shadows.",tags:["Shaders","Vibrant"]},
+  "Sildur's Vibrant":{desc:"Sildur shaders balancing beauty and FPS.",tags:["Shaders","Performance"]}
 };
 
 function t(k) { var o = (admin && admin.texts && admin.texts[k]) ? admin.texts[k] : I18N[k]; return o ? o[LANG] : k; }
@@ -886,7 +902,7 @@ function render() {
 
 function switchTab(id) {
   if (curTab === id) return;
-  var tabOrder = ['all','launcher','loader','manager','builder','tool','cheat'];
+  var tabOrder = ['all','launcher','loader','manager','builder','tool','cheat','visual'];
   var oldIdx = tabOrder.indexOf(curTab);
   var newIdx = tabOrder.indexOf(id);
   var direction = newIdx > oldIdx ? 'right' : 'left';
