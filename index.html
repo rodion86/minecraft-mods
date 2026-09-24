@@ -239,6 +239,8 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .chat-msg.from-user{align-self:flex-end;background:linear-gradient(135deg,var(--ac),rgba(124,58,237,.85));color:#0a0a0c;border-bottom-right-radius:5px;font-weight:600}
 .chat-msg.from-bot{align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-bottom-left-radius:5px;color:rgba(255,255,255,.88);padding-right:42px}
 .chat-msg.from-bot a{color:var(--ac);text-decoration:underline;text-underline-offset:2px}
+.chat-msg pre{border:1px solid rgba(124,58,237,.3);background:rgba(0,0,0,.45);border-radius:10px;padding:10px 12px;margin:6px 0;font-size:.74rem;line-height:1.55;overflow-x:auto;color:#d6d3ff;font-family:'JetBrains Mono',monospace;white-space:pre-wrap;word-break:break-word}
+.chat-msg pre::before{content:'</>';display:block;font-size:.6rem;color:var(--ac);margin-bottom:4px;opacity:.7;letter-spacing:1px}
 .chat-name{font-size:.7rem;font-weight:700;opacity:.75;margin-bottom:3px;display:flex;align-items:center;gap:5px}
 .chat-time{font-size:.58rem;opacity:.4;margin-top:4px;align-self:flex-end;font-family:'JetBrains Mono',monospace}
 .chat-voice{position:absolute;right:9px;top:9px;width:26px;height:26px;border-radius:8px;background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:var(--ac);font-size:.8rem;cursor:pointer;transition:all .25s;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0}
@@ -1360,6 +1362,11 @@ applyLang();
     {k:['музыка','клиент буратино','buratino'], a:'BURATINO CLIENT — он есть в шапке сайта. Заходи, там музыкальные фишки для Minecraft. По ссылке в навигации.'},
     {k:['donos','don0s','донат'], a:'По don0s — вот чат: https://t.me/macclient11 . Раздел читов в каталоге тоже поможет.'},
     {k:['support','саппорт','поддержк','help','помощ'], a:'Вот Support TG — пиши сюда, помогут с любым вопросом:<br><a href="https://t.me/macclient11" target="_blank" rel="noopener">https://t.me/macclient11</a><br><a href="https://t.me/russia_cruck" target="_blank" rel="noopener">@russia_cruck</a><br><br>Опиши проблему кратко — ответят быстрее 🙂'},
+    {k:['скрипт','код','команд','датапак','datapack','плагин','plugin','мод написать','написать мод','командный блок','command block'], a:'Вот база скриптов и кодов для Minecraft:<br><br><b>Командный блок — телепорт по кнопке:</b><pre>execute as @p at @s run tp @s 100 80 -200</pre><b>Датчик дня/ночи (командный блок, repeat):</b><pre>execute if time is night run say Наступила ночь!</pre><b>Выдать алмазную кирку с enchant:</b><pre>/give @p diamond_pickaxe{Enchantments:[{id:"efficiency",lvl:5}]} 1</pre><b>Заменить блоки земли на траву в области:</b><pre>/fill x1 y1 z1 x2 y2 z2 grass_block replace dirt</pre><br>Скажи точнее тему — датапак, плагин, настройка мода или ферма — соберу под неё.'},
+    {k:['датапак создать','свой датапак','система титула','кастомный крафт','рецепт'], a:'Мини-датапак «кастомный рецепт»:<pre>pack.mcmeta:\n{"pack":{"pack_format":15,"description":"My pack"}}\n\nИ крафт (алмаз=2 золота):\ndata/minecraft/recipe/mysword.json:\n{\n  "type":"crafting_shaped",\n  "pattern":["D","D","S"],\n  "key":{"D":{"item":"minecraft:diamond"},"S":{"item":"minecraft:stick"}},\n  "result":{"item":"minecraft:diamond_sword","count":1}\n}</pre>Положи в папку .minecraft/saves/мир/datapacks/имя/zip и включи командой <b>/datapack enable</b>. Хочешь рецепт на что-то конкретное?'},
+    {k:['плагин написать','написать плагин','bukkit','spigot','paper'], a:'Простейший плагин на Paper/Spigot (Java):<pre>public class Hello extends JavaPlugin {\n  @Override\n  public void onEnable() {\n    getLogger().info("Плагин запущен!");\n  }\n}</pre>Собирается через Maven (paper-api), файл plugin.yml с main-классом. Могу расписать структуру проекта целиком?'},
+    {k:['конфиг мода','настроить мод','options.txt','config'], a:'Куда смотреть настройки модов:<br>1. Папка мода: <pre>.minecraft/config/имя_мода.toml</pre>2. Ключевые параметры обычно в том же файле — FPS, рендер, чудеса.<br>3. Клавиши управления: <b>Настройки → Управление</b>.<br>4. Для шейдеров — папка <pre>.minecraft/shaderpacks</pre>Положи туда .zip с шейдерпаком и включи в Оптифайн/Ирис.'},
+    {k:['ферма автоматическая','автоферма','схема фермы','ферма редстоун'], a:'Автоферма пшеницы (редстоун): наблюдатель смотрит на грядку → убирает урожай:<pre>Наблюдатель → (сигнал в) Поршень,\nкоторый ломает урожай блоками.\nВода собирает в воронку → сундук.</pre>Для модов (например, MineColonies или Create) — моды из каталога, могу подобрать под твою версию.'},
     {k:['migodi','мигоди'], a:'migodi — автор Migora Launcher (он в каталоге, рейтинг 5.0). Его чат: https://t.me/migodihvh '}
   ];
   var FALLBACKS = [
@@ -1527,10 +1534,11 @@ applyLang();
       var done = false;
       var results = [];
       var finished = 0;
+      var total = 3;
       function finish() {
         if (done) return;
-        done = true;
-        resolve(results);
+        finished++;
+        if (finished >= total) { done = true; resolve(results); }
       }
       function grabWikipedia(lang) {
         var url = 'https://' + lang + '.wikipedia.org/w/api.php?action=query&list=search&utf8=1&format=json&origin=*&srlimit=3&srsearch=' + encodeURIComponent(q);
@@ -1541,10 +1549,7 @@ applyLang();
             var s = arr[i].snippet.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
             results.push({ title: t, snippet: s, url: 'https://' + lang + '.wikipedia.org/wiki/' + encodeURIComponent(t.replace(/ /g, '_')) });
           }
-        }).catch(function(){}).then(function(){
-          finished++;
-          if (finished === 2) finish();
-        });
+        }).catch(function(){}).then(finish);
       }
       function grabDDG() {
         fetch('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&no_redirect=1').then(function(r){ return r.json(); }).then(function(d){
@@ -1553,15 +1558,23 @@ applyLang();
           for (var i = 0; i < rt.length && i < 2; i++) {
             if (rt[i].Text) results.push({ title: rt[i].FirstURL.split('/').pop().replace(/_/g, ' ') || q, snippet: rt[i].Text, url: rt[i].FirstURL });
           }
-        }).catch(function(){}).then(function(){
-          finished++;
-          if (finished === 2) finish();
-        });
+        }).catch(function(){}).then(finish);
+      }
+      function grabGitHub() {
+        var q2 = q.split(/\s+/).slice(0,3).join(' ');
+        fetch('https://api.github.com/search/repositories?q=' + encodeURIComponent(q2 + ' minecraft') + '&per_page=3&sort=stars').then(function(r){ return r.json(); }).then(function(d){
+          var items = d && d.items || [];
+          for (var i = 0; i < items.length && i < 3; i++) {
+            var it = items[i];
+            results.push({ title: (it.full_name || '') + ' ⭐' + it.stargazers_count, snippet: (it.description || 'Репозиторий GitHub по запросу') + (it.language ? ' · ' + it.language : ''), url: it.html_url || '' });
+          }
+        }).catch(function(){}).then(finish);
       }
       var wiki = LANG === 'en' ? 'en' : 'ru';
       grabWikipedia(wiki);
       grabDDG();
-      setTimeout(finish, 12000);
+      grabGitHub();
+      setTimeout(function(){ if (!done) { done = true; resolve(results); } }, 12000);
     });
   }
 
