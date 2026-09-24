@@ -220,7 +220,16 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .modal-mini:hover{color:var(--ac);border-color:var(--ac);background:rgba(255,255,255,.04)}
 
 /* CHAT */
-.chat-card{width:min(460px,92vw);padding:20px;background:rgba(22,22,26,.92)}
+.chat-card{width:min(460px,92vw);padding:20px;background:rgba(22,22,26,.92);position:relative;overflow:hidden}
+.zeon-splash{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(16,16,20,.98);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+.zeon-splash.hide{opacity:0;transform:scale(1.06);visibility:hidden}
+.zeon-splash-z{font-size:5.2rem;font-weight:800;line-height:1;background:linear-gradient(135deg,var(--ac),#7c3aed);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-family:'JetBrains Mono',monospace;animation:zSplashIn .7s cubic-bezier(.34,1.56,.64,1) forwards;letter-spacing:-8px;text-shadow:0 0 40px rgba(124,58,237,.4)}
+.zeon-splash-z::after{content:'✦';display:block;font-size:.9rem;text-align:center;letter-spacing:0;-webkit-text-fill-color:var(--ac);animation:zSplashSpin 2.2s ease-in-out infinite}
+@keyframes zSplashIn{0%{opacity:0;transform:scale(.4) rotate(-14deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes zSplashSpin{0%,100%{transform:scale(1)}50%{transform:scale(1.5) rotate(180deg);opacity:.6}}
+.zeon-splash-label{font-size:1.15rem;font-weight:700;letter-spacing:1px;animation:zSplashUp .6s ease forwards .15s;opacity:0}
+.zeon-splash-sub{font-size:.75rem;color:rgba(255,255,255,.4);animation:zSplashUp .6s ease forwards .3s;opacity:0}
+@keyframes zSplashUp{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
 .zeon-head{display:flex;align-items:center;gap:11px}
 .zeon-avatar{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--ac),#7c3aed);display:flex;align-items:center;justify-content:center;font-size:1.15rem;color:#000;font-weight:800;box-shadow:0 6px 20px rgba(124,58,237,.35);animation:zeonPulse 2.4s ease-in-out infinite}
 @keyframes zeonPulse{0%,100%{box-shadow:0 6px 20px rgba(124,58,237,.35);transform:scale(1)}50%{box-shadow:0 6px 30px rgba(124,58,237,.7);transform:scale(1.06)}}
@@ -647,6 +656,11 @@ html,body,body *{cursor:none !important}
 
 <div class="modal" id="chatModal">
   <div class="modal-card chat-card">
+    <div class="zeon-splash" id="zeonSplash">
+      <div class="zeon-splash-z">Z</div>
+      <div class="zeon-splash-label">Zeon AI</div>
+      <div class="zeon-splash-sub">помощник по Minecraft</div>
+    </div>
     <div class="modal-head">
       <div class="zeon-head"><span class="zeon-avatar">✦</span><div class="zeon-id"><div class="modal-title">Zeon AI</div><div class="chat-status" id="chatStatus">● online</div></div></div>
       <button class="modal-close" id="chatClose" type="button">✕</button>
@@ -1689,6 +1703,11 @@ applyLang();
   function open() {
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
+    var splash = document.getElementById('zeonSplash');
+    if (splash) {
+      splash.classList.remove('hide');
+      setTimeout(function(){ splash.classList.add('hide'); }, 1250);
+    }
     if (!list.children.length) {
       addMsg('bot', '<span>Привет! Я <b>Zeon AI</b> — умный ИИ-помощник по Minecraft. <br>Спрашивай про читы, моды, визуалы, ошибки и настройки. Могу ответить голосом — жми 🔊.</span>', { voice: 'Привет! Я Зеон, умный ИИ помощник по Майнкрафт. Спрашивай про читы, моды, визуалы, ошибки и настройки.' });
       buildChips();
