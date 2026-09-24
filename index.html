@@ -225,8 +225,19 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .zeon-splash.hide{opacity:0;transform:scale(1.06);visibility:hidden}
 .zeon-splash-z{font-size:5.2rem;font-weight:800;line-height:1;background:linear-gradient(135deg,var(--ac),#7c3aed);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-family:'JetBrains Mono',monospace;animation:zSplashSpin 2s cubic-bezier(.4,0,.2,1) forwards;letter-spacing:-8px;text-shadow:0 0 40px rgba(124,58,237,.4)}
 @keyframes zSplashSpin{0%{opacity:0;transform:rotate(0deg) scale(.6)}50%{opacity:1}100%{opacity:1;transform:rotate(360deg) scale(1)}}
-.zeon-head{display:flex;align-items:center;gap:11px}
-.zeon-avatar{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--ac),#7c3aed);display:flex;align-items:center;justify-content:center;font-size:1.15rem;color:#000;font-weight:800;box-shadow:0 6px 20px rgba(124,58,237,.35);animation:zeonPulse 2.4s ease-in-out infinite}
+.zeon-head{display:flex;align-items:center;gap:11px;position:relative}
+.zeon-avatar{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--ac),#7c3aed);display:flex;align-items:center;justify-content:center;font-size:1.15rem;color:#000;font-weight:800;box-shadow:0 6px 20px rgba(124,58,237,.35);animation:zeonPulse 2.4s ease-in-out infinite;cursor:pointer;transition:transform .15s ease;user-select:none}
+.zeon-avatar:hover{transform:scale(1.1) rotate(60deg)}
+.zeon-settings{position:absolute;top:calc(100% + 8px);left:0;background:rgba(18,18,24,.96);border:1px solid rgba(124,58,237,.35);border-radius:14px;padding:12px;min-width:220px;z-index:20;box-shadow:0 12px 40px rgba(0,0,0,.6);display:none;animation:msgIn .25s cubic-bezier(.34,1.56,.64,1) forwards}
+.zeon-settings.open{display:block}
+.zeon-settings h4{margin:0 0 4px;font-size:.82rem;color:var(--ac);font-weight:700}
+.zeon-settings .zs-hint{font-size:.64rem;color:rgba(255,255,255,.45);margin:0 0 8px;line-height:1.4}
+.zeon-settings .zs-row{margin-bottom:10px}
+.zeon-settings .zs-row:last-child{margin-bottom:2px}
+.zs-seg{display:flex;gap:6px}
+.zs-seg button{flex:1;padding:6px 8px;border-radius:9px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#e7e7ec;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s ease}
+.zs-seg button:hover{background:rgba(255,255,255,.12)}
+.zs-seg button.active{background:linear-gradient(135deg,var(--ac),#7c3aed);color:#000;border-color:transparent;box-shadow:0 4px 14px rgba(124,58,237,.4)}
 @keyframes zeonPulse{0%,100%{box-shadow:0 6px 20px rgba(124,58,237,.35);transform:scale(1)}50%{box-shadow:0 6px 30px rgba(124,58,237,.7);transform:scale(1.06)}}
 .zeon-id{display:flex;flex-direction:column;line-height:1.2;gap:1px}
 .zeon-beta{background:linear-gradient(135deg,var(--ac),#7c3aed);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-size:.62em;font-weight:800;vertical-align:super}
@@ -658,7 +669,22 @@ html,body,body *{cursor:none !important}
       <div class="zeon-splash-z">Z</div>
     </div>
     <div class="modal-head">
-      <div class="zeon-head"><span class="zeon-avatar">✦</span><div class="zeon-id"><div class="modal-title">Zeon AI<span class="zeon-beta">.beta</span></div><div class="chat-status" id="chatStatus">● online</div></div></div>
+      <div class="zeon-head"><span class="zeon-avatar" id="zeonAvatar" title="Настройки Zeon">✦</span>
+        <div class="zeon-settings" id="zeonSettings">
+          <h4 data-i18n="set_lang">Язык</h4>
+          <p class="zs-hint" data-i18n="set_lang_hint">Язык ответов бота</p>
+          <div class="zs-row"><div class="zs-seg" id="zsLang">
+            <button data-flag="ru" data-i18n="set_ru">Русский</button>
+            <button data-flag="en" data-i18n="set_en">English</button>
+          </div></div>
+          <h4 data-i18n="set_voice">Голос</h4>
+          <p class="zs-hint" data-i18n="set_voice_hint">Тембр озвучки ответов</p>
+          <div class="zs-row"><div class="zs-seg" id="zsVoice">
+            <button data-gen="female" data-i18n="set_female">Женский</button>
+            <button data-gen="male" data-i18n="set_male">Мужской</button>
+          </div></div>
+        </div>
+        <div class="zeon-id"><div class="modal-title">Zeon AI<span class="zeon-beta">.beta</span></div><div class="chat-status" id="chatStatus">● online</div></div></div>
       <button class="modal-close" id="chatClose" type="button">✕</button>
     </div>
     <div class="chat-list" id="chatList"></div>
@@ -727,10 +753,19 @@ var curTab = "all";
 var curQ = "";
 
 var LANG = localStorage.getItem('mc_lang') === 'en' ? 'en' : 'ru';
+var VOICE_GEN = localStorage.getItem('mc_voice') === 'male' ? 'male' : 'female';
 var I18N = {
   catalog:{ru:"Каталог",en:"Catalog"},
   nav_music:{ru:"BURATINO CLIENT",en:"BURATINO CLIENT"},
   nav_zeon:{ru:"Zeon AI",en:"Zeon AI"},
+  set_ru:{ru:"Русский",en:"Русский"},
+  set_en:{ru:"English",en:"English"},
+  set_female:{ru:"Женский",en:"Female"},
+  set_male:{ru:"Мужской",en:"Male"},
+  set_lang:{ru:"Язык",en:"Language"},
+  set_lang_hint:{ru:"Язык ответов бота",en:"Bot reply language"},
+  set_voice:{ru:"Голос",en:"Voice"},
+  set_voice_hint:{ru:"Тембр озвучки ответов",en:"Voice tone for replies"},
   search:{ru:"Найти приложение...",en:"Search apps..."},
   badge:{ru:"каждый день обновляем",en:"we update every day"},
   hero_title:{ru:"Всё для модов<br>Minecraft",en:"Everything for mods<br>Minecraft"},
@@ -1027,6 +1062,7 @@ function toggleLang() {
   applyLang();
   var btn = document.getElementById('langBtn');
   if (btn) btn.textContent = LANG === 'ru' ? 'EN' : 'RU';
+  if (window.zsSync) window.zsSync();
 }
 
 document.getElementById('langBtn').onclick = toggleLang;
@@ -1385,17 +1421,27 @@ applyLang();
   function pickVoice() {
     loadVoices();
     if (!VOICES.length) return null;
-    var female = /svetlana|svet|zira|milena|katya|katerina|alexandra|alya|irina|olga|natalia|female|жен|google русский|samantha|victoria/i;
-    var female2 = /^ru|ru-ru/i;
-    var preferred = null, anyRu = null;
+    var wantMale = VOICE_GEN === 'male';
+    var maleRe = /dmitri|pavel|mihail|mikhail|yuri|yurii|alexander|boris|ivan|maxim|artem|dmitry|oleg|kiril/i;
+    var femaleRe = /svetlana|svet|zira|milena|katya|katerina|alexandra|alya|irina|olga|natalia|samantha|victoria/i;
+    var ruin = /^ru|ru-ru|ru_/i;
+    var chosen = null, anyRu = null;
     for (var i = 0; i < VOICES.length; i++) {
       var v = VOICES[i];
-      if (female2.test(v.lang)) {
+      if (ruin.test(v.lang)) {
         if (!anyRu) anyRu = v;
-        if (female.test(v.name) && !preferred) preferred = v;
+        var match = wantMale ? maleRe.test(v.name) : famaleRe.test(v.name);
+        if (match) { chosen = v; break; }
       }
     }
-    return preferred || anyRu || VOICES[0];
+    if (!chosen) {
+      for (var j = 0; j < VOICES.length; j++) {
+        var v2 = VOICES[j];
+        var m2 = wantMale ? maleRe.test(v2.name) : famaleRe.test(v2.name);
+        if (m2 && !chosen) chosen = v2;
+      }
+    }
+    return chosen || anyRu || VOICES[0];
   }
   function say(text) {
     try {
@@ -1717,6 +1763,69 @@ applyLang();
     speechSynthesis.onvoiceschanged = function(){ loadVoices(); };
   }
   document.getElementById('chatClose').onclick = close;
+  var zsPanel = document.getElementById('zeonSettings');
+  var zsAvatar = document.getElementById('zeonAvatar');
+  function zsSync() {
+    var zsp = document.getElementById('zeonSettings');
+    if (!zsp) return;
+    var langBtns = zsp.querySelectorAll('#zsLang button');
+    for (var i = 0; i < langBtns.length; i++) {
+      var lb = langBtns[i];
+      if (lb.getAttribute('data-flag') === LANG) {
+        lb.className = 'active';
+      } else {
+        lb.className = '';
+      }
+    }
+    var voiceBtns = zsp.querySelectorAll('#zsVoice button');
+    for (var j = 0; j < voiceBtns.length; j++) {
+      var vb = voiceBtns[j];
+      vb.className = vb.getAttribute('data-gen') === VOICE_GEN ? 'active' : '';
+    }
+  }
+  window.zsSync = zsSync;
+  if (zsAvatar) {
+    zsAvatar.onclick = function(e) {
+      e.stopPropagation();
+      if (zsPanel) {
+        var isOpen = zsPanel.classList.toggle('open');
+        if (isOpen) zsSync();
+      }
+    };
+  }
+  if (zsPanel) {
+    var zsLangBtns = zsPanel.querySelectorAll('#zsLang button');
+    for (var l = 0; l < zsLangBtns.length; l++) {
+      (function(btn){
+        btn.onclick = function(e) {
+          e.stopPropagation();
+          var flag = btn.getAttribute('data-flag');
+          LANG = flag;
+          localStorage.setItem('mc_lang', LANG);
+          applyLang();
+          var nb = document.getElementById('langBtn');
+          if (nb) nb.textContent = LANG === 'ru' ? 'EN' : 'RU';
+          zsSync();
+        };
+      })(zsLangBtns[l]);
+    }
+    var zsVoiceBtns = zsPanel.querySelectorAll('#zsVoice button');
+    for (var v = 0; v < zsVoiceBtns.length; v++) {
+      (function(btn){
+        btn.onclick = function(e) {
+          e.stopPropagation();
+          VOICE_GEN = btn.getAttribute('data-gen');
+          localStorage.setItem('mc_voice', VOICE_GEN);
+          zsSync();
+        };
+      })(zsVoiceBtns[v]);
+    }
+    document.addEventListener('click', function(e) {
+      if (zsPanel.classList.contains('open') && !zsPanel.contains(e.target) && e.target !== zsAvatar) {
+        zsPanel.classList.remove('open');
+      }
+    });
+  }
   if (sendBtn) sendBtn.onclick = function(){ var v = input.value.trim(); if (v) { ask(v); input.value = ''; } };
   input.addEventListener('keydown', function(e){ if (e.key === 'Enter') { var v = input.value.trim(); if (v) { ask(v); input.value = ''; } } });
   modal.addEventListener('click', function(e){ if (e.target === modal) close(); });
