@@ -1518,8 +1518,34 @@ applyLang();
     });
   }
 
+  var BANNED = [
+    'порн','секс','сексу','18+','nsfw','нарк','heroin','кокаин','meth','оружи','взрывчат','бомб',
+    'политик','выбор','президент','депутат','госдум','войн','санкц','путин','зеленский','нато',
+    'банк','кредит','ипотек','денег много','богатет','инвест','биткоин','крипт','валют','карта банк','счёт банк'
+  ];
+  var BANNED_REPLY = 'Это вне моей темы 🙂 Я Zeon AI — помощник по Minecraft. Лучше спроси про читы, моды, визуалы, лаунчеры, ошибки или оптимизацию.';
+
+  function isBanned(q) {
+    var ql = q.toLowerCase();
+    for (var i = 0; i < BANNED.length; i++) {
+      if (ql.indexOf(BANNED[i]) !== -1) return true;
+    }
+    return false;
+  }
+
   function ask(text) {
     if (busy) return;
+    if (isBanned(text)) {
+      addMsg('user', '<span>' + esc(text) + '</span>');
+      typing();
+      setTimeout(function(){
+        stopTyping();
+        addMsg('bot', '<span>' + BANNED_REPLY + '</span>', { voice: BANNED_REPLY });
+        busy = false;
+        if (sendBtn) sendBtn.disabled = false;
+      }, 800);
+      return;
+    }
     busy = true;
     if (sendBtn) { sendBtn.disabled = true; }
     var answer = think(text);
