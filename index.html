@@ -1385,15 +1385,14 @@ applyLang();
   function pickVoice() {
     loadVoices();
     if (!VOICES.length) return null;
-    var energetic = /pavel|ivan|maxim|artem|yuri|yurii|google|oleg|kiril/i;
-    var male = /dmitri|pavel|mihail|mikhail|yuri|yurii|alexander|boris|ivan|maxim|artem|dmitry|oleg|kiril/i;
-    var ruin = /^ru|ru-ru/i;
+    var female = /svetlana|svet|zira|milena|katya|katerina|alexandra|alya|irina|olga|natalia|female|жен|google русский|samantha|victoria/i;
+    var female2 = /^ru|ru-ru/i;
     var preferred = null, anyRu = null;
     for (var i = 0; i < VOICES.length; i++) {
       var v = VOICES[i];
-      if (ruin.test(v.lang)) {
+      if (female2.test(v.lang)) {
         if (!anyRu) anyRu = v;
-        if (male.test(v.name) && !preferred) preferred = v;
+        if (female.test(v.name) && !preferred) preferred = v;
       }
     }
     return preferred || anyRu || VOICES[0];
@@ -1404,8 +1403,8 @@ applyLang();
       speechSynthesis.cancel();
       var plain = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
       var u = new SpeechSynthesisUtterance(plain);
-      u.rate = 1.02;
-      u.pitch = 1.0;
+      u.rate = 1.04;
+      u.pitch = 1.08;
       u.volume = 1;
       var v = pickVoice();
       if (v) u.voice = v;
