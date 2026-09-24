@@ -1337,7 +1337,7 @@ applyLang();
     return s.join('<br>');
   }
 
-  var CHIPS = ['Привет', 'Лучшие читы', 'Что посоветуешь из визуалов', 'Как убрать лаги', 'Ошибка при входе'];
+  var CHIPS = ['Привет', 'Лучшие читы', 'Что посоветуешь из визуалов', 'Как убрать лаги', 'Ошибка при входе', 'Support'];
   var KB = [
     {k:['привет','здравств','хай','hello','hi ','ку','салют'], a:'Привет! Я Zeon AI — твой помощник по Minecraft. Спрашивай про читы, моды, визуалы, ошибки и настройки. Чем помочь?'},
     {k:['как тебя зов','кто ты','zeon','ты бот'], a:'Я Zeon AI — умный помощник по Minecraft. Знаю читы, моды, визуалы, лаунчеры и могу помочь с ошибками. Ещё умею говорить голосом — жми на 🔊 в моих ответах.'},
@@ -1351,6 +1351,7 @@ applyLang();
     {k:['спасибо','благодар','крут','молодец','love'], a:'Всегда рад помочь! Если что-то ещё понадобится — я рядом. Заглядывай в Zeon AI почаще ✦'},
     {k:['музыка','клиент буратино','buratino'], a:'BURATINO CLIENT — он есть в шапке сайта. Заходи, там музыкальные фишки для Minecraft. По ссылке в навигации.'},
     {k:['donos','don0s','донат'], a:'По don0s — вот чат: https://t.me/macclient11 . Раздел читов в каталоге тоже поможет.'},
+    {k:['support','саппорт','поддержк','help','помощ'], a:'Вот Support TG — пиши сюда, помогут с любым вопросом:<br><a href="https://t.me/macclient11" target="_blank" rel="noopener">https://t.me/macclient11</a><br><a href="https://t.me/russia_cruck" target="_blank" rel="noopener">@russia_cruck</a><br><br>Опиши проблему кратко — ответят быстрее 🙂'},
     {k:['migodi','мигоди'], a:'migodi — автор Migora Launcher (он в каталоге, рейтинг 5.0). Его чат: https://t.me/migodihvh '}
   ];
   var FALLBACKS = [
@@ -1626,6 +1627,13 @@ applyLang();
     b.onclick = function(){
       if (label === 'Привет' && CHIP_ONCE.greeting) return;
       if (label === 'Привет') CHIP_ONCE.greeting = true;
+      if (label === 'Support') {
+        if (busy) { CHIP_ONCE.supportPending = true; return; }
+        input.value = '';
+        ask('support');
+        buildChips();
+        return;
+      }
       input.value = label === 'Привет' ? 'Привет' : label;
       ask(input.value);
       input.value = '';
