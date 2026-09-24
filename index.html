@@ -1386,8 +1386,7 @@ applyLang();
       var v = VOICES[i];
       if (ruin.test(v.lang)) {
         if (!anyRu) anyRu = v;
-        if (energetic.test(v.name)) { preferred = v; break; }
-        if (!preferred && male.test(v.name)) preferred = v;
+        if (male.test(v.name) && !preferred) preferred = v;
       }
     }
     return preferred || anyRu || VOICES[0];
@@ -1397,26 +1396,13 @@ applyLang();
       if (!window.speechSynthesis) return;
       speechSynthesis.cancel();
       var plain = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      var u = new SpeechSynthesisUtterance(plain);
+      u.rate = 1.02;
+      u.pitch = 1.0;
+      u.volume = 1;
       var v = pickVoice();
-      var parts = plain.match(/[^.!?]+[.!?]?/g) || [plain];
-      var u0 = new SpeechSynthesisUtterance(parts[0] || plain);
-      u0.rate = 1.22;
-      u0.pitch = v && /ru/i.test(v.lang) ? 1.4 : 1.38;
-      u0.volume = 1;
-      if (v) u0.voice = v;
-      var idx = 1;
-      u0.onend = function(){
-        if (idx >= parts.length) return;
-        var uN = new SpeechSynthesisUtterance(parts[idx]);
-        uN.rate = 1.22;
-        uN.pitch = idx === parts.length - 1 ? 1.44 : 1.4;
-        uN.volume = 1;
-        if (v) uN.voice = v;
-        uN.onend = arguments.callee;
-        speechSynthesis.speak(uN);
-        idx++;
-      };
-      speechSynthesis.speak(u0);
+      if (v) u.voice = v;
+      speechSynthesis.speak(u);
     } catch(e) {}
   }
 
