@@ -63,6 +63,9 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0
 .nav-links button#navChatBtn::after{content:'';position:absolute;left:0;bottom:-5px;width:100%;height:2px;border-radius:2px;background:var(--ac);transform:scaleX(0);transform-origin:left;transition:transform .55s cubic-bezier(.34,1.56,.64,1)}
 .nav-links button#navChatBtn:hover{color:var(--ac)}
 .nav-links button#navChatBtn:hover::after{transform:scaleX(1)}
+.nav-links button#navChatBtn{cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.zeon-dot{width:7px;height:7px;border-radius:50%;background:var(--ac);animation:zeonDot 1.6s ease-in-out infinite;flex-shrink:0}
+@keyframes zeonDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
 
 /* BURGER */
 .nav-burger{display:none;width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;z-index:3000;position:relative;padding:0}
@@ -217,18 +220,41 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .modal-mini:hover{color:var(--ac);border-color:var(--ac);background:rgba(255,255,255,.04)}
 
 /* CHAT */
-.chat-card{width:min(460px,92vw);padding:20px}
-.chat-status{font-size:.65rem;color:rgba(255,255,255,.4);text-align:right;margin-bottom:6px;font-family:'JetBrains Mono',monospace}
-.chat-list{display:flex;flex-direction:column;gap:8px;max-height:360px;overflow-y:auto;padding:10px 4px;margin-bottom:12px}
+.chat-card{width:min(460px,92vw);padding:20px;background:rgba(22,22,26,.92)}
+.zeon-head{display:flex;align-items:center;gap:11px}
+.zeon-avatar{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--ac),#7c3aed);display:flex;align-items:center;justify-content:center;font-size:1.15rem;color:#000;font-weight:800;box-shadow:0 6px 20px rgba(124,58,237,.35);animation:zeonPulse 2.4s ease-in-out infinite}
+@keyframes zeonPulse{0%,100%{box-shadow:0 6px 20px rgba(124,58,237,.35);transform:scale(1)}50%{box-shadow:0 6px 30px rgba(124,58,237,.7);transform:scale(1.06)}}
+.zeon-id{display:flex;flex-direction:column;line-height:1.2;gap:1px}
+.chat-status{font-size:.62rem;color:var(--ac);margin:0;text-align:left;font-family:'JetBrains Mono',monospace}
+.chat-list{display:flex;flex-direction:column;gap:10px;height:340px;overflow-y:auto;padding:14px 4px;margin-bottom:10px;scrollbar-width:thin}
 .chat-list::-webkit-scrollbar{width:4px}
 .chat-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:4px}
-.chat-msg{display:flex;align-items:baseline;gap:8px;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05)}
-.chat-name{font-size:.72rem;font-weight:700;color:var(--ac);flex-shrink:0}
-.chat-text{font-size:.82rem;color:rgba(255,255,255,.85);word-break:break-word;flex:1}
-.chat-time{font-size:.6rem;color:rgba(255,255,255,.25);font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.chat-msg{display:flex;flex-direction:column;max-width:82%;padding:9px 13px;border-radius:15px;font-size:.83rem;line-height:1.45;word-break:break-word;animation:msgIn .4s cubic-bezier(.34,1.56,.64,1) forwards;will-change:transform,opacity;position:relative}
+@keyframes msgIn{0%{opacity:0;transform:translateY(14px) scale(.92)}60%{opacity:1;transform:translateY(-2px) scale(1.02)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.chat-msg.from-user{align-self:flex-end;background:linear-gradient(135deg,var(--ac),rgba(124,58,237,.85));color:#0a0a0c;border-bottom-right-radius:5px;font-weight:600}
+.chat-msg.from-bot{align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-bottom-left-radius:5px;color:rgba(255,255,255,.88);padding-right:42px}
+.chat-msg.from-bot a{color:var(--ac);text-decoration:underline;text-underline-offset:2px}
+.chat-name{font-size:.7rem;font-weight:700;opacity:.75;margin-bottom:3px;display:flex;align-items:center;gap:5px}
+.chat-time{font-size:.58rem;opacity:.4;margin-top:4px;align-self:flex-end;font-family:'JetBrains Mono',monospace}
+.chat-voice{position:absolute;right:9px;top:9px;width:26px;height:26px;border-radius:8px;background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:var(--ac);font-size:.8rem;cursor:pointer;transition:all .25s;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0}
+.chat-voice:hover{background:var(--ac);color:#000;transform:scale(1.12) rotate(-8deg)}
+.chat-typing{display:flex;gap:3px;align-items:center;padding:12px 14px;align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-radius:15px;border-bottom-left-radius:5px;animation:msgIn .3s ease forwards}
+.chat-typing span{width:6px;height:6px;border-radius:50%;background:var(--ac);animation:tp 1.2s ease-in-out infinite}
+.chat-typing span:nth-child(2){animation-delay:.15s}
+.chat-typing span:nth-child(3){animation-delay:.3s}
+@keyframes tp{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
+.chat-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chat-chip{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:rgba(255,255,255,.7);border-radius:999px;padding:6px 12px;font-size:.72rem;cursor:pointer;transition:all .25s;font-family:inherit}
+.chat-chip:hover{background:var(--ac);color:#000;border-color:var(--ac);transform:translateY(-2px)}
+.chat-chip:active{transform:scale(.94)}
 .chat-input-row{display:flex;gap:8px;align-items:center}
-.chat-input{margin-bottom:0;flex:1}
-.chat-send{width:auto;padding:12px 18px;flex-shrink:0}
+.chat-input{margin-bottom:0;flex:1;transition:border-color .3s}
+.chat-mic{width:44px;height:44px;flex-shrink:0;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-size:1rem;cursor:pointer;transition:all .25s;font-family:inherit}
+.chat-mic:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-2px)}
+.chat-mic.rec{background:rgba(239,68,68,.25);border-color:#ef4444;color:#ef4444;animation:recPulse 1s ease-in-out infinite}
+@keyframes recPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+.chat-send{width:auto;padding:12px 18px;flex-shrink:0;transition:transform .2s}
+.chat-send:active{transform:scale(.9)}
 .modal-err{color:#ef4444;font-size:.78rem;margin-top:10px;min-height:16px;text-align:center}
 .nav-actions{display:flex;flex-direction:column;align-items:stretch;gap:6px;position:relative}
 .nav-yt{display:flex;align-items:center;justify-content:center;gap:7px;text-decoration:none}
@@ -243,6 +269,7 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .mnav-link{font-size:1.02rem;font-weight:600;padding:15px 16px;border-radius:14px;color:rgba(255,255,255,.85);text-decoration:none;display:flex;align-items:center;gap:11px;transition:background .4s cubic-bezier(.34,1.56,.64,1),transform .4s cubic-bezier(.34,1.56,.64,1),color .3s;will-change:transform,background;-webkit-tap-highlight-color:transparent}
 .mnav-link:hover{background:rgba(255,255,255,.06);color:var(--ac)}
 .mnav-link:active{transform:scale(.96)}
+.mnav-link[data-chat]{background:none;border:none;width:100%;text-align:left;font-family:inherit;font-size:1.02rem;cursor:pointer}
 .mnav-label{font-size:.62rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1.5px;margin:14px 16px 4px;font-weight:600}
 .mnav-overlay.open{display:block}
 .mnav-overlay.open .mnav-backdrop{opacity:1}
@@ -408,7 +435,7 @@ html,body,body *{cursor:none !important}
     <a class="nav-links-link" id="navMusicBtn" href="https://rodion86.github.io/music-visualizer/" target="_blank" rel="noopener" data-i18n="nav_music">BURATINO CLIENT</a>
     <a href="https://t.me/macclient11" target="_blank">don0s</a>
     <a href="https://t.me/migodihvh" target="_blank">migodi</a>
-    <button class="nav-links-link" id="navChatBtn" type="button" data-i18n="nav_secret">Секретный чат</button>
+    <button class="nav-links-link" id="navChatBtn" type="button" data-i18n="nav_zeon"><span class="zeon-dot"></span>Zeon AI</button>
   </div>
   <div class="nav-actions" id="navActions">
   <a class="lang-btn nav-yt" href="https://www.youtube.com/@d0no0s-l7r" target="_blank" rel="noopener">
@@ -426,6 +453,7 @@ html,body,body *{cursor:none !important}
   <div class="mnav-backdrop" id="mnavBackdrop"></div>
   <div class="mnav-sheet">
     <div class="mnav-label">меню</div>
+    <button class="mnav-link" type="button" data-chat>✦ Zeon AI</button>
     <a class="mnav-link" href="https://rodion86.github.io/music-visualizer/" target="_blank" rel="noopener">BURATINO CLIENT</a>
     <a class="mnav-link" href="https://t.me/macclient11" target="_blank">✈️ don0s</a>
     <a class="mnav-link" href="https://t.me/migodihvh" target="_blank">✈️ migodi</a>
@@ -616,13 +644,14 @@ html,body,body *{cursor:none !important}
 <div class="modal" id="chatModal">
   <div class="modal-card chat-card">
     <div class="modal-head">
-      <div class="modal-title" data-i18n="chat_title">Секретный чат</div>
+      <div class="zeon-head"><span class="zeon-avatar">✦</span><div class="zeon-id"><div class="modal-title">Zeon AI</div><div class="chat-status" id="chatStatus">● online</div></div></div>
       <button class="modal-close" id="chatClose" type="button">✕</button>
     </div>
-    <div class="chat-status" id="chatStatus">...</div>
     <div class="chat-list" id="chatList"></div>
+    <div class="chat-chips" id="chatChips"></div>
     <div class="chat-input-row">
-      <input class="modal-input chat-input" id="chatMsg" type="text" placeholder="Сообщение...">
+      <button class="chat-mic" id="chatMic" type="button" title="Голосовое">🎤</button>
+      <input class="modal-input chat-input" id="chatMsg" type="text" placeholder="Спроси про майнкрафт...">
       <button class="modal-submit chat-send" id="chatSend" type="button">➤</button>
     </div>
   </div>
@@ -687,7 +716,7 @@ var LANG = localStorage.getItem('mc_lang') === 'en' ? 'en' : 'ru';
 var I18N = {
   catalog:{ru:"Каталог",en:"Catalog"},
   nav_music:{ru:"BURATINO CLIENT",en:"BURATINO CLIENT"},
-  nav_secret:{ru:"Секретный чат",en:"Secret chat"},
+  nav_zeon:{ru:"Zeon AI",en:"Zeon AI"},
   search:{ru:"Найти приложение...",en:"Search apps..."},
   badge:{ru:"каждый день обновляем",en:"we update every day"},
   hero_title:{ru:"Всё для модов<br>Minecraft",en:"Everything for mods<br>Minecraft"},
@@ -1212,7 +1241,7 @@ function renderCardsList() {
   }
 }
 
-var TX_KEYS = ['badge','hero_title','hero_p','stat_apps','stat_cats','stat_mods','footer_note','nav_music','nav_secret','chat_title','search'];
+var TX_KEYS = ['badge','hero_title','hero_p','stat_apps','stat_cats','stat_mods','footer_note','nav_music','nav_zeon','search'];
 function renderTxList() {
   var list = document.getElementById('txList');
   list.innerHTML = '';
@@ -1271,79 +1300,196 @@ adminInitFirebase(FIREBASE_CONFIG);
 
 applyLang();
 
-/* SECRET CHAT */
+/* ZEON AI */
 (function(){
   var modal = document.getElementById('chatModal');
   var list = document.getElementById('chatList');
   var input = document.getElementById('chatMsg');
   var statusEl = document.getElementById('chatStatus');
   var sendBtn = document.getElementById('chatSend');
+  var micBtn = document.getElementById('chatMic');
+  var chipsEl = document.getElementById('chatChips');
   var openBtn = document.getElementById('navChatBtn');
   if (!modal || !list || !input) return;
-  var KEY = 'mc_chat_v1';
-  var CD = 2000;
-  var lastSent = 0;
-  var msgs = [];
-  try { msgs = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) { msgs = []; }
-  var nick = localStorage.getItem('mc_chat_nick');
-  if (!nick) { nick = 'Аноним ' + Math.floor(Math.random() * 900 + 100); localStorage.setItem('mc_chat_nick', nick); }
-  var fbRef = (FIREBASE_CONFIG && typeof firebase !== 'undefined' && firebase.database && firebase.database().ref) ? firebase.database().ref('chat') : null;
+  var KEY = 'mc_zeon_v1';
+  var history = [];
+  try { history = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) { history = []; }
+  var busy = false;
 
-  function render() {
-    if (!list) return;
-    list.innerHTML = '';
-    var arr = msgs.slice(-60);
+  function now() {
+    var t = new Date();
+    return ((t.getHours() < 10 ? '0' : '') + t.getHours()) + ':' + ((t.getMinutes() < 10 ? '0' : '') + t.getMinutes());
+  }
+  function byCat(cat, max) {
+    var out = [];
+    for (var i = 0; i < DB.length; i++) { if (DB[i].cat === cat) out.push(DB[i]); }
+    return out.slice(0, max === undefined ? out.length : max);
+  }
+  function fmtApps(arr) {
+    var s = [];
     for (var i = 0; i < arr.length; i++) {
-      var m = arr[i];
-      var div = document.createElement('div');
-      div.className = 'chat-msg';
-      var own = m.n === nick;
-      div.style.justifyContent = own ? 'flex-end' : 'flex-start';
-      div.style.background = own ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.03)';
-      div.innerHTML = '<span class="chat-name">' + esc(m.n) + '</span><span class="chat-text">' + esc(m.t) + '</span><span class="chat-time">' + esc(m.ts) + '</span>';
-      list.appendChild(div);
+      s.push('<b>' + esc(arr[i].name) + '</b> (v' + esc(arr[i].platform) + ') — ' + esc(arr[i].desc) + ' <a href="' + esc(arr[i].link) + '" target="_blank" rel="noopener">скачать</a>');
     }
+    return s.join('<br>');
+  }
+
+  var CHIPS = ['Привет', 'Лучшие читы', 'Что посоветуешь из визуалов', 'Как убрать лаги', 'Ошибка при входе'];
+  var KB = [
+    {k:['привет','здравств','хай','hello','hi ','ку','салют'], a:'Привет! Я Zeon AI — твой помощник по Minecraft. Спрашивай про читы, моды, визуалы, ошибки и настройки. Чем помочь?'},
+    {k:['как тебя зов','кто ты','zeon','ты бот'], a:'Я Zeon AI — умный помощник по Minecraft. Знаю читы, моды, визуалы, лаунчеры и могу помочь с ошибками. Ещё умею говорить голосом — жми на 🔊 в моих ответах.'},
+    {k:['чит','wh','hack','хуй','накрут'], a:'Вот лучшие читы из каталога:<br>' + fmtApps(byCat('cheat')) + '<br><br>Это клиенты и утилиты для PvP. Ставить и использовать на свой риск!'},
+    {k:['визуал','косметик','скин'], a:'Вот косметические моды и визуалы:<br>' + fmtApps(byCat('visual')) + '<br><br>Они меняют внешний вид и добавляют красоту без влияния на геймплей.'},
+    {k:['мод','модов'], a:'Вот что могу предложить из модов и загрузчиков:<br>' + fmtApps(byCat('loader')) + '<br>' + fmtApps(byCat('tool')) + '<br><br>Обычно моды ставятся через Forge, Fabric или NeoForge — все они есть в каталоге.'},
+    {k:['лаунчер','запуск'], a:'Рекомендую эти лаунчеры:<br>' + fmtApps(byCat('launcher').slice(0,4)) + '<br><br>' + fmtApps(byCat('manager').slice(0,3))},
+    {k:['лаг','тормоз','fps','пиздит','низкий фпс'], a:'Как поднять FPS в Minecraft:<br>1. Поставь оптимизацию — Sodium или OptiFine (категория «Инструменты»).<br>2. Уменьши дистанцию прорисовки до 8-12 чанков.<br>3. Выключи плавную графику и частицы.<br>4. Назначь больше RAM лаунчеру (минимум 2-4 ГБ).<br>5. Зайди через лаунчер с оптимизацией, например Lunar Client.'},
+    {k:['ошибк','не запуск','краш','crash','завис','вылет','ошибка при входе'], a:'Разберём ошибку. Скажи точный текст ошибки или опиши момент (что делаешь и что появляется).<br>Для входа/авторизации обычно помогает:<br>1. Перезапусти лаунчер.<br>2. Очисти кэш и перезайди.<br>3. Проверь интернет.<br>4. Попробуй другой лаунчер из каталога.'},
+    {k:['сборка','модпак','собрать'], a:'Для готовых сборок модов посмотри:<br>' + fmtApps(byCat('builder')) + '<br><br>Собирать вручную советую через CurseForge App или Prism Launcher — они тянут моды и зависимости сами.'},
+    {k:['спасибо','благодар','крут','молодец','love'], a:'Всегда рад помочь! Если что-то ещё понадобится — я рядом. Заглядывай в Zeon AI почаще ✦'},
+    {k:['музыка','клиент буратино','buratino'], a:'BURATINO CLIENT — он есть в шапке сайта. Заходи, там музыкальные фишки для Minecraft. По ссылке в навигации.'},
+    {k:['donos','don0s','донат'], a:'По don0s — вот чат: https://t.me/macclient11 . Раздел читов в каталоге тоже поможет.'},
+    {k:['migodi','мигоди'], a:'migodi — автор Migora Launcher (он в каталоге, рейтинг 5.0). Его чат: https://t.me/migodihvh '}
+  ];
+  var FALLBACKS = [
+    'Я знаю про читы, моды, визуалы, лаунчеры и ошибки Minecraft. Попробуй спросить иначе или выбери тему снизу.',
+    'Хм, не уверен что понял. Спроси про читы, визуалы, моды или ошибки — так я смогу помочь.',
+    'Расскажи подробнее! Я силён в мире Minecraft: оптимизация, моды, клиенты, ошибки входа.'
+  ];
+
+  function say(text) {
+    try {
+      if (!window.speechSynthesis) return;
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
+      u.rate = 1.02;
+      u.pitch = 1.08;
+      var vs = speechSynthesis.getVoices();
+      for (var i = 0; i < vs.length; i++) { if (/ru/i.test(vs[i].lang)) { u.voice = vs[i]; break; } }
+      speechSynthesis.speak(u);
+    } catch(e) {}
+  }
+
+  function addMsg(from, html, opts) {
+    var wrap = document.createElement('div');
+    wrap.className = 'chat-msg from-' + from;
+    wrap.innerHTML = (from === 'bot' ? '<div class="chat-name">✦ Zeon AI — ваш ИИ-помощник</div>' : '<div class="chat-name">Вы</div>') + html +
+      '<div class="chat-time">' + now() + '</div>';
+    if (opts && opts.voice && from === 'bot') {
+      var vb = document.createElement('button');
+      vb.type = 'button';
+      vb.className = 'chat-voice';
+      vb.innerHTML = '🔊';
+      vb.title = 'Озвучить голосом';
+      vb.dataset.text = opts.voice;
+      vb.onclick = function(){ say(this.dataset.text); };
+      wrap.appendChild(vb);
+    }
+    list.appendChild(wrap);
     list.scrollTop = list.scrollHeight;
   }
 
-  function lock() {
-    if (!sendBtn) return;
-    sendBtn.disabled = true;
-    sendBtn.style.opacity = '.45';
-    sendBtn.style.pointerEvents = 'none';
+  function typing() {
+    var t = document.createElement('div');
+    t.className = 'chat-typing';
+    t.id = 'zeonTyping';
+    t.innerHTML = '<span></span><span></span><span></span>';
+    list.appendChild(t);
+    list.scrollTop = list.scrollHeight;
   }
-  function unlock() {
-    if (!sendBtn) return;
-    sendBtn.disabled = false;
-    sendBtn.style.opacity = '';
-    sendBtn.style.pointerEvents = '';
+  function stopTyping() {
+    var t = document.getElementById('zeonTyping');
+    if (t) t.remove();
   }
 
-  function send() {
-    var v = input.value.trim();
-    if (!v) return;
-    var now = Date.now();
-    if (sendBtn.disabled || now - lastSent < CD) return;
-    lastSent = now;
-    lock();
-    setTimeout(unlock, CD);
-    var t = new Date();
-    var hh = (t.getHours() < 10 ? '0' : '') + t.getHours();
-    var mm = (t.getMinutes() < 10 ? '0' : '') + t.getMinutes();
-    var m = { n: nick, t: v, ts: hh + ':' + mm, x: Date.now() };
-    msgs.push(m);
-    if (msgs.length > 100) msgs = msgs.slice(-100);
-    try { localStorage.setItem(KEY, JSON.stringify(msgs)); } catch(e) {}
-    input.value = '';
-    render();
-    if (fbRef) { fbRef.push(m); }
+  function store() {
+    if (history.length > 200) history = history.slice(-200);
+    try { localStorage.setItem(KEY, JSON.stringify(history)); } catch(e) {}
+  }
+
+  function think(q) {
+    var ql = q.toLowerCase();
+    var best = null;
+    for (var i = 0; i < KB.length; i++) {
+      var kb = KB[i];
+      for (var j = 0; j < kb.k.length; j++) {
+        if (ql.indexOf(kb.k[j]) !== -1) { best = kb; break; }
+      }
+      if (best) break;
+    }
+    if (!best) {
+      var hits = [];
+      for (var d = 0; d < DB.length; d++) {
+        var name = DB[d].name.toLowerCase();
+        if (ql.indexOf(name) !== -1) hits.push(DB[d]);
+      }
+      if (hits.length) {
+        return 'Нашёл в каталоге:<br>' + fmtApps(hits);
+      }
+      var words = ql.split(/\s+/);
+      var foundHit = null;
+      for (var w = 0; w < words.length && !foundHit; w++) {
+        if (words[w].length < 3) continue;
+        for (var d2 = 0; d2 < DB.length && !foundHit; d2++) {
+          if (DB[d2].name.toLowerCase().indexOf(words[w]) !== -1 || (DB[d2].tags && DB[d2].tags.join(' ').toLowerCase().indexOf(words[w]) !== -1)) foundHit = DB[d2];
+        }
+      }
+      if (foundHit) return 'Похоже ты про <b>' + esc(foundHit.name) + '</b> — ' + esc(foundHit.desc) + ' <a href="' + esc(foundHit.link) + '" target="_blank" rel="noopener">скачать</a>';
+      var f = FALLBACKS[Math.floor(Math.random() * FALLBACKS.length)];
+      return f;
+    }
+    return best.a;
+  }
+
+  function ask(text) {
+    if (busy) return;
+    busy = true;
+    if (sendBtn) { sendBtn.disabled = true; }
+    var answer = think(text);
+    addMsg('user', '<span>' + esc(text) + '</span>');
+    typing();
+    var delay = 600 + Math.min(answer.length * 3, 900);
+    setTimeout(function(){
+      stopTyping();
+      var plain = answer.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      addMsg('bot', '<span>' + answer + '</span>', { voice: plain });
+      history.push({ q: text, a: plain, ts: now() });
+      store();
+      busy = false;
+      if (sendBtn) sendBtn.disabled = false;
+      buildChips();
+    }, delay);
+  }
+
+  var CHIP_ONCE = {};
+  function chip(i, label) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chat-chip';
+    b.textContent = label;
+    if (i === 0 && CHIP_ONCE.greeting) { b.style.display = 'none'; }
+    b.onclick = function(){
+      if (label === 'Привет' && CHIP_ONCE.greeting) return;
+      if (label === 'Привет') CHIP_ONCE.greeting = true;
+      input.value = label === 'Привет' ? 'Привет' : label;
+      ask(input.value);
+      input.value = '';
+      buildChips();
+    };
+    return b;
+  }
+  function buildChips() {
+    if (!chipsEl) return;
+    chipsEl.innerHTML = '';
+    for (var i = 0; i < CHIPS.length; i++) chipsEl.appendChild(chip(i, CHIPS[i]));
   }
 
   function open() {
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
-    render();
-    setTimeout(function(){ if (input && window.innerWidth > 640) input.focus(); }, 100);
+    if (!list.children.length) {
+      addMsg('bot', '<span>Привет! Я <b>Zeon AI</b> — умный ИИ-помощник по Minecraft. <br>Спрашивай про читы, моды, визуалы, ошибки и настройки. Могу ответить голосом — жми 🔊.</span>', { voice: 'Привет! Я Зеон, умный ИИ помощник по Майнкрафт. Спрашивай про читы, моды, визуалы, ошибки и настройки.' });
+      buildChips();
+    }
+    setTimeout(function(){ if (input && window.innerWidth > 640) input.focus(); }, 180);
   }
   function close() {
     modal.classList.remove('open');
@@ -1352,25 +1498,48 @@ applyLang();
 
   if (openBtn) openBtn.onclick = open;
   document.getElementById('chatClose').onclick = close;
-  if (sendBtn) sendBtn.onclick = send;
-  input.addEventListener('keydown', function(e){ if (e.key === 'Enter') send(); });
+  if (sendBtn) sendBtn.onclick = function(){ var v = input.value.trim(); if (v) { ask(v); input.value = ''; } };
+  input.addEventListener('keydown', function(e){ if (e.key === 'Enter') { var v = input.value.trim(); if (v) { ask(v); input.value = ''; } } });
   modal.addEventListener('click', function(e){ if (e.target === modal) close(); });
-
-  if (statusEl) statusEl.textContent = fbRef ? '● онлайн · кд 2 сек' : '● секретный чат · кд 2 сек';
-
-  if (fbRef) {
-    fbRef.limitToLast(60).on('child_added', function(snap) {
-      var m = snap.val();
-      if (!m) return;
-      if (msgs.some(function(x){ return x.x === m.x; })) return;
-      msgs.push(m);
-      if (msgs.length > 100) msgs = msgs.slice(-100);
-      render();
-    });
-  }
 
   var mnavBtn = document.querySelector('.mnav-link[data-chat]');
   if (mnavBtn) mnavBtn.onclick = function(e){ e.preventDefault(); close(); open(); };
+
+  if (micBtn) {
+    var recog = null;
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SR) {
+      recog = new SR();
+      recog.lang = 'ru-RU';
+      recog.interimResults = false;
+      recog.maxAlternatives = 1;
+      recog.onresult = function(e){
+        var txt = e.results[0][0].transcript;
+        micBtn.classList.remove('rec');
+        micBtn.textContent = '🎤';
+        if (txt) { input.value = txt; }
+      };
+      recog.onerror = function(){ micBtn.classList.remove('rec'); micBtn.textContent = '🎤'; };
+      recog.onend = function(){ micBtn.classList.remove('rec'); micBtn.textContent = '🎤'; };
+      micBtn.onclick = function(){
+        if (micBtn.classList.contains('rec')) {
+          recog.stop();
+          micBtn.classList.remove('rec');
+          micBtn.textContent = '🎤';
+        } else {
+          micBtn.classList.add('rec');
+          micBtn.textContent = '●';
+          try { recog.start(); } catch(e) {}
+        }
+      };
+    } else {
+      micBtn.disabled = true;
+      micBtn.title = 'Не поддерживается браузером';
+      micBtn.style.opacity = '.3';
+    }
+  }
+
+  if (statusEl) statusEl.textContent = '● online';
 })();
 
 /* BURGER MENU */
@@ -1395,6 +1564,10 @@ applyLang();
       overlay.classList.remove('open');
       burger.classList.remove('open');
       document.body.style.overflow = '';
+      if (link.hasAttribute('data-chat')) {
+        var openBtn = document.getElementById('navChatBtn');
+        if (openBtn) openBtn.click();
+      }
     };
   });
 })();
