@@ -1381,16 +1381,27 @@ applyLang();
     try {
       if (!window.speechSynthesis) return;
       speechSynthesis.cancel();
-      var u = new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
-      u.rate = 1.18;
-      u.pitch = 1.32;
-      u.volume = 1;
+      var plain = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
       var v = pickVoice();
-      if (v) {
-        u.voice = v;
-        if (/ru/i.test(v.lang)) { u.pitch = 1.35; }
-      }
-      speechSynthesis.speak(u);
+      var parts = plain.match(/[^.!?]+[.!?]?/g) || [plain];
+      var u0 = new SpeechSynthesisUtterance(parts[0] || plain);
+      u0.rate = 1.22;
+      u0.pitch = v && /ru/i.test(v.lang) ? 1.4 : 1.38;
+      u0.volume = 1;
+      if (v) u0.voice = v;
+      var idx = 1;
+      u0.onend = function(){
+        if (idx >= parts.length) return;
+        var uN = new SpeechSynthesisUtterance(parts[idx]);
+        uN.rate = 1.22;
+        uN.pitch = idx === parts.length - 1 ? 1.44 : 1.4;
+        uN.volume = 1;
+        if (v) uN.voice = v;
+        uN.onend = arguments.callee;
+        speechSynthesis.speak(uN);
+        idx++;
+      };
+      speechSynthesis.speak(u0);
     } catch(e) {}
   }
 
