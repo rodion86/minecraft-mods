@@ -1360,15 +1360,34 @@ applyLang();
     'Расскажи подробнее! Я силён в мире Minecraft: оптимизация, моды, клиенты, ошибки входа.'
   ];
 
+  function pickVoice() {
+    var vs = speechSynthesis.getVoices();
+    if (!vs.length) return null;
+    var male = /dmitri|pavel|mihail|mikhail|yuri|yurii|alexander|boris|ivan|maxim|artem|dmitry/i;
+    var ruin = /^ru|ru-ru/i;
+    var preferred = null, anyRu = null;
+    for (var i = 0; i < vs.length; i++) {
+      var v = vs[i];
+      if (ruin.test(v.lang)) {
+        if (!anyRu) anyRu = v;
+        if (male.test(v.name)) { preferred = v; break; }
+      }
+    }
+    return preferred || anyRu || vs[0];
+  }
   function say(text) {
     try {
       if (!window.speechSynthesis) return;
       speechSynthesis.cancel();
       var u = new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
-      u.rate = 1.02;
-      u.pitch = 1.08;
-      var vs = speechSynthesis.getVoices();
-      for (var i = 0; i < vs.length; i++) { if (/ru/i.test(vs[i].lang)) { u.voice = vs[i]; break; } }
+      u.rate = 0.96;
+      u.pitch = 0.82;
+      u.volume = 1;
+      var v = pickVoice();
+      if (v) {
+        u.voice = v;
+        if (/ru/i.test(v.lang)) { u.pitch = 0.78; }
+      }
       speechSynthesis.speak(u);
     } catch(e) {}
   }
