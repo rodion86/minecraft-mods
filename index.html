@@ -1363,6 +1363,7 @@ applyLang();
   function pickVoice() {
     var vs = speechSynthesis.getVoices();
     if (!vs.length) return null;
+    var energetic = /pavel|ivan|maxim|artem|yuri|yurii|google/i;
     var male = /dmitri|pavel|mihail|mikhail|yuri|yurii|alexander|boris|ivan|maxim|artem|dmitry/i;
     var ruin = /^ru|ru-ru/i;
     var preferred = null, anyRu = null;
@@ -1370,7 +1371,8 @@ applyLang();
       var v = vs[i];
       if (ruin.test(v.lang)) {
         if (!anyRu) anyRu = v;
-        if (male.test(v.name)) { preferred = v; break; }
+        if (energetic.test(v.name)) { preferred = v; break; }
+        if (!preferred && male.test(v.name)) preferred = v;
       }
     }
     return preferred || anyRu || vs[0];
@@ -1380,13 +1382,13 @@ applyLang();
       if (!window.speechSynthesis) return;
       speechSynthesis.cancel();
       var u = new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
-      u.rate = 0.96;
-      u.pitch = 0.82;
+      u.rate = 1.18;
+      u.pitch = 1.32;
       u.volume = 1;
       var v = pickVoice();
       if (v) {
         u.voice = v;
-        if (/ru/i.test(v.lang)) { u.pitch = 0.78; }
+        if (/ru/i.test(v.lang)) { u.pitch = 1.35; }
       }
       speechSynthesis.speak(u);
     } catch(e) {}
