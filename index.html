@@ -1409,8 +1409,54 @@ applyLang();
     try { localStorage.setItem(KEY, JSON.stringify(history)); } catch(e) {}
   }
 
+  var STOP = ['что','такое','это','этот','эта','какой','какая','какие','какое','за','про','по','кто','такая','такой','такое','значит','и','или','от','для','он','она','они','есть','был','была','были'];
+  var LOOKUP = ['что такое','что это за','что за','что это','это что','какой это','какая это','какое это','кто такой','кто такая','что значит','это за','что означает'];
+
+  function detectLookup(q) {
+    var ql = q.toLowerCase();
+    for (var i = 0; i < LOOKUP.length; i++) {
+      if (ql.indexOf(LOOKUP[i]) !== -1) return true;
+    }
+    return /what is|what's|whats|who is|wtf/i.test(q);
+  }
+  function extractSubject(q) {
+    var ql = q.toLowerCase();
+    var words = ql.split(/[^a-zа-яё0-9]+/i);
+    var out = [];
+    for (var i = 0; i < words.length; i++) {
+      var w = words[i];
+      if (!w || w.length < 2) continue;
+      if (STOP.indexOf(w) !== -1) continue;
+      out.push(w);
+    }
+    return out.join(' ');
+  }
+
   function think(q) {
     var ql = q.toLowerCase();
+    var isLook = detectLookup(q);
+    if (isLook) {
+      var subj = extractSubject(q);
+      if (subj) {
+        var sq = subj.split(/\s+/);
+        var hit = null;
+        var score = 0;
+        for (var di = 0; di < DB.length; di++) {
+          var dn = DB[di].name.toLowerCase();
+          var sc = 0;
+          for (var sI = 0; sI < sq.length; sI++) {
+            if (sq[sI].length < 2) continue;
+            if (dn.indexOf(sq[sI]) !== -1) sc += sq[sI].length;
+            else if ((DB[di].tags || []).join(' ').toLowerCase().indexOf(sq[sI]) !== -1) sc += 1;
+          }
+          if (sc > score) { score = sc; hit = DB[di]; }
+        }
+        if (hit && score >= 2) {
+          var catRu = CAT[hit.cat] || '';
+          return '<b>' + esc(hit.name) + '</b> — это ' + esc(hit.desc.toLowerCase().replace(/\.$/, '')) + '.<br>Категория: ' + esc(catRu) + ' · Рейтинг: ' + hit.rating + ' ★ · Версия: ' + esc(hit.platform) + '<br>Оригинальный сайт: <a href="' + esc(hit.link) + '" target="_blank" rel="noopener">' + esc(hit.link) + '</a>';
+        }
+      }
+    }
     var best = null;
     for (var i = 0; i < KB.length; i++) {
       var kb = KB[i];
@@ -1552,7 +1598,8 @@ applyLang();
     addMsg('user', '<span>' + esc(text) + '</span>');
     if (answer === null) {
       typing();
-      setTimeout(function(){ answerWeb(text); }, 500);
+      var webQ = detectLookup(text) ? (extractSubject(text) || text) : text;
+      setTimeout(function(){ answerWeb(webQ); }, 500);
       return;
     }
     typing();
