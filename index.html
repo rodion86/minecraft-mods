@@ -1360,22 +1360,29 @@ applyLang();
     'Расскажи подробнее! Я силён в мире Minecraft: оптимизация, моды, клиенты, ошибки входа.'
   ];
 
+  var VOICES = [];
+  var VOICES_LOADED = false;
+  function loadVoices() {
+    if (!window.speechSynthesis) return;
+    var got = speechSynthesis.getVoices();
+    if (got && got.length) { VOICES = got; VOICES_LOADED = true; }
+  }
   function pickVoice() {
-    var vs = speechSynthesis.getVoices();
-    if (!vs.length) return null;
-    var energetic = /pavel|ivan|maxim|artem|yuri|yurii|google/i;
-    var male = /dmitri|pavel|mihail|mikhail|yuri|yurii|alexander|boris|ivan|maxim|artem|dmitry/i;
+    loadVoices();
+    if (!VOICES.length) return null;
+    var energetic = /pavel|ivan|maxim|artem|yuri|yurii|google|oleg|kiril/i;
+    var male = /dmitri|pavel|mihail|mikhail|yuri|yurii|alexander|boris|ivan|maxim|artem|dmitry|oleg|kiril/i;
     var ruin = /^ru|ru-ru/i;
     var preferred = null, anyRu = null;
-    for (var i = 0; i < vs.length; i++) {
-      var v = vs[i];
+    for (var i = 0; i < VOICES.length; i++) {
+      var v = VOICES[i];
       if (ruin.test(v.lang)) {
         if (!anyRu) anyRu = v;
         if (energetic.test(v.name)) { preferred = v; break; }
         if (!preferred && male.test(v.name)) preferred = v;
       }
     }
-    return preferred || anyRu || vs[0];
+    return preferred || anyRu || VOICES[0];
   }
   function say(text) {
     try {
@@ -1694,6 +1701,10 @@ applyLang();
   }
 
   if (openBtn) openBtn.onclick = open;
+  loadVoices();
+  if (window.speechSynthesis) {
+    speechSynthesis.onvoiceschanged = function(){ loadVoices(); };
+  }
   document.getElementById('chatClose').onclick = close;
   if (sendBtn) sendBtn.onclick = function(){ var v = input.value.trim(); if (v) { ask(v); input.value = ''; } };
   input.addEventListener('keydown', function(e){ if (e.key === 'Enter') { var v = input.value.trim(); if (v) { ask(v); input.value = ''; } } });
