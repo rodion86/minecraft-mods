@@ -250,6 +250,19 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .chat-msg.from-user{align-self:flex-end;background:linear-gradient(135deg,var(--ac),rgba(124,58,237,.85));color:#0a0a0c;border-bottom-right-radius:5px;font-weight:600}
 .chat-msg.from-bot{align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-bottom-left-radius:5px;color:rgba(255,255,255,.88);padding-right:42px}
 .chat-msg.from-bot a{color:var(--ac);text-decoration:underline;text-underline-offset:2px}
+.alice-wrap{display:none;position:absolute;inset:0;background:rgba(10,10,14,.7);backdrop-filter:blur(6px);z-index:15;flex-direction:column;align-items:center;justify-content:center;gap:20px;border-radius:24px}
+.alice-wrap.on{display:flex}
+.alice-ring{position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center}
+.alice-ring i{position:absolute;width:6px;border-radius:6px;background:linear-gradient(180deg,#f6f6f8,#c44eff);transform-origin:60px 3px;animation:aliceBar 1s ease-in-out infinite;box-shadow:0 0 12px #c44eff}
+.alice-ring i:nth-child(1){transform:rotate(0deg) translateY(-57px) scaleY(.5);height:26px;animation-delay:-.2s}
+.alice-ring i:nth-child(2){transform:rotate(72deg) translateY(-57px) scaleY(.9);height:42px;animation-delay:-.4s}
+.alice-ring i:nth-child(3){transform:rotate(144deg) translateY(-57px) scaleY(.35);height:20px;animation-delay:-.6s}
+.alice-ring i:nth-child(4){transform:rotate(216deg) translateY(-57px) scaleY(.75);height:36px;animation-delay:-.8s}
+.alice-ring i:nth-child(5){transform:rotate(288deg) translateY(-57px) scaleY(.6);height:30px;animation-delay:-1s}
+@keyframes aliceBar{0%,100%{opacity:.5}50%{opacity:1;scale:1.15}}
+.alice-msg{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);padding:10px 18px;border-radius:30px;font-size:.86rem;color:#f1f1f5}
+.alice-dot{width:9px;height:9px;border-radius:50%;background:#c44eff;animation:aliceBlink 1.2s ease-in-out infinite;box-shadow:0 0 10px #c44eff}
+@keyframes aliceBlink{0%,100%{opacity:1}50%{opacity:.25}}
 .chat-msg pre{border:1px solid rgba(124,58,237,.3);background:rgba(0,0,0,.45);border-radius:10px;padding:10px 12px;margin:6px 0;font-size:.74rem;line-height:1.55;overflow-x:auto;color:#d6d3ff;font-family:'JetBrains Mono',monospace;white-space:pre-wrap;word-break:break-word}
 .chat-msg pre::before{content:'</>';display:block;font-size:.6rem;color:var(--ac);margin-bottom:4px;opacity:.7;letter-spacing:1px}
 .chat-name{font-size:.7rem;font-weight:700;opacity:.75;margin-bottom:3px;display:flex;align-items:center;gap:5px}
@@ -688,6 +701,10 @@ html,body,body *{cursor:none !important}
       <button class="modal-close" id="chatClose" type="button">✕</button>
     </div>
     <div class="chat-list" id="chatList"></div>
+    <div class="alice-wrap" id="aliceWrap">
+      <div class="alice-ring"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="alice-msg"><span class="alice-dot"></span><span id="aliceText">Слушаю...</span></div>
+    </div>
     <div class="chat-chips" id="chatChips"></div>
     <div class="chat-input-row">
       <button class="chat-mic" id="chatMic" type="button" title="Голосовое">🎤</button>
@@ -1836,27 +1853,60 @@ applyLang();
   if (micBtn) {
     var recog = null;
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var aliceWrapEl = document.getElementById('aliceWrap');
+    var aliceTextEl = document.getElementById('aliceText');
+    function aliceShow(text) {
+      if (!aliceWrapEl) return;
+      if (aliceTextEl) aliceTextEl.textContent = text;
+      aliceWrapEl.classList.add('on');
+    }
+    function aliceHide() {
+      if (aliceWrapEl) aliceWrapEl.classList.remove('on');
+    }
     if (SR) {
       recog = new SR();
       recog.lang = 'ru-RU';
-      recog.interimResults = false;
+      recog.interimResults = true;
       recog.maxAlternatives = 1;
+      recog.continuous = false;
+      var startTs = 0;
+      recog.onstart = function(){
+        startTs = Date.now();
+        micBtn.classList.add('rec');
+        micBtn.textContent = '●';
+        aliceShow('Слушаю...');
+      };
       recog.onresult = function(e){
-        var txt = e.results[0][0].transcript;
+        for (var k = e.resultIndex; k < e.results.length; k++) {
+          var res = e.results[k];
+          var txt = res[0].transcript;
+          if (aliceTextEl && res.isFinal) aliceTextEl.textContent = txt;
+          if (res.isFinal) {
+            var t = txt.trim();
+            t = t.replace(/^(зеон|zeon|алиса|alice)[,?\s]+/i, '').trim();
+            if (t) { input.value = t; recog.stop(); setTimeout(function(){ ask(t); input.value = ''; }, 250); }
+            else if (!t && Date.now() - startTs > 1200) { recog.stop(); aliceHide(); }
+          }
+        }
+      };
+      recog.onerror = function(e){
         micBtn.classList.remove('rec');
         micBtn.textContent = '🎤';
-        if (txt) { input.value = txt; }
+        aliceHide();
+        if (e && e.error === 'not-allowed') micBtn.title = 'Доступ к микрофону запрещён';
       };
-      recog.onerror = function(){ micBtn.classList.remove('rec'); micBtn.textContent = '🎤'; };
-      recog.onend = function(){ micBtn.classList.remove('rec'); micBtn.textContent = '🎤'; };
+      recog.onend = function(){
+        micBtn.classList.remove('rec');
+        micBtn.textContent = '🎤';
+        aliceHide();
+      };
       micBtn.onclick = function(){
         if (micBtn.classList.contains('rec')) {
           recog.stop();
           micBtn.classList.remove('rec');
           micBtn.textContent = '🎤';
+          aliceHide();
         } else {
-          micBtn.classList.add('rec');
-          micBtn.textContent = '●';
           try { recog.start(); } catch(e) {}
         }
       };
