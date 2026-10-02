@@ -1665,14 +1665,22 @@ applyLang();
 
   function webSearch(q) {
     return new Promise(function(resolve) {
+      var cacheKey = 'mc_ws_' + LANG + '_' + q;
+      try {
+        var cached = sessionStorage.getItem(cacheKey);
+        if (cached) { resolve(JSON.parse(cached)); return; }
+      } catch(e) {}
       var done = false;
       var results = [];
       var finished = 0;
       var total = 3;
+      function saveCache() {
+        try { sessionStorage.setItem(cacheKey, JSON.stringify(results)); } catch(e) {}
+      }
       function finish() {
         if (done) return;
         finished++;
-        if (finished >= total) { done = true; resolve(results); }
+        if (finished >= total) { done = true; saveCache(); resolve(results); }
       }
       function grabWikipedia(lang) {
         var url = 'https://' + lang + '.wikipedia.org/w/api.php?action=query&list=search&utf8=1&format=json&origin=*&srlimit=3&srsearch=' + encodeURIComponent(q);
@@ -1762,6 +1770,15 @@ applyLang();
 
   function ask(text) {
     if (busy) return;
+    var nowT = Date.now();
+    if (!ask.queue) ask.queue = [];
+    ask.queue.push(nowT);
+    while (ask.queue.length && nowT - ask.queue[0] > 30000) ask.queue.shift();
+    if (ask.queue.length > 8) {
+      ask.queue.shift();
+      addMsg('bot', '<span>Слишком много сообщений. Подожди немного и продолжим 🙂</span>', { voice: 'Слишком много сообщений, подожди немного и продолжим.' });
+      return;
+    }
     if (isBanned(text)) {
       addMsg('user', '<span>' + esc(text) + '</span>');
       typing();
