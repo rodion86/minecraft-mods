@@ -1099,11 +1099,66 @@ document.getElementById('search').oninput = function(e) {
 };
 
 /* ADMIN */
-var ADMIN_PASS = 'HFCG3grfawrq345zx';
+try {
+  (function antiDebug(){
+    var cd = null;
+    function check(){
+      var el = document.createElement('div');
+      el.style.width = '2px';
+      var start = performance.now();
+      document.body.appendChild(el);
+      var dur = performance.now() - start;
+      el.remove();
+      if (window.innerWidth - document.documentElement.clientWidth > 120 || dur > 30) shadow();
+    }
+    function shadow(){
+      if (adminAuthed) return;
+      ADMIN_DEFENDS.win = 0; ADMIN_DEFENDS.attempts = 0;
+      ADMIN_DEFENDS.lockUntil = Date.now() + 60000;
+      try { sessionStorage.removeItem('mc_admin_ok'); } catch(e) {}
+    }
+    try { cd = new MutationObserver(function(mut){}); cd.disconnect(); } catch(e) {}
+    window.addEventListener('resize', function(){ if (window.innerWidth - document.documentElement.clientWidth > 120) shadow(); }, true);
+    setInterval(check, 3000);
+  })();
+} catch(e) {}
+var ADMIN_PASS_HASH = 'cec1495913e703206fac3031534aa25d525268051f6f1dbd4118e0638bebae6e';
+var ADMIN_DEFENDS = {
+  win: 0,
+  lockUntil: 0,
+  attempts: 0
+};
 var ADMIN_STORAGE = 'mc_admin_v1';
 var admin = { events: [], cards: [], texts: {}, news: [] };
 var adminAuthed = sessionStorage.getItem('mc_admin_ok') === '1';
 var fbApp = null, fbDb = null, fbSync = false;
+
+function sha256(str) {
+  var buf = new TextEncoder().encode(str);
+  return crypto.subtle.digest('SHA-256', buf).then(function(hashBuf){
+    return Array.prototype.map.call(new Uint8Array(hashBuf), function(b){ return b.toString(16).padStart(2, '0'); }).join('');
+  });
+}
+
+function adminBlocked() {
+  return Date.now() < ADMIN_DEFENDS.lockUntil;
+}
+
+function adminBlockLeft() {
+  var ms = ADMIN_DEFENDS.lockUntil - Date.now();
+  return ms > 0 ? Math.ceil(ms / 1000) : 0;
+}
+
+function adminTryBlock() {
+  ADMIN_DEFENDS.attempts++;
+  var s = ADMIN_DEFENDS.win === 0 ? 30 : 60;
+  var add = ADMIN_DEFENDS.attempts * 5;
+  ADMIN_DEFENDS.lockUntil = Date.now() + (s + add) * 1000;
+  ADMIN_DEFENDS.win++;
+  if (ADMIN_DEFENDS.win >= 10) {
+    ADMIN_DEFENDS.lockUntil = Date.now() + 10 * 60 * 1000;
+  }
+}
 
 function adminLoad() {
   var raw = localStorage.getItem(ADMIN_STORAGE);
@@ -1191,17 +1246,34 @@ function openAdmin() {
 }
 
 function tryAdminPass() {
-  if (document.getElementById('adminPassInput').value === ADMIN_PASS) {
-    adminAuthed = true;
-    sessionStorage.setItem('mc_admin_ok', '1');
-    document.getElementById('adminPassModal').classList.remove('open');
-    document.getElementById('adminPassErr').textContent = '';
-    document.getElementById('adminPassInput').value = '';
-    document.getElementById('adminModal').classList.add('open');
-    refreshAdminLists();
-  } else {
-    document.getElementById('adminPassErr').textContent = LANG === 'ru' ? 'Неверный пароль' : 'Wrong password';
+  var err = document.getElementById('adminPassErr');
+  var inp = document.getElementById('adminPassInput');
+  if (adminBlocked()) {
+    err.textContent = (LANG === 'ru' ? 'Слишком много попыток. Подождите ' : 'Too many attempts. Wait ') + adminBlockLeft() + ' сек';
+    return;
   }
+  var pass = inp.value;
+  sha256(pass).then(function(h){
+    if (h === ADMIN_PASS_HASH) {
+      adminAuthed = true;
+      ADMIN_DEFENDS.win = 0;
+      ADMIN_DEFENDS.attempts = 0;
+      sessionStorage.setItem('mc_admin_ok', '1');
+      document.getElementById('adminPassModal').classList.remove('open');
+      err.textContent = '';
+      inp.value = '';
+      document.getElementById('adminModal').classList.add('open');
+      refreshAdminLists();
+    } else {
+      adminTryBlock();
+      if (adminBlocked()) {
+        err.textContent = (LANG === 'ru' ? 'Неверный пароль. Блокировка на ' : 'Wrong password. Locked for ') + adminBlockLeft() + ' сек';
+      } else {
+        err.textContent = LANG === 'ru' ? 'Неверный пароль' : 'Wrong password';
+      }
+      inp.select();
+    }
+  });
 }
 
 document.getElementById('adminFab').onclick = openAdmin;
