@@ -714,6 +714,19 @@ html,body,body *{cursor:none !important}
   </div>
 </div>
 
+<div class="modal" id="zeonPassModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div class="modal-title">Zeon AI</div>
+      <button class="modal-close" id="zeonPassClose" type="button">✕</button>
+    </div>
+    <p style="color:rgba(255,255,255,.35);font-size:.78rem;margin-bottom:14px" id="zeonPassHint">Введи пароль для доступа</p>
+    <input class="modal-input" id="zeonPassInput" type="password" autocomplete="off" placeholder="Пароль">
+    <button class="modal-submit" id="zeonPassBtn" type="button">Войти</button>
+    <div class="modal-err" id="zeonPassErr"></div>
+  </div>
+</div>
+
 
 <div id="katanaCursor"><img src="netherite-sword.svg?v=2" alt="" draggable="false"></div>
 <div id="sharpen"></div>
@@ -1845,6 +1858,7 @@ applyLang();
   }
 
   function open() {
+    if (!zeonAuthed()) { openZeonPass(); return; }
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
     var splash = document.getElementById('zeonSplash');
@@ -1861,6 +1875,70 @@ applyLang();
   function close() {
     modal.classList.remove('open');
     document.body.style.overflow = '';
+  }
+
+  var ZEON_PASS_HASH = '7dd385bd1c20e8a1073cfc2eff29fd390ff1a1919d7f229cf142547e34d7d592';
+  var ZEON_LOCK = { attempts: 0, until: 0 };
+  var ZEON_TTL = 8 * 60 * 60 * 1000;
+
+  function zeonAuthed() {
+    try {
+      var v = parseInt(localStorage.getItem('mc_zeon_ts') || '0', 10);
+      if (v && Date.now() - v < ZEON_TTL) return true;
+      localStorage.removeItem('mc_zeon_ts');
+    } catch(e) {}
+    return false;
+  }
+
+  function openZeonPass() {
+    var pm = document.getElementById('zeonPassModal');
+    if (!pm) { open(); return; }
+    pm.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    var inp = document.getElementById('zeonPassInput');
+    inp.value = '';
+    setTimeout(function(){ inp.focus(); }, 120);
+  }
+
+  function tryZeonPass() {
+    var err = document.getElementById('zeonPassErr');
+    var inp = document.getElementById('zeonPassInput');
+    if (Date.now() < ZEON_LOCK.until) {
+      err.textContent = (LANG === 'ru' ? 'Подождите ' : 'Wait ') + Math.ceil((ZEON_LOCK.until - Date.now()) / 1000) + ' сек';
+      return;
+    }
+    sha256(inp.value).then(function(h) {
+      if (h === ZEON_PASS_HASH) {
+        ZEON_LOCK.attempts = 0;
+        ZEON_LOCK.until = 0;
+        localStorage.setItem('mc_zeon_ts', String(Date.now()));
+        document.getElementById('zeonPassModal').classList.remove('open');
+        err.textContent = '';
+        open();
+      } else {
+        ZEON_LOCK.attempts++;
+        ZEON_LOCK.until = Date.now() + (ZEON_LOCK.attempts * 10 + 10) * 1000;
+        err.textContent = (LANG === 'ru' ? 'Неверный пароль. Блокировка ' : 'Wrong password. Locked for ') + Math.ceil((ZEON_LOCK.until - Date.now()) / 1000) + ' сек';
+        inp.select();
+      }
+    }).catch(function(){
+      err.textContent = LANG === 'ru' ? 'Открой сайт по HTTPS и попробуй снова' : 'Open the site over HTTPS and retry';
+    });
+  }
+
+  var zeonPassBtn = document.getElementById('zeonPassBtn');
+  var zeonPassInput = document.getElementById('zeonPassInput');
+  var zeonPassModal = document.getElementById('zeonPassModal');
+  if (zeonPassBtn) zeonPassBtn.onclick = tryZeonPass;
+  if (zeonPassInput) zeonPassInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryZeonPass(); });
+  if (zeonPassModal) {
+    document.getElementById('zeonPassClose').onclick = function(){
+      zeonPassModal.classList.remove('open');
+      document.body.style.overflow = '';
+    };
+    zeonPassModal.addEventListener('click', function(e){
+      if (e.target === zeonPassModal) { zeonPassModal.classList.remove('open'); document.body.style.overflow = ''; }
+    });
   }
 
   if (openBtn) openBtn.onclick = open;
