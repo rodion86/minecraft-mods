@@ -1497,6 +1497,7 @@ applyLang();
   }
 
   var CHIPS = ['Привет', 'Лучшие читы', 'Что посоветуешь из визуалов', 'Как убрать лаги', 'Ошибка при входе', 'Support'];
+  var lastTopic = null;
   var KB = [
     {k:['привет','здравств','хай','hello','hi ','ку','салют'], a:'Привет! Я Zeon AI — твой помощник по Minecraft. Спрашивай про читы, моды, визуалы, ошибки и настройки. Чем помочь?'},
     {k:['как тебя зов','кто ты','zeon','ты бот'], a:'Я Zeon AI — умный помощник по Minecraft. Знаю читы, моды, визуалы, лаунчеры и могу помочь с ошибками. Ещё умею говорить голосом — жми на 🔊 в моих ответах.'},
@@ -1633,58 +1634,247 @@ applyLang();
 
   function think(q) {
     var ql = q.toLowerCase();
+    var stems = stemQuery(ql);
+
+    var cont = contextTopic(ql);
+    if (cont) return cont;
+
     var isLook = detectLookup(q);
     if (isLook) {
       var subj = extractSubject(q);
       if (subj) {
-        var sq = subj.split(/\s+/);
-        var hit = null;
-        var score = 0;
-        for (var di = 0; di < DB.length; di++) {
-          var dn = DB[di].name.toLowerCase();
-          var sc = 0;
-          for (var sI = 0; sI < sq.length; sI++) {
-            if (sq[sI].length < 2) continue;
-            if (dn.indexOf(sq[sI]) !== -1) sc += sq[sI].length;
-            else if ((DB[di].tags || []).join(' ').toLowerCase().indexOf(sq[sI]) !== -1) sc += 1;
-          }
-          if (sc > score) { score = sc; hit = DB[di]; }
-        }
-        if (hit && score >= 2) {
-          var catRu = CAT[hit.cat] || '';
-          return '<b>' + esc(hit.name) + '</b> — это ' + esc(hit.desc.toLowerCase().replace(/\.$/, '')) + '.<br>Категория: ' + esc(catRu) + ' · Рейтинг: ' + hit.rating + ' ★ · Версия: ' + esc(hit.platform) + '<br>Оригинальный сайт: <a href="' + esc(hit.link) + '" target="_blank" rel="noopener">' + esc(hit.link) + '</a>';
-        }
+        var hit = matchApp(subj);
+        if (hit) { lastTopic = hit; return appCard(hit); }
       }
     }
+
+    var cmp = matchCompare(ql, stems);
+    if (cmp) return cmp;
+
+    var stat = matchStat(ql);
+    if (stat) return stat;
+
+    var top = matchTop(ql, stems);
+    if (top) { lastTopic = top[0]; return top[1]; }
+
+    var kb = bestKB(ql, stems);
+    if (kb) return kb.a;
+
+    var named = matchNamed(ql);
+    if (named) { lastTopic = named[0]; return named[1]; }
+
+    var single = matchSingle(ql, stems);
+    if (single) { lastTopic = single; return appCard(single); }
+
+    var near = suggestApps(stems);
+    if (near) {
+      return 'Не нашёл точного совпадения, но вот ближайшее:<br>' + fmtApps(near) +
+        '<br><br>Если это не то — уточни название, или спроси «лучшие читы», «топ лаунчеров», «сколько приложений».';
+    }
+    return null;
+  }
+
+  function stemRu(w) {
+    w = (w || '').toLowerCase().replace(/ё/g, 'е').replace(/[^a-zа-я0-9]/g, '');
+    if (w.length <= 3) return w;
+    var suf = ['ами','ями','ами','ямся','ами','ов','ев','ей','ах','ях','ам','ям','ой','ый','ий','ую','юю','ого','его','ому','ему','ыми','ими','ать','ять','еть','уть','ться','ться','ся','ть','ла','ло','ли','та','то','ты'];
+    for (var i = 0; i < suf.length; i++) {
+      var s = suf[i];
+      if (w.length - s.length >= 3 && w.slice(-s.length) === s) return w.slice(0, w.length - s.length);
+    }
+    return w;
+  }
+
+  function stemQuery(ql) {
+    var words = ql.split(/[^a-zа-я0-9]+/i);
+    var out = [];
+    for (var i = 0; i < words.length; i++) {
+      var w = words[i];
+      if (!w || w.length < 3) continue;
+      var s = stemRu(w);
+      if (s && s.length >= 3 && STOP.indexOf(s) === -1 && STOP.indexOf(w) === -1) out.push(s);
+    }
+    return out;
+  }
+
+  function matchApp(text) {
+    var tl = text.toLowerCase();
+    var stems = stemQuery(tl);
+    var hit = null, score = 0;
+    for (var di = 0; di < DB.length; di++) {
+      var dn = DB[di].name.toLowerCase();
+      var sc = 0;
+      for (var sI = 0; sI < stems.length; sI++) {
+        var st = stems[sI];
+        if (st.length < 3) continue;
+        if (dn.indexOf(st) !== -1) sc += st.length * 2;
+        else if ((DB[di].tags || []).join(' ').toLowerCase().indexOf(st) !== -1) sc += 2;
+        else if (partialName(dn, st)) sc += 3;
+      }
+      if (sc > score) { score = sc; hit = DB[di]; }
+    }
+    return (hit && score >= 3) ? hit : null;
+  }
+
+  function partialName(name, stem) {
+    for (var i = 0; i < name.length - stem.length + 1; i++) {
+      if (name.substr(i, stem.length) === stem) return true;
+    }
+    return false;
+  }
+
+  function appCard(a) {
+    var catRu = CAT[a.cat] || '';
+    return '<b>' + esc(a.name) + '</b> — ' + esc(a.desc.toLowerCase().replace(/\.$/, '')) + '.<br>' +
+      'Категория: ' + esc(catRu) + ' · Рейтинг: ' + a.rating + ' ★ · Версия: ' + esc(a.platform) + '<br>' +
+      'Оригинальный сайт: <a href="' + esc(a.link) + '" target="_blank" rel="noopener">' + esc(a.link) + '</a>';
+  }
+
+  function matchCompare(ql, stems) {
+    var m = ql.match(/что\s+лучше|что\s+из|что\s+выбрать|или\s+лучше|сравни|что\s+топ|что\s+норм/);
+    if (!m && ql.indexOf(' или ') === -1) return null;
+    if (stems.length < 2) return null;
+    var cand = [];
+    for (var i = 0; i < stems.length; i++) {
+      if (stems[i].length < 3) continue;
+      var h = matchApp(stems[i]);
+      if (h && cand.indexOf(h) === -1) cand.push(h);
+      if (cand.length >= 3) break;
+    }
+    if (cand.length < 2) return null;
+    var best = cand[0];
+    for (var c = 1; c < cand.length; c++) if (cand[c].rating > best.rating) best = cand[c];
+    var lines = ['Сравниваю:<br>'];
+    for (var k = 0; k < cand.length; k++) {
+      lines.push('<b>' + esc(cand[k].name) + '</b> — ' + cand[k].rating + ' ★ · ' + esc(cand[k].platform) + ' · ' + esc(CAT[cand[k].cat] || ''));
+    }
+    lines.push('<br>🏆 <b>Мой выбор: ' + esc(best.name) + '</b> — рейтинг ' + best.rating + ' ★. ' + esc(best.desc));
+    lines.push('Ссылка: <a href="' + esc(best.link) + '" target="_blank" rel="noopener">' + esc(best.link) + '</a>');
+    lastTopic = best;
+    return lines.join('<br>');
+  }
+
+  function matchStat(ql) {
+    if (!/сколько|какие категории|категории есть|сколько всего/.test(ql)) return null;
+    var apps = DB.length + (admin.cards ? admin.cards.length : 0);
+    var cats = Object.keys(CAT).length;
+    var lines = ['📊 Статистика каталога:<br>• Приложений: <b>' + apps + '</b><br>• Категорий: <b>' + cats + '</b>'];
     var best = null;
-    for (var i = 0; i < KB.length; i++) {
-      var kb = KB[i];
-      for (var j = 0; j < kb.k.length; j++) {
-        if (ql.indexOf(kb.k[j]) !== -1) { best = kb; break; }
+    for (var i = 0; i < DB.length; i++) if (!best || DB[i].rating > best.rating) best = DB[i];
+    if (best) lines.push('• Лучший по рейтингу: <b>' + esc(best.name) + '</b> (' + best.rating + ' ★)');
+    lines.push('<br>Спроси «топ лаунчеров», «лучшие читы» или «что лучше X или Y» — сравню.');
+    return lines.join('<br>');
+  }
+
+  function matchTop(ql, stems) {
+    var cat = null;
+    var catWords = { launcher: ['лаунчер','запуск','launcher'], loader: ['загрузчик','fabric','forge','loader'], manager: ['менеджер','manager'], builder: ['сборк','модпак','builder'], tool: ['инструмент','оптимизац','шейдер','tool'], cheat: ['чит','читы','hack','cheat'], visual: ['визуал','космет','visual'] };
+    for (var ck in catWords) {
+      for (var w = 0; w < catWords[ck].length; w++) {
+        var cw = catWords[ck][w];
+        if (ql.indexOf(cw) !== -1) { cat = ck; break; }
       }
-      if (best) break;
+      if (cat) break;
     }
-    if (!best) {
-      var hits = [];
-      for (var d = 0; d < DB.length; d++) {
-        var name = DB[d].name.toLowerCase();
-        if (ql.indexOf(name) !== -1) hits.push(DB[d]);
+    if (!cat) {
+      for (var s = 0; s < stems.length; s++) {
+        for (var c2 in catWords) {
+          if (catWords[c2].indexOf(stems[s]) !== -1) { cat = c2; break; }
+        }
+        if (cat) break;
       }
-      if (hits.length) {
-        return 'Нашёл в каталоге:<br>' + fmtApps(hits);
-      }
-      var words = ql.split(/\s+/);
-      var foundHit = null;
-      for (var w = 0; w < words.length && !foundHit; w++) {
-        if (words[w].length < 3) continue;
-        for (var d2 = 0; d2 < DB.length && !foundHit; d2++) {
-          if (DB[d2].name.toLowerCase().indexOf(words[w]) !== -1 || (DB[d2].tags && DB[d2].tags.join(' ').toLowerCase().indexOf(words[w]) !== -1)) foundHit = DB[d2];
+    }
+    if (!cat) return null;
+    if (!/лучш|топ|популярн|посовет|рекоменд|что взять|покажи/.test(ql)) return null;
+    var pool = byCat(cat).slice();
+    if (!pool.length) return null;
+    pool.sort(function(a, b){ return b.rating - a.rating; });
+    var top3 = pool.slice(0, 3);
+    return [top3[0], '🏆 Топ-3 в категории «' + esc(CAT[cat]) + '»:<br>' + fmtApps(top3)];
+  }
+
+  function bestKB(ql, stems) {
+    var best = null, bestScore = 0;
+    for (var i = 0; i < KB.length; i++) {
+      var kb = KB[i], sc = 0;
+      for (var j = 0; j < kb.k.length; j++) {
+        var key = kb.k[j];
+        if (ql.indexOf(key) !== -1) { sc += key.length * 3; continue; }
+        var ks = stemRu(key);
+        for (var s = 0; s < stems.length; s++) {
+          if (stems[s] === ks || (ks.length > 3 && stems[s].indexOf(ks) !== -1)) { sc += 5; break; }
         }
       }
-      if (foundHit) return 'Похоже ты про <b>' + esc(foundHit.name) + '</b> — ' + esc(foundHit.desc) + ' <a href="' + esc(foundHit.link) + '" target="_blank" rel="noopener">скачать</a>';
-      return null;
+      if (sc > bestScore) { bestScore = sc; best = kb; }
     }
-    return best.a;
+    return bestScore >= 5 ? best : null;
+  }
+
+  function matchNamed(ql) {
+    var hits = [];
+    for (var d = 0; d < DB.length; d++) {
+      if (ql.indexOf(DB[d].name.toLowerCase()) !== -1) hits.push(DB[d]);
+    }
+    if (hits.length) return [hits[0], 'Нашёл в каталоге:<br>' + fmtApps(hits)];
+    return null;
+  }
+
+  function matchSingle(ql, stems) {
+    for (var w = 0; w < stems.length; w++) {
+      if (stems[w].length < 4) continue;
+      var h = matchApp(stems[w]);
+      if (h) return h;
+    }
+    return null;
+  }
+
+  function suggestApps(stems) {
+    if (!stems.length) return null;
+    var scored = [];
+    for (var d = 0; d < DB.length; d++) {
+      var a = DB[d];
+      var hay = (a.name + ' ' + a.tags.join(' ') + ' ' + a.desc).toLowerCase();
+      var sc = 0;
+      for (var s = 0; s < stems.length; s++) {
+        var st = stems[s];
+        if (st.length < 4) continue;
+        if (hay.indexOf(st) !== -1) sc += 2;
+        else if (commonPrefix(hay, st) >= Math.min(4, st.length - 1)) sc += 1;
+      }
+      if (sc > 0) scored.push({ a: a, sc: sc });
+    }
+    if (!scored.length) return null;
+    scored.sort(function(x, y){ return y.sc - x.sc || y.a.rating - x.a.rating; });
+    var out = [];
+    for (var i = 0; i < scored.length && i < 3; i++) out.push(scored[i].a);
+    return out;
+  }
+
+  function commonPrefix(hay, word) {
+    var best = 0;
+    for (var i = 0; i < hay.length - word.length + 1; i++) {
+      if (hay.substr(i, word.length) === word) return word.length;
+      var c = 0;
+      for (var j = 0; j < word.length && i + j < hay.length; j++) {
+        if (hay[i + j] === word[j]) c++; else break;
+      }
+      if (c > best) best = c;
+    }
+    return best;
+  }
+
+  function contextTopic(ql) {
+    if (!lastTopic) return null;
+    var short = ql.split(/\s+/).length <= 5;
+    if (!short) return null;
+    if (/^(он|она|оно|они|этот|эта|это|тот|та|про него|про нее|о нем|о ней|а он|а она|а оно|как он|а как)\b/.test(ql) || /\b(он|она|оно|они|его|её|ее)\b/.test(ql)) {
+      var add = '';
+      if (/безопас|безопасн|вирус|бан/.test(ql)) add = '<br><br>По безопасности: скачивай только с оригинального сайта — все ссылки выше ведут на официальные источники.';
+      else if (/лучше|топ|рекоменд/.test(ql)) add = '<br><br>Для сравнения скажи «что лучше X или Y» — подберу по рейтингу.';
+      else add = '<br><br>Скажи что конкретно интересует — версия, установка, рейтинг или сравнение.';
+      return appCard(lastTopic) + add;
+    }
+    return null;
   }
 
   function webSearch(q) {
