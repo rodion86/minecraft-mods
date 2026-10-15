@@ -717,12 +717,23 @@ html,body,body *{cursor:none !important}
 <div class="modal" id="zeonPassModal">
   <div class="modal-card">
     <div class="modal-head">
-      <div class="modal-title">Zeon AI</div>
+      <div class="modal-title">Zeon AI<span class="zeon-beta">.beta</span></div>
       <button class="modal-close" id="zeonPassClose" type="button">✕</button>
     </div>
-    <p style="color:rgba(255,255,255,.35);font-size:.78rem;margin-bottom:14px" id="zeonPassHint">Введи пароль для доступа</p>
-    <input class="modal-input" id="zeonPassInput" type="password" autocomplete="off" placeholder="Пароль">
-    <button class="modal-submit" id="zeonPassBtn" type="button">Войти</button>
+    <div class="zs-seg" id="zeonAuthTabs" style="margin-bottom:14px">
+      <button data-mode="pass" class="active" type="button">Пароль</button>
+      <button data-mode="promo" type="button">Промо</button>
+    </div>
+    <div id="zeonAuthPass">
+      <p style="color:rgba(255,255,255,.35);font-size:.78rem;margin-bottom:14px">Введи пароль для доступа</p>
+      <input class="modal-input" id="zeonPassInput" type="password" autocomplete="off" placeholder="Пароль">
+      <button class="modal-submit" id="zeonPassBtn" type="button">Войти</button>
+    </div>
+    <div id="zeonAuthPromo" style="display:none">
+      <p style="color:rgba(255,255,255,.35);font-size:.78rem;margin-bottom:14px">Активируй промокод: 12ч / 6ч / 2ч доступа</p>
+      <input class="modal-input" id="zeonPromoInput" type="text" autocomplete="off" placeholder="ZEON12-XXXXXX">
+      <button class="modal-submit" id="zeonPromoBtn" type="button">Активировать</button>
+    </div>
     <div class="modal-err" id="zeonPassErr"></div>
   </div>
 </div>
@@ -1878,16 +1889,38 @@ applyLang();
   }
 
   var ZEON_PASS_HASH = '7dd385bd1c20e8a1073cfc2eff29fd390ff1a1919d7f229cf142547e34d7d592';
+  var ZEON_PROMOS = {
+    'e1ad0eb3569ea267217e2c34c9cb1c17d04f978dc779a8e8878d32c4108d7d6b': 12,
+    '00c2250b86ead80b3dc1b3cc7e197d3ed9efd00bd5a4350094e931fea055b1ca': 12,
+    '81f611849fdbb46fbc8a298b6f4b93ea270eb35279f841ee658e0fbdd16a20c4': 12,
+    'f0a3e5fdf0d8dd5b709a4f290c114ee5c19d8dd74e38130fed79bfe0204d91b8': 6,
+    '7ef809019f160ccd958e35c742f3390699ada12de16ed8dfbf889067edb68cf6': 6,
+    '8f3a7856eb060f7c9ea76022c203279c8cc3497e9ae052fcc0bb2a2d88ab2a55': 6,
+    'a17cb5ea99dd6e37bf26b6a10bb0f50996d26407a80f18b2e364aa272fe89933': 2,
+    '21a6ad1cbd37897b05d81bfc57a0bcb6decdd39febe732684b443795e155d1e2': 2,
+    '6efd287845a5f684674ff4d27a5b471e5929c5e34358c8000b2a1c4dc9059c95': 2
+  };
   var ZEON_LOCK = { attempts: 0, until: 0 };
-  var ZEON_TTL = 8 * 60 * 60 * 1000;
+  var ZEON_PASS_TTL = 8 * 60 * 60 * 1000;
 
+  function zeonUntil() {
+    return parseInt(localStorage.getItem('mc_zeon_until') || '0', 10);
+  }
+  function zeonGrant(hours) {
+    var now = Date.now();
+    var until = Math.max(now, zeonUntil()) + hours * 60 * 60 * 1000;
+    localStorage.setItem('mc_zeon_until', String(until));
+  }
   function zeonAuthed() {
     try {
-      var v = parseInt(localStorage.getItem('mc_zeon_ts') || '0', 10);
-      if (v && Date.now() - v < ZEON_TTL) return true;
-      localStorage.removeItem('mc_zeon_ts');
+      if (zeonUntil() > Date.now()) return true;
+      localStorage.removeItem('mc_zeon_until');
     } catch(e) {}
     return false;
+  }
+  function zeonGrantPass() {
+    var now = Date.now();
+    localStorage.setItem('mc_zeon_until', String(Math.max(now, zeonUntil()) + ZEON_PASS_TTL));
   }
 
   function openZeonPass() {
@@ -1895,9 +1928,10 @@ applyLang();
     if (!pm) { open(); return; }
     pm.classList.add('open');
     document.body.style.overflow = 'hidden';
+    document.getElementById('zeonPassErr').textContent = '';
     var inp = document.getElementById('zeonPassInput');
-    inp.value = '';
-    setTimeout(function(){ inp.focus(); }, 120);
+    if (inp) inp.value = '';
+    setTimeout(function(){ if (inp) inp.focus(); }, 120);
   }
 
   function tryZeonPass() {
@@ -1911,7 +1945,7 @@ applyLang();
       if (h === ZEON_PASS_HASH) {
         ZEON_LOCK.attempts = 0;
         ZEON_LOCK.until = 0;
-        localStorage.setItem('mc_zeon_ts', String(Date.now()));
+        zeonGrantPass();
         document.getElementById('zeonPassModal').classList.remove('open');
         err.textContent = '';
         open();
@@ -1926,11 +1960,61 @@ applyLang();
     });
   }
 
+  function tryZeonPromo() {
+    var err = document.getElementById('zeonPassErr');
+    var inp = document.getElementById('zeonPromoInput');
+    if (Date.now() < ZEON_LOCK.until) {
+      err.textContent = (LANG === 'ru' ? 'Подождите ' : 'Wait ') + Math.ceil((ZEON_LOCK.until - Date.now()) / 1000) + ' сек';
+      return;
+    }
+    sha256(inp.value.trim().toUpperCase()).then(function(h) {
+      var hours = ZEON_PROMOS[h];
+      if (hours) {
+        ZEON_LOCK.attempts = 0;
+        ZEON_LOCK.until = 0;
+        zeonGrant(hours);
+        document.getElementById('zeonPassModal').classList.remove('open');
+        err.textContent = '';
+        inp.value = '';
+        open();
+      } else {
+        ZEON_LOCK.attempts++;
+        ZEON_LOCK.until = Date.now() + (ZEON_LOCK.attempts * 8 + 8) * 1000;
+        err.textContent = (LANG === 'ru' ? 'Промокод не найден. Блокировка ' : 'Promo not found. Locked for ') + Math.ceil((ZEON_LOCK.until - Date.now()) / 1000) + ' сек';
+        inp.select();
+      }
+    }).catch(function(){
+      err.textContent = LANG === 'ru' ? 'Открой сайт по HTTPS и попробуй снова' : 'Open the site over HTTPS and retry';
+    });
+  }
+
   var zeonPassBtn = document.getElementById('zeonPassBtn');
   var zeonPassInput = document.getElementById('zeonPassInput');
   var zeonPassModal = document.getElementById('zeonPassModal');
+  var zeonPromoBtn = document.getElementById('zeonPromoBtn');
+  var zeonPromoInput = document.getElementById('zeonPromoInput');
   if (zeonPassBtn) zeonPassBtn.onclick = tryZeonPass;
   if (zeonPassInput) zeonPassInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryZeonPass(); });
+  if (zeonPromoBtn) zeonPromoBtn.onclick = tryZeonPromo;
+  if (zeonPromoInput) zeonPromoInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryZeonPromo(); });
+  var zeonAuthTabs = document.getElementById('zeonAuthTabs');
+  if (zeonAuthTabs) {
+    var zBtns = zeonAuthTabs.querySelectorAll('button');
+    for (var zt = 0; zt < zBtns.length; zt++) {
+      (function(tb){
+        tb.onclick = function(){
+          for (var z = 0; z < zBtns.length; z++) zBtns[z].className = '';
+          tb.className = 'active';
+          var pass = tb.getAttribute('data-mode') === 'pass';
+          document.getElementById('zeonAuthPass').style.display = pass ? '' : 'none';
+          document.getElementById('zeonAuthPromo').style.display = pass ? 'none' : '';
+          document.getElementById('zeonPassErr').textContent = '';
+          var target = pass ? zeonPassInput : zeonPromoInput;
+          if (target) { target.value = ''; setTimeout(function(){ target.focus(); }, 60); }
+        };
+      })(zBtns[zt]);
+    }
+  }
   if (zeonPassModal) {
     document.getElementById('zeonPassClose').onclick = function(){
       zeonPassModal.classList.remove('open');
