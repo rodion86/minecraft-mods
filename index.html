@@ -464,6 +464,21 @@ html,body,body *{cursor:none !important}
 #katanaCursor img{width:36px;height:36px;display:block;transform:translate(-6px,-6px);transform-origin:center;image-rendering:auto;will-change:transform}
 #katanaCursor.on{opacity:1}
 @media(hover:none){#katanaCursor{display:none}}
+html.halloween #katanaCursor{display:none}
+html:not(.halloween) #mouseCursor{display:none}
+#mouseCursor{position:fixed;top:0;left:0;z-index:99999;pointer-events:none;opacity:0;transition:opacity .35s;will-change:transform}
+#mouseCursor.on{opacity:1}
+#mouseCursor svg{margin:-21px 0 0 -21px;display:block;transform-origin:center;filter:drop-shadow(0 0 7px rgba(255,123,28,.55))}
+.mw-wing{transform-box:fill-box}
+.mw-wing-l{transform-origin:100% 50%;animation:mwFlap .26s ease-in-out infinite alternate}
+.mw-wing-r{transform-origin:0% 50%;animation:mwFlap .26s ease-in-out infinite alternate-reverse}
+@keyframes mwFlap{0%{transform:rotate(-16deg)}100%{transform:rotate(18deg)}}
+.mw-teeth{opacity:0}
+.mw-inner{transform-box:fill-box;transform-origin:center}
+#mouseCursor.biting .mw-teeth{opacity:1}
+#mouseCursor.biting .mw-inner{animation:mwBite .24s ease}
+@keyframes mwBite{0%{transform:scale(1) translateX(0)}30%{transform:scale(1.14) translateX(5px)}60%{transform:scale(1.05) translateX(2px)}100%{transform:scale(1) translateX(0)}}
+@media(hover:none){#mouseCursor{display:none}}
 </style>
 </head>
 <body>
@@ -798,6 +813,29 @@ html,body,body *{cursor:none !important}
 
 
 <div id="katanaCursor"><img src="netherite-sword.svg?v=2" alt="" draggable="false"></div>
+<div id="mouseCursor">
+<svg class="hw-mouse" viewBox="0 0 64 64" width="42" height="42" xmlns="http://www.w3.org/2000/svg">
+ <g class="mw-inner">
+  <path class="mw-wing mw-wing-l" d="M28 30 C17 13 4 15 2 26 C13 24 22 28 28 34 Z" fill="#8f8fa6"/>
+  <path class="mw-wing mw-wing-r" d="M36 30 C47 13 60 15 62 26 C51 24 42 28 36 34 Z" fill="#8f8fa6"/>
+  <path class="mw-tail" d="M14 40 C3 43 5 56 15 53" fill="none" stroke="#9d9db0" stroke-width="2.4" stroke-linecap="round"/>
+  <ellipse class="mw-body" cx="31" cy="35" rx="15" ry="10" fill="#c7c7d6"/>
+  <circle cx="39" cy="24" r="6" fill="#c7c7d6"/>
+  <circle cx="39" cy="24" r="3" fill="#e9a7b9"/>
+  <circle cx="48" cy="27" r="5.4" fill="#c7c7d6"/>
+  <circle cx="48" cy="27" r="2.6" fill="#e9a7b9"/>
+  <circle cx="46" cy="37" r="8" fill="#d8d8e4"/>
+  <circle cx="49" cy="35" r="1.9" fill="#1a1a22"/>
+  <circle cx="56" cy="38" r="2" fill="#e9899f"/>
+  <g class="mw-teeth">
+    <rect x="51.6" y="40" width="2.4" height="3.4" rx="1" fill="#fff"/>
+    <rect x="53.9" y="40" width="2.4" height="3.4" rx="1" fill="#fff"/>
+  </g>
+  <path class="mw-jaw" d="M52 41 q3 2.4 5 0" fill="none" stroke="#8a5566" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M55 37 l7 -2.5 M55 39 l7.5 1" stroke="#8a8a9c" stroke-width="1" stroke-linecap="round"/>
+ </g>
+</svg>
+</div>
 <div id="sharpen"></div>
 
 <script>
@@ -2729,6 +2767,46 @@ drawParticles();
     }
 
     wrap.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) rotate(' + (ang + slash) + 'deg)';
+    requestAnimationFrame(loop);
+  })();
+})();
+
+/* FLYING MOUSE CURSOR (HALLOWEEN) */
+(function(){
+  var wrap = document.getElementById('mouseCursor');
+  if (!wrap) return;
+  var svg = wrap.querySelector('.hw-mouse');
+  var tx = innerWidth / 2, ty = innerHeight / 2;
+  var x = tx, y = ty;
+  var ang = 0;
+  var on = false;
+  function isHW(){ return document.documentElement.classList.contains('halloween'); }
+  function show(){ if (isHW() && !on){ on = true; wrap.classList.add('on'); } }
+  document.addEventListener('mousemove', function(e){
+    tx = e.clientX; ty = e.clientY;
+    show();
+  });
+  document.addEventListener('mouseleave', function(){ on = false; wrap.classList.remove('on'); });
+  document.addEventListener('mousedown', function(e){
+    if (!wrap.classList.contains('on')) return;
+    wrap.classList.remove('biting');
+    void wrap.offsetWidth;
+    wrap.classList.add('biting');
+    setTimeout(function(){ wrap.classList.remove('biting'); }, 250);
+  });
+  (function loop(){
+    var nx = x + (tx - x) * 0.25;
+    var ny = y + (ty - y) * 0.25;
+    var vx = nx - x, vy = ny - y;
+    x = nx; y = ny;
+    var speed = Math.sqrt(vx * vx + vy * vy);
+    if (speed > 0.5) {
+      var target = Math.atan2(vy, vx) * 180 / Math.PI;
+      var d = ((target - ang + 540) % 360) - 180;
+      ang += d * 0.22;
+    }
+    wrap.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+    if (svg) svg.style.transform = 'rotate(' + ang + 'deg)';
     requestAnimationFrame(loop);
   })();
 })();
