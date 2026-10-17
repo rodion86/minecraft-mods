@@ -199,6 +199,35 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 /* PLAYEROK BUTTON */
 .playerok-btn{position:fixed;top:240px;left:20px;z-index:100;display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.75);font-size:.72rem;font-weight:700;text-decoration:none;backdrop-filter:blur(20px);cursor:pointer;transition:all .25s;opacity:0;animation:fadeUp .6s ease forwards;animation-delay:1.3s}
 .playerok-btn:hover{color:#000;background:var(--ac);border-color:var(--ac)}
+.theme-btn{font-family:'Space Grotesk',sans-serif}
+.theme-btn.on{color:#0c0616;background:var(--ac);border-color:var(--ac)}
+
+/* HALLOWEEN THEME */
+html.halloween{--ac:#ff7b1c;--bg:#0c0616}
+html.halloween body{background:radial-gradient(ellipse at 50% -10%,#2a0f3d 0%,#12071f 45%,#05020a 100%)}
+html.halloween .bg-orb{background:radial-gradient(circle,rgba(255,123,28,.16),transparent)}
+html.halloween .bg-grid{background-image:linear-gradient(rgba(255,123,28,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,123,28,.06) 1px,transparent 1px)}
+html.halloween .bg-grid::after{background:radial-gradient(ellipse at 50% 30%,rgba(255,123,28,.12),transparent 70%)}
+html.halloween .bg-line{background:linear-gradient(90deg,transparent,rgba(255,123,28,.4),transparent)}
+html.halloween .intro{background:#0c0616}
+html.halloween .hero-title,html.halloween h1,html.halloween h2{text-shadow:0 0 24px rgba(255,123,28,.35)}
+html.halloween .brand-mark,html.halloween .intro-logo{box-shadow:0 0 18px rgba(255,123,28,.5)}
+html.halloween .hw-decor{display:block}
+
+/* HALLOWEEN DECOR */
+.hw-decor{display:none;position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.hw-bat{position:absolute;font-size:24px;filter:drop-shadow(0 0 8px rgba(255,123,28,.55));animation:hwFly 20s linear infinite}
+.hw-bat:nth-child(1){top:8%;font-size:22px;animation-duration:24s;animation-delay:-3s}
+.hw-bat:nth-child(2){top:26%;font-size:30px;animation-duration:30s;animation-delay:-12s}
+.hw-bat:nth-child(3){top:52%;font-size:20px;animation-duration:26s;animation-delay:-7s}
+.hw-bat:nth-child(4){top:72%;font-size:27px;animation-duration:34s;animation-delay:-18s}
+@keyframes hwFly{0%{transform:translateX(-14vw) translateY(0) scaleX(1)}20%{transform:translateX(20vw) translateY(-34px)}40%{transform:translateX(44vw) translateY(24px)}60%{transform:translateX(66vw) translateY(-26px)}80%{transform:translateX(88vw) translateY(18px)}100%{transform:translateX(114vw) translateY(0)}}
+.hw-fog{position:absolute;left:-10%;right:-10%;bottom:0;height:45vh;background:radial-gradient(ellipse at 50% 120%,rgba(255,123,28,.14),transparent 70%);animation:hwFog 9s ease-in-out infinite alternate}
+.hw-pumpkin{position:absolute;bottom:14px;font-size:44px;filter:drop-shadow(0 0 14px rgba(255,123,28,.6));animation:hwBob 4s ease-in-out infinite}
+.hw-pumpkin:nth-child(6){left:3%}
+.hw-pumpkin:nth-child(7){right:3%;bottom:24px;font-size:38px;animation-delay:-2s}
+@keyframes hwFog{0%{opacity:.45;transform:translateX(-2%)}100%{opacity:1;transform:translateX(2%)}}
+@keyframes hwBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
 
 /* ACCOUNT MODAL */
 .modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(10px)}
@@ -451,6 +480,16 @@ html,body,body *{cursor:none !important}
   <div class="bg-line"></div>
 </div>
 
+<div class="hw-decor" id="hwDecor" aria-hidden="true">
+  <span class="hw-bat">🦇</span>
+  <span class="hw-bat">🦇</span>
+  <span class="hw-bat">🦇</span>
+  <span class="hw-bat">🦇</span>
+  <span class="hw-fog"></span>
+  <span class="hw-pumpkin">🎃</span>
+  <span class="hw-pumpkin">🎃</span>
+</div>
+
 <canvas id="particles" style="position:fixed;inset:0;z-index:1;pointer-events:none"></canvas>
 
 <div class="intro" id="intro">
@@ -585,7 +624,7 @@ html,body,body *{cursor:none !important}
   </div>
 </div>
 
-<a class="playerok-btn" href="https://playerok.com/profile/bySandy01/products" target="_blank" rel="noopener">💎 Хочешь такой же сайт?</a>
+<button class="playerok-btn theme-btn" id="themeBtn" type="button">🎃 Хэллуин-режим</button>
 
 <footer>
   <div class="footer-brand">don0s <span>x</span> migodi</div>
@@ -1103,10 +1142,33 @@ function toggleLang() {
   applyLang();
   var btn = document.getElementById('langBtn');
   if (btn) btn.textContent = LANG === 'ru' ? 'EN' : 'RU';
+  applyTheme();
   if (window.zsSync) window.zsSync();
 }
 
 document.getElementById('langBtn').onclick = toggleLang;
+
+var THEME = 'halloween';
+try { THEME = localStorage.getItem('mc_theme') || 'halloween'; } catch (e) {}
+function applyTheme() {
+  var on = THEME === 'halloween';
+  if (on) document.documentElement.classList.add('halloween');
+  else document.documentElement.classList.remove('halloween');
+  var b = document.getElementById('themeBtn');
+  if (b) {
+    b.classList.toggle('on', on);
+    if (LANG === 'ru') b.innerHTML = on ? '🎃 Обычный вид' : '🎃 Хэллуин-режим';
+    else b.innerHTML = on ? '🎃 Default view' : '🎃 Halloween mode';
+  }
+}
+function toggleTheme() {
+  THEME = THEME === 'halloween' ? 'default' : 'halloween';
+  try { localStorage.setItem('mc_theme', THEME); } catch (e) {}
+  applyTheme();
+}
+document.getElementById('themeBtn').onclick = toggleTheme;
+applyTheme();
+window.addEventListener('load', applyTheme);
 
 document.getElementById('search').oninput = function(e) {
   curQ = e.target.value;
