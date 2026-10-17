@@ -245,6 +245,36 @@ html.halloween .hw-decor{display:block}
 .hw-hang:nth-child(12) .hw-string{height:70px}
 @keyframes hwSway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
 
+/* WINTER THEME */
+html.winter{--ac:#7fd6ff;--bg:#061420}
+html.winter body{background:radial-gradient(ellipse at 50% -20%,#12415c 0%,#0a2436 45%,#04101a 100%)}
+html.winter .bg-orb{background:radial-gradient(circle,rgba(127,214,255,.16),transparent)}
+html.winter .bg-grid{background-image:linear-gradient(rgba(127,214,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(127,214,255,.07) 1px,transparent 1px)}
+html.winter .bg-grid::after{background:radial-gradient(ellipse at 50% 30%,rgba(127,214,255,.13),transparent 70%)}
+html.winter .bg-line{background:linear-gradient(90deg,transparent,rgba(127,214,255,.4),transparent)}
+html.winter .bg-vignette{background:radial-gradient(ellipse at center,transparent 44%,rgba(150,220,255,.12) 82%,rgba(205,242,255,.3) 100%)}
+html.winter .intro{background:#061420}
+html.winter .hero-title,html.winter h1,html.winter h2{text-shadow:0 0 24px rgba(127,214,255,.45)}
+html.winter .brand-mark,html.winter .intro-logo{box-shadow:0 0 18px rgba(127,214,255,.55)}
+html.winter .win-decor{display:block}
+
+/* WINTER DECOR */
+.win-decor{display:none;position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.snow{position:absolute;top:0;display:block;animation:snFall linear infinite}
+.snow i{display:block;width:100%;height:100%;border-radius:50%;background:#eefaff;box-shadow:0 0 7px rgba(175,232,255,.95);animation:snSway ease-in-out infinite alternate}
+@keyframes snFall{0%{transform:translateY(-10vh)}100%{transform:translateY(118vh)}}
+@keyframes snSway{0%{transform:translateX(-16px)}100%{transform:translateX(16px)}}
+.snow-drift{position:absolute;left:-6%;right:-6%;bottom:-46px;height:132px;background:radial-gradient(ellipse at 50% 100%,#eaf8ff 0%,rgba(234,248,255,.65) 55%,transparent 76%);border-radius:46% 46% 0 0;filter:blur(3px);opacity:.7;animation:driftBreath 7s ease-in-out infinite alternate}
+@keyframes driftBreath{0%{transform:translateY(6px);opacity:.6}100%{transform:translateY(0);opacity:.85}}
+.win-bigflake{position:absolute;font-size:56px;color:#e3f6ff;opacity:.55;text-shadow:0 0 26px rgba(150,230,255,.95);animation:winSpin 34s linear infinite}
+.win-bigflake:nth-child(2){left:4%;bottom:120px}
+.win-bigflake:nth-child(3){right:5%;top:14%;font-size:74px;animation-duration:46s;animation-direction:reverse}
+.win-bigflake:nth-child(4){left:46%;bottom:96px;font-size:34px;animation-duration:52s;animation-delay:-12s}
+.win-frosty{position:absolute;left:3%;bottom:26px;font-size:52px;filter:drop-shadow(0 0 16px rgba(160,230,255,.85));animation:frostBob 5s ease-in-out infinite}
+.win-frosty2{position:absolute;right:3%;bottom:34px;font-size:44px;filter:drop-shadow(0 0 16px rgba(160,230,255,.85));animation:frostBob 5.6s ease-in-out infinite;animation-delay:-2.4s}
+@keyframes winSpin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+@keyframes frostBob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(4deg)}}
+
 /* HALLOWEEN EGG: laughing glowing pumpkin */
 .hw-egg{position:fixed;inset:0;z-index:100000;display:none;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .35s}
 .hw-egg.on{display:flex;opacity:1;pointer-events:auto;cursor:pointer}
@@ -489,6 +519,24 @@ html:not(.halloween) #pumpkinCursor{display:none}
 #pumpkinCursor.biting .pk-inner{animation:pkSquash .26s cubic-bezier(.3,1.4,.5,1)}
 @keyframes pkSquash{0%{transform:scale(1,1)}30%{transform:scale(1.2,.8)}60%{transform:scale(.93,1.1)}100%{transform:scale(1,1)}}
 @media(hover:none){#pumpkinCursor{display:none}}
+html.winter #katanaCursor{display:none}
+html:not(.winter) #snowCursor{display:none}
+#snowCursor{position:fixed;top:0;left:0;z-index:99999;pointer-events:none;opacity:0;transition:opacity .35s;will-change:transform}
+#snowCursor.on{opacity:1}
+#snowCursor svg{margin:-21px 0 0 -21px;display:block;transform-origin:center;filter:drop-shadow(0 0 8px rgba(150,230,255,.85))}
+.cs-inner{transform-box:fill-box;transform-origin:center}
+#snowCursor.cracking svg{animation:csShatter .5s ease-out}
+@keyframes csShatter{0%{transform:scale(1);opacity:1}35%{transform:scale(1.4) rotate(24deg);opacity:.55}70%{transform:scale(.96) rotate(-10deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+.cs-bit{position:absolute;top:0;left:0;width:7px;height:7px;border-radius:50%;background:#eefaff;box-shadow:0 0 8px rgba(175,232,255,.95);opacity:0}
+.cs-bit:nth-child(1){--bx:-30px;--by:-24px}
+.cs-bit:nth-child(2){--bx:28px;--by:-26px}
+.cs-bit:nth-child(3){--bx:-34px;--by:14px}
+.cs-bit:nth-child(4){--bx:32px;--by:16px}
+.cs-bit:nth-child(5){--bx:-6px;--by:-38px}
+.cs-bit:nth-child(6){--bx:8px;--by:34px}
+#snowCursor.cracking .cs-bit{animation:csBit .52s ease-out forwards}
+@keyframes csBit{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--bx),var(--by)) scale(.2)}}
+@media(hover:none){#snowCursor{display:none}}
 </style>
 </head>
 <body>
@@ -532,6 +580,15 @@ html:not(.halloween) #pumpkinCursor{display:none}
   <span class="hw-hang"><span class="hw-string"></span><span class="hw-hangbat">🦇</span></span>
   <span class="hw-hang"><span class="hw-string"></span><span class="hw-hangbat">🦇</span></span>
   <span class="hw-hang"><span class="hw-string"></span><span class="hw-hangbat">🦇</span></span>
+</div>
+
+<div class="win-decor" id="winDecor" aria-hidden="true">
+  <div class="snow-drift"></div>
+  <span class="win-bigflake">❄</span>
+  <span class="win-bigflake">❄</span>
+  <span class="win-bigflake">❄</span>
+  <span class="win-frosty">⛄</span>
+  <span class="win-frosty2">⛄</span>
 </div>
 
 <canvas id="particles" style="position:fixed;inset:0;z-index:1;pointer-events:none"></canvas>
@@ -839,6 +896,24 @@ html:not(.halloween) #pumpkinCursor{display:none}
   </g>
  </g>
 </svg>
+</div>
+<div id="snowCursor">
+ <span class="cs-bit"></span><span class="cs-bit"></span><span class="cs-bit"></span>
+ <span class="cs-bit"></span><span class="cs-bit"></span><span class="cs-bit"></span>
+ <svg class="cs-flake" viewBox="0 0 64 64" width="42" height="42" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g class="cs-inner">
+   <g id="csArm" fill="none" stroke="#e8f8ff" stroke-width="3.4" stroke-linecap="round">
+    <path d="M32 32 L32 7"/>
+    <path d="M32 14 l-6.5 -6.5 M32 14 l6.5 -6.5"/>
+    <path d="M32 22 l-5 -5 M32 22 l5 -5"/>
+   </g>
+   <use href="#csArm" xlink:href="#csArm" transform="rotate(60 32 32)"/>
+   <use href="#csArm" xlink:href="#csArm" transform="rotate(120 32 32)"/>
+   <use href="#csArm" xlink:href="#csArm" transform="rotate(180 32 32)"/>
+   <use href="#csArm" xlink:href="#csArm" transform="rotate(240 32 32)"/>
+   <use href="#csArm" xlink:href="#csArm" transform="rotate(300 32 32)"/>
+  </g>
+ </svg>
 </div>
 <div id="sharpen"></div>
 <div id="ytHost" style="position:fixed;left:-9999px;top:-9999px;width:2px;height:2px;opacity:0;pointer-events:none"></div>
@@ -1333,28 +1408,56 @@ document.addEventListener('visibilitychange', function () { if (document.hidden)
 updateMusicBtn();
 
 var THEME = 'halloween';
+var THEME_ORDER = ['halloween', 'winter', 'default'];
 try { THEME = localStorage.getItem('mc_theme') || 'halloween'; } catch (e) {}
+if (THEME_ORDER.indexOf(THEME) === -1) THEME = 'halloween';
 function applyTheme() {
-  var on = THEME === 'halloween';
-  if (on) document.documentElement.classList.add('halloween');
-  else document.documentElement.classList.remove('halloween');
+  var d = document.documentElement;
+  d.classList.remove('halloween');
+  d.classList.remove('winter');
+  if (THEME === 'halloween') d.classList.add('halloween');
+  else if (THEME === 'winter') d.classList.add('winter');
   var b = document.getElementById('themeBtn');
   if (b) {
-    b.classList.toggle('on', on);
-    if (LANG === 'ru') b.innerHTML = on ? '🎃 Обычный вид' : '🎃 Хэллуин-режим';
-    else b.innerHTML = on ? '🎃 Default view' : '🎃 Halloween mode';
+    b.classList.toggle('on', THEME !== 'default');
+    var next = THEME_ORDER[(THEME_ORDER.indexOf(THEME) + 1) % THEME_ORDER.length];
+    var ru = '🌗 Обычный вид', en = '🌗 Default view';
+    if (next === 'halloween') { ru = '🎃 Хэллуин-режим'; en = '🎃 Halloween mode'; }
+    else if (next === 'winter') { ru = '🧊 Зимняя версия'; en = '🧊 Winter mode'; }
+    b.innerHTML = LANG === 'ru' ? ru : en;
   }
   if (typeof updateMusicBtn === 'function') updateMusicBtn();
   if (typeof syncMusicTheme === 'function') syncMusicTheme();
 }
 function toggleTheme() {
-  THEME = THEME === 'halloween' ? 'default' : 'halloween';
+  THEME = THEME_ORDER[(THEME_ORDER.indexOf(THEME) + 1) % THEME_ORDER.length];
   try { localStorage.setItem('mc_theme', THEME); } catch (e) {}
   applyTheme();
 }
 document.getElementById('themeBtn').onclick = toggleTheme;
 applyTheme();
 window.addEventListener('load', applyTheme);
+
+(function makeSnow() {
+  var win = document.getElementById('winDecor');
+  if (!win) return;
+  var n = Math.max(18, Math.min(48, Math.round(innerWidth / 32)));
+  for (var i = 0; i < n; i++) {
+    var s = document.createElement('span');
+    s.className = 'snow';
+    var size = 3 + Math.random() * 7;
+    s.style.left = (Math.random() * 100) + 'vw';
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.opacity = (0.45 + Math.random() * 0.55).toFixed(2);
+    s.style.animationDuration = (7 + Math.random() * 14).toFixed(1) + 's';
+    s.style.animationDelay = (-Math.random() * 24).toFixed(1) + 's';
+    var inner = document.createElement('i');
+    inner.style.animationDuration = (2.4 + Math.random() * 4.5).toFixed(1) + 's';
+    s.appendChild(inner);
+    win.appendChild(s);
+  }
+})();
 
 document.getElementById('search').oninput = function(e) {
   curQ = e.target.value;
@@ -2947,8 +3050,48 @@ drawParticles();
     x = nx; y = ny;
     var target = Math.max(-14, Math.min(14, vx * 0.9));
     ang += (target - ang) * 0.18;
-    wrap.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
-    if (svg) svg.style.transform = 'rotate(' + ang + 'deg)';
+    if (isHW()) {
+      wrap.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+      if (svg) svg.style.transform = 'rotate(' + ang + 'deg)';
+    }
+    requestAnimationFrame(loop);
+  })();
+})();
+
+/* SNOWFLAKE CURSOR (WINTER) */
+(function(){
+  var wrap = document.getElementById('snowCursor');
+  if (!wrap) return;
+  var svg = wrap.querySelector('.cs-flake');
+  var tx = innerWidth / 2, ty = innerHeight / 2;
+  var x = tx, y = ty;
+  var spin = 0;
+  var on = false;
+  function isWinter(){ return document.documentElement.classList.contains('winter'); }
+  function show(){ if (isWinter() && !on){ on = true; wrap.classList.add('on'); } }
+  document.addEventListener('mousemove', function(e){
+    tx = e.clientX; ty = e.clientY;
+    show();
+  });
+  document.addEventListener('mouseleave', function(){ on = false; wrap.classList.remove('on'); });
+  document.addEventListener('mousedown', function(){
+    if (!wrap.classList.contains('on')) return;
+    wrap.classList.remove('cracking');
+    void wrap.offsetWidth;
+    wrap.classList.add('cracking');
+    clearTimeout(window.__csT);
+    window.__csT = setTimeout(function(){ wrap.classList.remove('cracking'); }, 560);
+  });
+  (function loop(){
+    var nx = x + (tx - x) * 0.25;
+    var ny = y + (ty - y) * 0.25;
+    var sp = Math.abs(nx - x) + Math.abs(ny - y);
+    x = nx; y = ny;
+    spin += 0.45 + Math.min(sp, 26) * 0.05;
+    if (isWinter()) {
+      wrap.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+      if (svg) svg.style.transform = 'rotate(' + spin + 'deg)';
+    }
     requestAnimationFrame(loop);
   })();
 })();
