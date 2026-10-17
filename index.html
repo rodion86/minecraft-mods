@@ -202,6 +202,7 @@ footer{border-top:1px solid rgba(255,255,255,.04);padding:32px 0;text-align:cent
 .theme-btn{font-family:'Space Grotesk',sans-serif}
 .theme-btn.on{color:#0c0616;background:var(--ac);border-color:var(--ac)}
 .music-btn{top:292px}
+html:not(.halloween) .music-btn{display:none}
 
 /* HALLOWEEN THEME */
 html.halloween{--ac:#ff7b1c;--bg:#0c0616}
@@ -1247,6 +1248,18 @@ function toggleMusic() {
   if (MUSIC_ON) { try { ytPlayer.playVideo(); } catch (e) {} }
   else { saveMusicTime(); try { ytPlayer.pauseVideo(); } catch (e) {} }
 }
+function isHalloween() { return document.documentElement.classList.contains('halloween'); }
+function syncMusicTheme() {
+  var b = document.getElementById('musicBtn');
+  if (b) b.style.display = isHalloween() ? '' : 'none';
+  if (!ytPlayer || !ytReady) return;
+  if (isHalloween()) {
+    if (MUSIC_ON) { try { ytPlayer.playVideo(); } catch (e) {} }
+  } else {
+    saveMusicTime();
+    try { ytPlayer.pauseVideo(); } catch (e) {}
+  }
+}
 function initYT() {
   if (ytPlayer || !window.YT || !window.YT.Player) return;
   ytPlayer = new YT.Player('ytHost', {
@@ -1255,7 +1268,7 @@ function initYT() {
     events: {
       onReady: function () {
         ytReady = true;
-        if (MUSIC_ON) startMusic(true);
+        if (MUSIC_ON && isHalloween()) startMusic(true);
         else if (musicT > 1) { try { ytPlayer.seekTo(musicT, true); } catch (e) {} }
       },
       onError: function () { try { localStorage.setItem('mc_music_t', '0'); } catch (e) {} }
@@ -1283,6 +1296,7 @@ function applyTheme() {
     else b.innerHTML = on ? '🎃 Default view' : '🎃 Halloween mode';
   }
   if (typeof updateMusicBtn === 'function') updateMusicBtn();
+  if (typeof syncMusicTheme === 'function') syncMusicTheme();
 }
 function toggleTheme() {
   THEME = THEME === 'halloween' ? 'default' : 'halloween';
