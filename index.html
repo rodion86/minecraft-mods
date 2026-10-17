@@ -228,6 +228,20 @@ html.halloween .hw-decor{display:block}
 .hw-pumpkin:nth-child(7){right:3%;bottom:24px;font-size:38px;animation-delay:-2s}
 @keyframes hwFog{0%{opacity:.45;transform:translateX(-2%)}100%{opacity:1;transform:translateX(2%)}}
 @keyframes hwBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
+.hw-hang{position:absolute;top:0;display:flex;flex-direction:column;align-items:center;transform-origin:top center;animation:hwSway 4.5s ease-in-out infinite;pointer-events:none}
+.hw-string{width:2px;background:linear-gradient(to bottom,rgba(210,210,225,.04),rgba(210,210,225,.45));border-radius:2px}
+.hw-hang .hw-hangbat{font-size:30px;margin-top:-4px;transform:scaleY(-1);filter:drop-shadow(0 0 10px rgba(255,123,28,.65))}
+.hw-hang:nth-child(8){left:9%;animation-delay:-1s}
+.hw-hang:nth-child(8) .hw-string{height:90px}
+.hw-hang:nth-child(9){left:29%;animation-delay:-3s;animation-duration:5.6s}
+.hw-hang:nth-child(9) .hw-string{height:150px}
+.hw-hang:nth-child(10){left:54%;animation-delay:-2s}
+.hw-hang:nth-child(10) .hw-string{height:110px}
+.hw-hang:nth-child(11){left:76%;animation-delay:-4.2s;animation-duration:5.2s}
+.hw-hang:nth-child(11) .hw-string{height:170px}
+.hw-hang:nth-child(12){left:91%;animation-delay:-1.6s}
+.hw-hang:nth-child(12) .hw-string{height:70px}
+@keyframes hwSway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
 
 /* ACCOUNT MODAL */
 .modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(10px)}
@@ -488,6 +502,11 @@ html,body,body *{cursor:none !important}
   <span class="hw-fog"></span>
   <span class="hw-pumpkin">🎃</span>
   <span class="hw-pumpkin">🎃</span>
+  <span class="hw-hang"><span class="hw-string"></span><span class="hw-hangbat">🦇</span></span>
+  <span class="hw-hang"><span class="hw-string"></span><span class="hw-hangbat">🦇</span></span>
+  <span class="hw-hang"><span class="hw-string"></span><span class="hw-hangbat">🦇</span></span>
+  <span class="hw-hang"><span class="hw-string"></span><span class="hw-hangbat">🦇</span></span>
+  <span class="hw-hang"><span class="hw-string"></span><span class="hw-hangbat">🦇</span></span>
 </div>
 
 <canvas id="particles" style="position:fixed;inset:0;z-index:1;pointer-events:none"></canvas>
