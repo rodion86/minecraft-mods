@@ -474,6 +474,26 @@ textarea.modal-input{resize:vertical;min-height:60px}
 .captcha-err{color:#ef4444;font-size:.75rem;min-height:18px;margin-bottom:8px}
 @keyframes captchaPop{from{opacity:0;transform:scale(.92) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
 
+/* CHANNEL VIDEOS */
+.videos{margin:6px 0 34px}
+.vid-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.vid-title{font-size:1.05rem;font-weight:700;display:flex;align-items:center;gap:8px}
+.vid-title::before{content:'';width:7px;height:7px;border-radius:50%;background:#f00;box-shadow:0 0 10px rgba(255,0,0,.8);animation:zeonDot 1.6s ease-in-out infinite}
+.vid-link{font-size:.74rem;color:rgba(255,255,255,.5);text-decoration:none;transition:color .3s}
+.vid-link:hover{color:var(--ac)}
+.vid-main{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:#000;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+.vid-main iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;margin-top:14px}
+.vid-item{display:block;width:100%;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:12px;overflow:hidden;cursor:pointer;padding:0;text-align:left;transition:transform .25s,border-color .25s,box-shadow .25s}
+.vid-item:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.18)}
+.vid-item.on{border-color:var(--ac);box-shadow:0 0 0 1px color-mix(in srgb,var(--ac) 40%,transparent),0 10px 26px rgba(0,0,0,.4)}
+.vid-thumb{position:relative;display:block;width:100%;aspect-ratio:16/9;overflow:hidden;background:#000}
+.vid-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.vid-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.55))}
+.vid-play{position:absolute;right:8px;bottom:8px;z-index:2;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.6rem}
+.vid-name{display:-webkit-box;padding:8px 10px;font-size:.7rem;font-weight:600;color:rgba(255,255,255,.8);line-height:1.35;max-height:3.2em;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+@media(max-width:640px){.vid-grid{grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:9px}}
+
 /* MINECRAFT CURSOR */
 html,body,body *{cursor:none !important}
 #katanaCursor{position:fixed;top:0;left:0;z-index:99999;pointer-events:none;opacity:0;transition:opacity .35s;will-change:transform}
@@ -580,6 +600,17 @@ html:not(.halloween) #pumpkinCursor{display:none}
     <a class="mnav-link" href="https://playerok.com/profile/bySandy01/products" target="_blank" rel="noopener">💎 PlayerOk</a>
   </div>
 </div>
+
+<section class="videos" id="videos">
+  <div class="vid-head">
+    <div class="vid-title" data-i18n="vid_title">Видео канала</div>
+    <a class="vid-link" href="https://www.youtube.com/@d0no0s-l7r" target="_blank" rel="noopener" data-i18n="vid_all">▶️ Весь канал на YouTube</a>
+  </div>
+  <div class="vid-main">
+    <iframe id="vidFrame" title="d0no0s" src="https://www.youtube.com/embed/oXqcYFTTve4?rel=0&modestbranding=1&playsinline=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+  </div>
+  <div class="vid-grid" id="vidGrid"></div>
+</section>
 
 <section class="hero" id="catalog">
   <div class="badge" data-i18n="badge">каждый день обновляем</div>
@@ -950,6 +981,8 @@ var I18N = {
   badge:{ru:"каждый день обновляем",en:"we update every day"},
   hero_title:{ru:"Всё для модов<br>Minecraft",en:"Everything for mods<br>Minecraft"},
   hero_p:{ru:"Лаунчеры, загрузчики, оптимизация, сборки. Лучшее в одном месте.",en:"Launchers, loaders, optimization, packs. All in one place."},
+  vid_title:{ru:"Видео канала",en:"Channel videos"},
+  vid_all:{ru:"▶️ Весь канал на YouTube",en:"▶️ Full channel on YouTube"},
   empty:{ru:"Ничего не найдено",en:"Nothing found"},
   best:{ru:"Лучший выбор",en:"Best pick"},
   rec:{ru:"Рекомендуем",en:"Recommended"},
@@ -2951,6 +2984,75 @@ drawParticles();
     if (svg) svg.style.transform = 'rotate(' + ang + 'deg)';
     requestAnimationFrame(loop);
   })();
+})();
+
+/* CHANNEL VIDEOS */
+(function(){
+  var CHAN = [
+    {id:'oXqcYFTTve4', t:'ИГРАЕМ НА FUNTIME'},
+    {id:'fqysMsEMM7M', t:'ИГРАЕМ НА FUNTIME'},
+    {id:'9-zuC3zFy6c', t:'играем на фантайм'},
+    {id:'oVVQFp-g8I4', t:'играем на фантайм'},
+    {id:'61LVV0gY6ZI', t:'играем с визуалами phantom visuals'},
+    {id:'bNKNIPpPuNI', t:'играем с визуалами phantom visuals'},
+    {id:'bSTSCAdnNKs', t:'nightixDLC кряк с лютой килкой'},
+    {id:'oaKpTGJ5SX8', t:'БЕСПЛАТНЫЙ ВИЗУАЛЫ PHANTOM VISUALS'},
+    {id:'Adqm7Lb8RxQ', t:'СДЕЛАЛ КОПИЮ САЙТА FUNTIME'},
+    {id:'0q_DKMQjLn0', t:'ТУТОР КАК СЛОМАТЬ ПК ДРУГУ'},
+    {id:'z6S84J5Bu64', t:'ОБЗОР САЙТА С ЛЮТЫМИ КРЯКАМИ'},
+    {id:'3jbPc88beiM', t:'тутор по настройки ai aura вилд клиент'},
+    {id:'3UN8vPhVl-s', t:'Я СОБРАЛ ВСЕХ БЛОГЕОВ МАЙНКРАФТ В ОДНОМ ТРЕКЕ|трек-HvH ебЛ@НЫ'},
+    {id:'1chLyzX_34k', t:'кряк вилд клиент на лучшем бесплатном лаунчере'},
+    {id:'jQGATWcQhA0', t:'rockstar client кряк топ пвп 2.0'}
+  ];
+  var grid = document.getElementById('vidGrid');
+  var frame = document.getElementById('vidFrame');
+  if (!grid || !frame) return;
+  function play(v, el) {
+    frame.src = 'https://www.youtube.com/embed/' + v.id + '?rel=0&modestbranding=1&playsinline=1&autoplay=1';
+    var items = grid.querySelectorAll('.vid-item');
+    for (var i = 0; i < items.length; i++) items[i].classList.remove('on');
+    if (el) el.classList.add('on');
+    try { sessionStorage.setItem('mc_vid', v.id); } catch (e) {}
+  }
+  for (var i = 0; i < CHAN.length; i++) {
+    (function(v, idx){
+      var b = document.createElement('button');
+      b.className = 'vid-item' + (idx === 0 ? ' on' : '');
+      b.type = 'button';
+      var thumb = document.createElement('span');
+      thumb.className = 'vid-thumb';
+      var img = document.createElement('img');
+      img.src = 'https://i.ytimg.com/vi/' + v.id + '/mqdefault.jpg';
+      img.alt = '';
+      img.loading = 'lazy';
+      img.draggable = false;
+      var pl = document.createElement('span');
+      pl.className = 'vid-play';
+      pl.textContent = '▶';
+      thumb.appendChild(img);
+      thumb.appendChild(pl);
+      var name = document.createElement('span');
+      name.className = 'vid-name';
+      name.textContent = v.t;
+      b.appendChild(thumb);
+      b.appendChild(name);
+      b.onclick = function () { play(v, b); };
+      grid.appendChild(b);
+    })(CHAN[i], i);
+  }
+  var saved = null;
+  try { saved = sessionStorage.getItem('mc_vid'); } catch (e) {}
+  if (saved) {
+    for (var k = 0; k < CHAN.length; k++) {
+      if (CHAN[k].id === saved) {
+        frame.src = 'https://www.youtube.com/embed/' + saved + '?rel=0&modestbranding=1&playsinline=1';
+        var it = grid.querySelectorAll('.vid-item');
+        for (var j = 0; j < it.length; j++) it[j].classList.toggle('on', j === k);
+        break;
+      }
+    }
+  }
 })();
 </script>
 </body>
