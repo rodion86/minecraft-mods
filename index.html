@@ -1196,7 +1196,14 @@ var YT_ID = 'wLKoT8-sP8c';
 var MUSIC_ON = true;
 try { var ms0 = localStorage.getItem('mc_music_on'); if (ms0 !== null) MUSIC_ON = ms0 === '1'; } catch (e) {}
 var musicT = 0;
-try { musicT = parseFloat(localStorage.getItem('mc_music_t')) || 0; } catch (e) {}
+try {
+  if (localStorage.getItem('mc_music_id') === YT_ID) {
+    musicT = parseFloat(localStorage.getItem('mc_music_t')) || 0;
+  } else {
+    localStorage.setItem('mc_music_id', YT_ID);
+    localStorage.setItem('mc_music_t', '0');
+  }
+} catch (e) {}
 var ytPlayer = null, ytReady = false, ytGestureArmed = false;
 
 function updateMusicBtn() {
